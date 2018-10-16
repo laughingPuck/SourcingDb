@@ -15,19 +15,31 @@ class SessionsController extends Controller
 
     public function store(Request $request) {
         $credentials = $this->validate($request, [
-            'email' => 'required|email|max:255',
+            'name' => 'required|max:50',
             'password' => 'required'
         ]);
 
         if (Auth::attempt($credentials)) {
             //landing page
-            session()->flash('success', 'Welcome!');
-            return redirect()->route('users.show', [Auth::user()]);
+            session()->flash('success', 'Welcome to Sourcing DB System');
+            return redirect()->route('show', [Auth::user()]);
         } else {
             //fail alert
-            session()->flash('danger', 'Sorry that your mailbox and password do not match!');
+            session()->flash('danger', 'Sorry that your user name and password do not match!');
             return redirect()->back();
         }
         return;
+    }
+
+    public function show(User $user)
+    {
+        return view('sessions.show' , compact('user'));
+    }
+
+    public function destroy()
+    {
+        Auth::logout();
+        session()->flash('success', 'Successfully Log Out！');
+        return redirect('/');
     }
 }

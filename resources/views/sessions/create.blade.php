@@ -2,9 +2,9 @@
 @section('content')
 <div class="col-md-offset-2 col-md-8">
   <div class="panel panel-default">
-    <div class="panel-heading">
+    <!--<div class="panel-heading">
       <h5>Login</h5>
-    </div>
+    </div>-->
     <div class="panel-body">
       @include('shared._errors')
 
@@ -12,8 +12,8 @@
           {{ csrf_field() }}
 
           <div class="form-group">
-            <label for="email">Email：</label>
-            <input type="text" name="email" class="form-control" value="{{ old('email') }}">
+            <label for="name">User Name：</label>
+            <input type="text" name="name" class="form-control" value="{{ old('name') }}">
           </div>
 
           <div class="form-group">

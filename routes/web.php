@@ -13,6 +13,8 @@
 
 Route::get('/', 'SessionsController@create');
 Route::post('login', 'SessionsController@store')->name('login');
+Route::get('/show', 'SessionsController@show')->name('show');
+//Route::get('/help', 'StaticPagesController@help')->name('help');
 Route::delete('logout', 'SessionsController@destroy')->name('logout');
 
 Route::resource('users', 'UsersController');
