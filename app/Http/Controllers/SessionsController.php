@@ -21,7 +21,7 @@ class SessionsController extends Controller
 
         if (Auth::attempt($credentials)) {
             //landing page
-            session()->flash('success', 'Welcome to Sourcing DB System');
+            session()->flash('success', 'Hi '. (Auth::user()->name) .',Welcome to Sourcing DB System.' );
             return redirect()->route('show', [Auth::user()]);
         } else {
             //fail alert

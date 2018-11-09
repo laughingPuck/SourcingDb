@@ -17,4 +17,10 @@ class UsersController extends Controller
     {
         return view('users.show' , compact('user'));
     }
+
+    public function edit($id)
+    {
+        return view('users.edit', compact('user', 'id'));
+        //return redirect()->route('users.show', [$user]);
+    }
 }

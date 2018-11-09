@@ -1,24 +1,52 @@
-@extends('layouts.default')
+@extends('layouts.default2')
 @section('content')
 <?php
-require_once(public_path() ."/phpGrid_Lite/conf.php");
+use phpGrid\C_DataGrid;
 
-$dg = new c_DataGrid("SELECT id,name,email,created_at,updated_at FROM users");
-$dg->enable_advanced_search(true);
-//$dg->enable_export('EXCEL');
-$dg->enable_edit('FORM', 'CRU');
+require_once(public_path() ."/phpGrid_Enterprise_v7.2.7/conf.php");
+
+$dg = new C_DataGrid("SELECT id,name,email,password,role_id,created_at,updated_at FROM users");
+
 $dg->set_col_title("id", "ID");
 $dg->set_col_title("name", "User Name");
 $dg->set_col_title("email", "EMail");
+$dg->set_col_title("role_id", "Role");
 $dg->set_col_title("created_at", "Created At");
 $dg->set_col_title("updated_at", "Updated At");
+
+$dg->set_col_edittype("role_id", "select", "Select role_id,role_name from roles",false);
+$dg->set_col_edittype("password", "password");
+
+$dg->enable_autowidth(true);
+$dg->set_scroll(true);
+
+//$dg->set_col_datetime("created_at");
+//$dg->set_col_date("updated_at");
+
+$dg->enable_advanced_search(true);
+$dg->enable_edit('FORM', 'CRUD');
+
+//$dg->add_event("jqGridAddEditBeforeSubmit", $beforeSubmit);
+//$dg->set_jq_editurl("/users/edit");
+
+$dg -> set_col_hidden("password");
+$dg -> set_col_required("name, email, password, role_id");
+$dg -> set_col_readonly("id, created_at, updated_at");
+$dg -> set_col_default("created_at", date("Y-m-d H:i:s"));
+$dg -> set_col_default("updated_at", date("Y-m-d H:i:s"));
 $dg -> display();
-//php artisan tinker
-//App\Models\User::create(['name'=> 'Admin', 'role_id'=>'1', 'email'=>'gyeon_woostar@163.com', 'password'=>bcrypt('password')])
-
 ?>
-
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/simplemodal/1.4.4/jquery.simplemodal.min.js"></script>
+<script type="text/javascript">
+jQuery(document).ready(function($) {
+    jQuery("#edit_users").off("click");
+    jQuery("#edit_users").on("click", function() {
+        var selrow = jQuery("#users").jqGrid("getGridParam","selrow");
+        if(selrow != null)
+            document.location.href = '/users/'+selrow+'/edit';
+    });
+});
+</script>
 <!--<div id="myCarousel" class="carousel slide">
     <ol class="carousel-indicators">
         <li data-target="#myCarousel" data-slide-to="0"
