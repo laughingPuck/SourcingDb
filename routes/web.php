@@ -11,15 +11,15 @@
 |
 */
 
-Route::get('/', 'SessionsController@create');
-Route::post('login', 'SessionsController@store')->name('login');
-Route::get('/show', 'SessionsController@show')->name('show');
-//Route::get('/help', 'StaticPagesController@help')->name('help');
-Route::delete('logout', 'SessionsController@destroy')->name('logout');
-
-Route::get('/stickwcup/show', 'StickWCupController@show')->name('stickwcup.show');
-
-Route::resource('users', 'UsersController');
+//Route::get('/', 'SessionsController@create');
+//Route::post('login', 'SessionsController@store')->name('login');
+//Route::get('/show', 'SessionsController@show')->name('show');
+////Route::get('/help', 'StaticPagesController@help')->name('help');
+//Route::delete('logout', 'SessionsController@destroy')->name('logout');
+//
+//Route::get('/stickwcup/show', 'StickWCupController@show')->name('stickwcup.show');
+//
+//Route::resource('users', 'UsersController');
 
 /*
 Route::get('/users', 'UsersController@index')->name('users.index');
