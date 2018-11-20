@@ -12,5 +12,6 @@ Route::group([
 
     $router->get('/', 'HomeController@index');
     $router->resource('/stick_w_cup', ProductStickwcupController::class);
+    $router->get('/stick_w_cup/image/{id}', 'ImageStickwcupController@index');
 
 });
