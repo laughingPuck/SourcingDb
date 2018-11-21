@@ -5,7 +5,7 @@ namespace App\Admin\Controllers;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Form;
 use Encore\Admin\Show;
-use Encore\Admin\Layout\Content;
+use App\Admin\Widgets\AdminContent;
 use App\Admin\Widgets\ToolBox;
 use Encore\Admin\Grid;
 use Encore\Admin\Controllers\HasResourceActions;
@@ -15,7 +15,7 @@ class ImageStickwcupController extends Controller
 {
     use HasResourceActions;
 
-    public function index($id, Content $content)
+    public function index($id, AdminContent $content)
     {
         return $content
             ->header('Images Stick With Cup')
@@ -30,6 +30,7 @@ class ImageStickwcupController extends Controller
         $box->style('default');
 
         $box->addTool('<a href="/stick_w_cup/'.$id.'" class="btn btn-sm btn-primary"><i class="fa fa-eye"></i>&nbsp;&nbsp;Return to detail</a>');
+        $box->addTool('<a href="/stick_w_cup" class="btn btn-sm btn-default"><i class="fa fa-list"></i>&nbsp;&nbsp;Return to list</a>');
 
         return $box;
     }

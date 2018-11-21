@@ -5,7 +5,7 @@ namespace App\Admin\Controllers;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Form;
 use Encore\Admin\Show;
-use Encore\Admin\Layout\Content;
+use App\Admin\Widgets\AdminContent;
 use Encore\Admin\Widgets\Box;
 use Encore\Admin\Grid;
 use Encore\Admin\Controllers\HasResourceActions;
@@ -47,7 +47,7 @@ class ProductStickwcupController extends Controller
         'Not sure' => 'Not sure',
     ];
 
-    public function index(Content $content)
+    public function index(AdminContent $content)
     {
         return $content
             ->header('Product Stick With Cup')
@@ -55,7 +55,7 @@ class ProductStickwcupController extends Controller
             ->body($this->grid()->render());
     }
 
-    public function edit($id, Content $content)
+    public function edit($id, AdminContent $content)
     {
         return $content
             ->header('Product Stick With Cup Edit')
@@ -63,7 +63,7 @@ class ProductStickwcupController extends Controller
             ->body($this->form()->edit($id));
     }
 
-    public function create(Content $content)
+    public function create(AdminContent $content)
     {
         return $content
             ->header('Product Stick With Cup Create')
@@ -71,7 +71,7 @@ class ProductStickwcupController extends Controller
             ->body($this->form());
     }
 
-    public function show($id, Content $content)
+    public function show($id, AdminContent $content)
     {
         return $content
             ->header('Product Stick With Cup Detail')
@@ -94,7 +94,11 @@ class ProductStickwcupController extends Controller
         $grid->overall_width('Overall Width');
         $grid->images('Images')->display(function ($images) {
             $count = count($images);
-            return "<span class='label label-primary'>{$count}</span>";
+            if ($count) {
+                return "<a href='/stick_w_cup/image/{$this->id}' class='btn btn-xs btn-success'><i class='fa fa-image'></i>&nbsp;&nbsp;{$count}</a>";
+            } else {
+                return "<button type='button' disabled='disabled' class='btn btn-xs btn-default'><i class='fa fa-image'></i>&nbsp;&nbsp;{$count}</button>";
+            }
         });
 
 //        $grid->state('Display')->display(function ($type) {
