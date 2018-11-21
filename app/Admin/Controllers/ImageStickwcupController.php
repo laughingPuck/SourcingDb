@@ -26,10 +26,10 @@ class ImageStickwcupController extends Controller
     protected function showImages($id)
     {
         $images = DB::table('image_stickwcup')->where('product_id', $id)->whereNull('deleted_at')->get();
-        $box = new ToolBox('Images', view('admin.productimages', ['imageList' => $images]));
+        $box = new ToolBox('ID:'.$id, view('admin.productImageGallery', ['imageList' => $images]));
         $box->style('default');
 
-        $box->addTool('<a href="/stick_w_cup/'.$id.'" class="btn btn-sm btn-primary"><i class="fa fa-eye"></i>&nbsp;&nbsp;Return to detail</a>');
+        $box->addTool('<a href="/stick_w_cup/'.$id.'" style="margin-right: 10px;" class="btn btn-sm btn-primary"><i class="fa fa-eye"></i>&nbsp;&nbsp;Return to detail</a>');
         $box->addTool('<a href="/stick_w_cup" class="btn btn-sm btn-default"><i class="fa fa-list"></i>&nbsp;&nbsp;Return to list</a>');
 
         return $box;

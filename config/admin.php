@@ -211,7 +211,7 @@ return [
     | Supported: "tencent", "google", "yandex".
     |
     */
-    'map_provider' => 'tencent',
+    'map_provider' => 'google',
 
     /*
     |--------------------------------------------------------------------------
