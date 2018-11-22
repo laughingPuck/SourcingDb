@@ -9,7 +9,7 @@ use App\Admin\Widgets\AdminContent;
 use Encore\Admin\Widgets\Box;
 use Encore\Admin\Grid;
 use Encore\Admin\Controllers\HasResourceActions;
-use App\ProductStickwcup;
+use App\Admin\Models\ProductStickwcup;
 use Illuminate\Support\Facades\DB;
 
 class ProductStickwcupController extends Controller

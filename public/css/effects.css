@@ -1,0 +1,113 @@
+.col-lg-3, .col-md-4, .col-sm-6, .col-xs-12 {
+  padding: 15px;
+}
+
+/* general styling for all the hovers */
+	
+.hover {
+  width: 100%;
+  height: 100%;
+  float: left;
+  overflow: hidden;
+  position: relative;
+  text-align: center;
+  cursor: default;
+}
+
+.hover .overlay {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  overflow: hidden;
+  top: 0;
+  left: 0;
+}
+
+.hover img {
+  display: block;
+  position: relative;
+}
+
+.hover h2 {
+  text-transform: uppercase;
+  color: #fff;
+  text-align: center;
+  position: relative;
+  font-size: 20px;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.hover button.info {
+  display: inline-block;
+  text-decoration: none;
+  padding: 7px 14px;
+  text-transform: uppercase;
+  color: #fff;
+  border: 1px solid #fff;
+  margin: 50px 0 0 0;
+  border-radius: 0px;
+  background-color: transparent;
+}
+
+.hover button.info:hover {
+  box-shadow: 0 0 5px #fff;
+}
+
+/* styling to remove box shadow and border from buttons for last few effects */
+
+.hover button.nullbutton {
+  border: none;
+  padding: 0px;
+  margin: 0px;
+}
+
+.hover button.nullbutton:hover {
+  box-shadow: none;
+}
+
+/* remove the blue line that shows on modal buttons after you have open and close a modal */
+
+.modal-open .modal, button:focus {
+    outline:none!important
+}
+
+/* styling so when hovering over a div that opens a modal the cursor changes to a pointer */
+.point {
+cursor: pointer;
+}
+ 
+ /* effect hover 4 */
+ 
+.ehover4 h2 {
+  transform: translateY(55px);
+  transition: all 0.4s ease-in-out;
+}
+
+.ehover4:hover h2 {
+  transform: translateY(15px);
+}
+
+.ehover4 .overlay {
+  background-color: rgba(75,75,75,0.7);
+  transition: all 0.4s ease-in-out;
+}
+
+.ehover4:hover .overlay {
+  background-color: rgba(48, 152, 157, 0.4);
+}
+
+.ehover4 button.info {
+  opacity: 0;
+  transform: scale(0);
+  transition: all 0.4s ease-in-out;
+  font-weight: normal;
+  border: 1px solid white;
+  margin: -55px 0 0 0;
+  padding: 73px 90px;
+}
+
+.ehover4:hover button.info {
+  opacity: 1;
+  transform: scale(1);
+}

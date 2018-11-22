@@ -1,13 +1,23 @@
-<style>
-    .link{display:inline-block;margin-left:30px;width: 280px;height: 150px;color: #ddd;background-color: #21475d;text-align: center;line-height: 150px;float: left;font-weight: bold;font-size: 18px;}
-    .link:hover{color: #ddd;background-color: #2a5a75;}
-</style>
-<a class="link" href="/stick_w_cup">
-    Stick w cup
-</a>
-<a class="link" href="/vial">
-    Vial
-</a>
-<a class="link" href="/compact_palette">
-    Compact & Palette
-</a>
+<link rel="stylesheet" href="/css/effects.css">
+
+<div class="container-fluid">
+    <div class="row">
+
+        <?php foreach($imageList as $v): ?>
+
+        <div class="col-xs-12 col-sm-6 col-md-4">
+            <div class="hover ehover4">
+                <img class="img-responsive" src="/<?=$v->cover_image?>" alt="<?=$v->cate_name?>">
+                <a href="<?=$v->link?>">
+                    <div class="overlay">
+                        <h2><?=$v->cate_name?></h2>
+                        <button class="info" >Click to show</button>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <?php endforeach; ?>
+
+    </div>
+</div>
