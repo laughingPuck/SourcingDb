@@ -38,4 +38,6 @@ class ProductAttribute extends Model
         self::DATA_TYPE_NUM => 'Decimal',
         self::DATA_TYPE_AREA => 'Int',
     ];
+
+    protected $fillable = ['attribute_name', 'attribute_desc', 'form_type', 'data_type', 'options', 'default'];
 }

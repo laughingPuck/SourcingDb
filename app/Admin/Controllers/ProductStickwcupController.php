@@ -152,32 +152,35 @@ class ProductStickwcupController extends Controller
 
         $form->display('id', 'ID');
 
-        $form->text('cosmopak_item', 'Cosmopak Item')->rules('required')->required();
-        $form->text('vendor_item', 'Vendor Item')->rules('required')->required();
-        $form->text('manufactory_name', 'Manufactory Name')->rules('required')->required();
-        $form->text('item_description', 'Item Description')->rules('required')->required();
-        $form->select('material', 'Material')->options(self::$materialMap)->rules('required')->required()->setWidth(3);
-        $form->select('shape', 'Shape')->options(self::$shapeMap)->rules('required')->required()->setWidth(3);
-        $form->select('style', 'Style')->options(self::$styleMap)->rules('required')->required()->setWidth(3);
-        $form->select('cup', 'Cup')->options(self::$cupMap)->rules('required')->required()->setWidth(3);
-        $form->text('cup_size', 'Cup Size')->rules('required')->required()->setWidth(2);
-        $form->text('cover_material', 'Cover Material')->rules('required')->required();
-        $form->text('overall_length', 'Overall Length')->rules('required')->required()->setWidth(2);
-        $form->text('overall_width', 'Overall Width')->rules('required')->required()->setWidth(2);
-        $form->text('overall_height', 'Overall Height')->rules('required')->required()->setWidth(2);
-        $form->select('mechanism', 'Mechanism')->options(self::$mechanismMap)->rules('required')->required()->setWidth(3);
-        $form->text('storage_location', 'Storage Location')->rules('required')->required();
-        $form->text('sample_available', 'Sample Available')->rules('required')->required();
-        $form->text('related_projects', 'Related Projects')->rules('required')->required();
-        $form->text('moq', 'Moq')->rules('required')->required();
-        $form->text('price', 'Price')->rules('required')->required()->setWidth(2);
-        $form->text('mold_status', 'Mold Status')->rules('required')->required();
-        $form->switch('state', 'Display')->value(1)->required();
+        $form->text('cosmopak_item', 'Cosmopak Item')->rules('required');
+        $form->text('vendor_item', 'Vendor Item')->rules('required');
+        $form->text('manufactory_name', 'Manufactory Name')->rules('required');
+        $form->text('item_description', 'Item Description')->rules('required');
+        $form->divider();
+        $form->select('material', 'Material')->options(self::$materialMap)->rules('required')->setWidth(4);
+        $form->select('shape', 'Shape')->options(self::$shapeMap)->rules('required')->setWidth(4);
+        $form->select('style', 'Style')->options(self::$styleMap)->rules('required')->setWidth(4);
+        $form->select('cup', 'Cup')->options(self::$cupMap)->rules('required')->setWidth(4);
+        $form->select('mechanism', 'Mechanism')->options(self::$mechanismMap)->rules('required')->setWidth(4);
+        $form->divider();
+        $form->text('cup_size', 'Cup Size')->rules('required|regex:/^\d+$/|max:1', ['regex' => 'The Price must be a number'])->setWidth(4);
+        $form->text('cover_material', 'Cover Material')->rules('required');
+        $form->text('overall_length', 'Overall Length')->rules('required')->setWidth(4);
+        $form->text('overall_width', 'Overall Width')->rules('required')->setWidth(4);
+        $form->text('overall_height', 'Overall Height')->rules('required')->setWidth(4);
+        $form->text('storage_location', 'Storage Location')->rules('required');
+        $form->text('sample_available', 'Sample Available')->rules('required');
+        $form->text('related_projects', 'Related Projects')->rules('required');
+        $form->text('moq', 'Moq')->rules('required');
+        $form->text('price', 'Price')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Price must be a number'])->setWidth(4);
+        $form->text('mold_status', 'Mold Status')->rules('required');
+        $form->switch('state', 'Display')->value(1);
 
         $form->hasMany('images', function (Form\NestedForm $form) {
             $form->image('url', 'Image');
-            $form->text('Title');
-            $form->text('Desc');
+            $form->text('title', 'Title');
+            $form->text('desc', 'Desc');
+            $form->switch('state', 'Display')->value(1);
         });
 
         $form->display('created_at', 'Created At');

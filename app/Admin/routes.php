@@ -14,6 +14,7 @@ Route::group([
     $router->resource('/stick_w_cup', ProductStickwcupController::class);
     $router->get('/stick_w_cup/image/{id}', 'ImageStickwcupController@index');
 
+//    $router->get('/product_attribute/{id}', 'ProductCategoryController@attributeEdit');
     $router->resource('/product_categories', ProductCategoryController::class);
 
 });
