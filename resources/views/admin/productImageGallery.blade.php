@@ -1,3 +1,4 @@
+<script type="text/javascript" src="/js/baguetteBox.min.js"></script>
 <link rel="stylesheet" href="/css/baguetteBox.min.css">
 <link rel="stylesheet" href="/css/thumbnail-gallery.css">
 <style>
@@ -32,7 +33,6 @@
 
         </div>
     </div>
-<script type="text/javascript" src="/js/baguetteBox.min.js"></script>
 <script type="text/javascript">
     baguetteBox.run('.tz-gallery');
 </script>
