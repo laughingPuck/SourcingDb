@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateImageStickwcupsTable extends Migration
+class CreateImageCompactpalettesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateImageStickwcupsTable extends Migration
      */
     public function up()
     {
-        Schema::create('image_stickwcup', function (Blueprint $table) {
+        Schema::create('image_compactpalette', function (Blueprint $table) {
             $table->increments('id')->unsigned();
             $table->integer('product_id')->unsigned();
             $table->string('url', 500);
@@ -32,6 +32,6 @@ class CreateImageStickwcupsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('image_stickwcup');
+        Schema::dropIfExists('image_compactpalette');
     }
 }

@@ -1,15 +1,16 @@
+<div class="row">
 <?php foreach ($imageList as $v): ?>
-<a data-img-src="/<?=$v->url;?>" data-img-title="<?=$v->title;?>" data-img-desc="<?=$v->desc;?>" class="image-pointer" style="cursor: pointer;display: inline-block;color: #666;font-weight: bold;">
-<div class="imgBox img-thumbnail" style="width: 250px;margin-right: 10px;float: left;">
-    <div class="imgSrc" style="overflow-y: scroll;height: 150px;">
-        <img src="/<?=$v->url;?>" class="img-responsive center-block" style="max-height: 150px;" alt="<?=$v->title;?>">
+    <div class="col-sm-6 col-md-4">
+        <a data-img-src="/<?=$v->url;?>" data-img-title="<?=$v->title;?>" data-img-desc="<?=$v->desc;?>" class="image-pointer" style="cursor: pointer;display: inline-block;color: #666;font-weight: bold;">
+        <div class="imgBox img-thumbnail" style="width: 250px;margin-right: 10px;float: left;">
+            <div class="imgSrc" style="overflow-y: scroll;max-height: 150px;">
+                <img src="/<?=$v->url;?>" class="img-responsive center-block" style="max-height: 150px;" alt="<?=$v->title;?>">
+            </div>
+        </div>
+        </a>
     </div>
-    <hr/>
-    <p style="text-align: center;margin-top:5px;"><?=$v->title;?></p>
-</div>
-</a>
-
 <?php endforeach; ?>
+</div>
 
 <div class="modal fade bs-example-modal-lg" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel">
     <div class="modal-dialog modal-lg" style="width:710px;" role="document">

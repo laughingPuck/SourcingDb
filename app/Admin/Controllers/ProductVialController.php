@@ -9,45 +9,45 @@ use App\Admin\Widgets\AdminContent;
 use Encore\Admin\Widgets\Box;
 use Encore\Admin\Grid;
 use Encore\Admin\Controllers\HasResourceActions;
-use App\Admin\Models\ProductStickwcup;
+use App\Admin\Models\ProductVial;
 use Illuminate\Support\Facades\DB;
 
-class ProductStickwcupController extends Controller
+class ProductVialController extends Controller
 {
     use HasResourceActions;
 
-    const NAME = 'Stick With Cup';
-    const URI = 'stick_with_cup';
-    const IMAGE_TABLE = 'image_stickwcup';
+    const NAME = 'Vial';
+    const URI = 'vial';
+    const IMAGE_TABLE = 'image_vial';
 
-    public static $productClassName = ProductStickwcup::class;
+    public static $productClassName = ProductVial::class;
 
     public static $materialMap = [
         'Plastic' => 'Plastic',
         'Alumium' => 'Alumium',
+        'Not sure' => 'Not sure',
     ];
     public static $shapeMap = [
-        'Round' => 'Round',
+        'Round/Cylindical' => 'Round/Cylindical',
         'Square' => 'Square',
-        'Oval' => 'Oval',
         'Other' => 'Other',
+        'Not sure' => 'Not sure',
     ];
-    public static $styleMap = [
-        'Twist' => 'Twist',
-        'Push up' => 'Push up',
-        'Deodorant' => 'Deodorant',
-    ];
-    public static $cupMap = [
-        'Cup#' => 'Cup#',
+    public static $vialMap = [
         '1' => '1',
         '2+' => '2+',
         'Not sure' => 'Not sure',
     ];
-    public static $mechanismMap = [
-        'Repel' => 'Repel',
-        'Push up' => 'Push up',
-        'Repel/Propel' => 'Repel/Propel',
-        'Other' => 'Other',
+    public static $applicatorMap = [
+        'Brush' => 'Brush',
+        'FLocking Plastic Applicator' => 'FLocking Plastic Applicator',
+        'Non FLocking Plastic Applicator' => 'Non FLocking Plastic Applicator',
+        'Other Applicator' => 'Other Applicator',
+        'Not sure' => 'Not sure',
+    ];
+    public static $thickWallMap = [
+        'Yes' => 'Yes',
+        'No' => 'No',
         'Not sure' => 'Not sure',
     ];
 
@@ -90,10 +90,11 @@ class ProductStickwcupController extends Controller
 
 //        $grid->id('ID')->sortable();
         $grid->manufactory_name('Manufactory Name');
-        $grid->material('Material');
+        $grid->cap_material('Cap Material');
+        $grid->base_material('Base Material');
+        $grid->stem_material('Stem Material');
         $grid->shape('Shape');
-        $grid->style('Style');
-        $grid->mechanism('Mechanism');
+        $grid->vial('Vial');
         $grid->overall_height('Overall Height');
         $grid->overall_width('Overall Width');
         $grid->images('Images')->display(function ($images) {
@@ -125,11 +126,11 @@ class ProductStickwcupController extends Controller
             $filter->between('created_at', 'Created At')->datetime();
             $filter->between('overall_height', 'Overall Height');
             $filter->between('overall_width', 'Overall Width');
-            $filter->equal('material', 'Material')->select(self::$materialMap);
+            $filter->equal('cap_material', 'Cap Material')->select(self::$materialMap);
+            $filter->equal('base_material', 'Base Material')->select(self::$materialMap);
+            $filter->equal('stem_material', 'Stem Material')->select(self::$materialMap);
             $filter->equal('shape', 'Shape')->select(self::$shapeMap);
-            $filter->equal('style', 'Style')->select(self::$styleMap);
-            $filter->equal('cup', 'Cup')->select(self::$cupMap);
-            $filter->equal('mechanism', 'Mechanism')->select(self::$mechanismMap);
+            $filter->equal('vial', 'Vial')->select(self::$vialMap);
             $filter->where(function ($query) {
                 switch ($this->input) {
                     case '1':
@@ -161,17 +162,16 @@ class ProductStickwcupController extends Controller
         $form->text('manufactory_name', 'Manufactory Name')->rules('required');
         $form->text('item_description', 'Item Description')->rules('required');
         $form->divider();
-        $form->select('material', 'Material')->options(self::$materialMap)->rules('required')->setWidth(4);
+        $form->select('cap_material', 'Cap Material')->options(self::$materialMap)->rules('required')->setWidth(4);
+        $form->select('base_material', 'Base Material')->options(self::$materialMap)->rules('required')->setWidth(4);
+        $form->select('stem_material', 'Stem Material')->options(self::$materialMap)->rules('required')->setWidth(4);
         $form->select('shape', 'Shape')->options(self::$shapeMap)->rules('required')->setWidth(4);
-        $form->select('style', 'Style')->options(self::$styleMap)->rules('required')->setWidth(4);
-        $form->select('cup', 'Cup')->options(self::$cupMap)->rules('required')->setWidth(4);
-        $form->select('mechanism', 'Mechanism')->options(self::$mechanismMap)->rules('required')->setWidth(4);
+        $form->select('vial', 'Vial')->options(self::$vialMap)->rules('required')->setWidth(4);
         $form->divider();
-        $form->text('cup_size', 'Cup Size')->rules('required|regex:/^\d+$/|max:1', ['regex' => 'The Price must be a number'])->setWidth(4);
-        $form->text('cover_material', 'Cover Material')->rules('required');
         $form->text('overall_length', 'Overall Length')->rules('required')->setWidth(4);
         $form->text('overall_width', 'Overall Width')->rules('required')->setWidth(4);
         $form->text('overall_height', 'Overall Height')->rules('required')->setWidth(4);
+        $form->text('collar', 'Collar')->rules('required');
         $form->text('storage_location', 'Storage Location')->rules('required');
         $form->text('sample_available', 'Sample Available')->rules('required');
         $form->text('related_projects', 'Related Projects')->rules('required');
@@ -214,17 +214,16 @@ class ProductStickwcupController extends Controller
         $show->manufactory_name('Manufactory Name');
         $show->item_description('Item Description');
         $show->divider();
-        $show->material('Material');
+        $show->cap_material('Cap Material');
+        $show->base_material('Base Material');
+        $show->stem_material('Stem Material');
         $show->shape('Shape');
-        $show->style('Style');
-        $show->cup('Cup');
+        $show->vial('Vial');
         $show->divider();
-        $show->cup_size('Cup Size');
-        $show->cover_material('Cover Material');
         $show->overall_length('Overall Height');
         $show->overall_width('Overall Width');
         $show->overall_height('Overall Height');
-        $show->mechanism('Mechanism');
+        $show->collar('Collar');
         $show->storage_location('Storage Location');
         $show->sample_available('Sample Available');
         $show->related_projects('Related Projects');

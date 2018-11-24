@@ -11,8 +11,11 @@ Route::group([
 ], function (Router $router) {
 
     $router->get('/', 'HomeController@index');
-    $router->resource('/stick_w_cup', ProductStickwcupController::class);
-    $router->get('/stick_w_cup/image/{id}', 'ImageStickwcupController@index');
+    $router->resource('/stick_with_cup', ProductStickwcupController::class);
+    $router->resource('/vial', ProductVialController::class);
+    $router->resource('/compact_palette', ProductCompactpaletteController::class);
+
+    $router->get('/gallery/{cate}/{id}', 'ImageGalleryController@index');
 
 //    $router->get('/product_attribute/{id}', 'ProductCategoryController@attributeEdit');
     $router->resource('/product_categories', ProductCategoryController::class);

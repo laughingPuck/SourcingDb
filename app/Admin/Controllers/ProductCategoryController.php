@@ -67,8 +67,8 @@ class ProductCategoryController extends Controller
         $grid->created_at('Created At');
 
         $grid->actions(function (Grid\Displayers\Actions $actions) {
-            $id = $actions->getKey();
-            $actions->append("<a href='/product_attribute/{$id}'><i class='fa fa-tag'></i></a>");
+//            $id = $actions->getKey();
+//            $actions->append("<a href='/product_attribute/{$id}'><i class='fa fa-tag'></i></a>");
         });
 
         $grid->tools(function (Grid\Tools $tools) {

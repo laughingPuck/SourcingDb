@@ -34,5 +34,7 @@
         </div>
     </div>
 <script type="text/javascript">
-    baguetteBox.run('.tz-gallery');
+    if (baguetteBox) {
+        baguetteBox.run('.tz-gallery');
+    }
 </script>

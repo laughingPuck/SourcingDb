@@ -12,8 +12,8 @@ class HomeController extends Controller
     {
         $images = DB::table('product_categories')->whereNull('deleted_at')->get();
         return $content
-            ->header('Index')
-            ->description('Products...')
+            ->header('Home')
+            ->description('Products Menu')
             ->row(view('admin.index', ['imageList' => $images]));
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateProductStickwcupsTable extends Migration
+class CreateProductVialsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,22 +13,21 @@ class CreateProductStickwcupsTable extends Migration
      */
     public function up()
     {
-        Schema::create('product_stickwcup', function (Blueprint $table) {
+        Schema::create('product_vial', function (Blueprint $table) {
             $table->increments('id')->unsigned();
             $table->string('cosmopak_item')->nullable();
             $table->string('vendor_item')->nullable();
             $table->string('manufactory_name')->nullable();
             $table->string('item_description')->nullable();
-            $table->string('material')->nullable();
+            $table->string('cap_material')->nullable();
+            $table->string('base_material')->nullable();
+            $table->string('stem_material')->nullable();
             $table->string('shape')->nullable();
-            $table->string('style')->nullable();
-            $table->string('cup')->nullable();
-            $table->decimal('cup_size')->nullable();
-            $table->string('cover_material')->nullable();
+            $table->string('vial')->nullable();
             $table->decimal('overall_length')->nullable();
             $table->decimal('overall_width')->nullable();
             $table->decimal('overall_height')->nullable();
-            $table->string('mechanism')->nullable();
+            $table->string('collar')->nullable();
             $table->string('storage_location')->nullable();
             $table->string('sample_available')->nullable();
             $table->string('related_projects')->nullable();
@@ -48,6 +47,6 @@ class CreateProductStickwcupsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('product_stickwcup');
+        Schema::dropIfExists('product_vial');
     }
 }
