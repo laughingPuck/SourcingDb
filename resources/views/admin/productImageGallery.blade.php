@@ -1,40 +1,24 @@
-<script type="text/javascript" src="/js/baguetteBox.min.js"></script>
-<link rel="stylesheet" href="/css/baguetteBox.min.css">
-<link rel="stylesheet" href="/css/thumbnail-gallery.css">
-<style>
-    .intro{
-        height: 45px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-    }
-</style>
-    <div class="container-fluid gallery-container" style="background-color: #f6f6f6;">
-        <div class="tz-gallery">
-            <div class="row">
+<link href="/css/lightgallery.css" rel="stylesheet">
+<div class="container-fluid">
+    <div id="gallery" class="row">
 
-                <?php foreach ($imageList as $v): ?>
-                <div class="col-sm-6 col-md-4">
-                    <div class="thumbnail">
-                        <a class="lightbox" href="/<?=$v->url;?>">
-                            <img src="/<?=$v->url;?>" alt="<?=$v->title;?>" style="max-height: 200px;">
-                        </a>
-                        <div class="caption">
-                            <h3><?=$v->title;?></h3>
-                            <p class="intro"><?=$v->desc;?></p>
-                        </div>
-                    </div>
-                </div>
-                <?php endforeach; ?>
-
+        <?php foreach ($imageList as $v): ?>
+            <div style="display: inline-block;background-color: #333;" class="col-sm-6 col-md-4 thumbnail" data-src="/<?=$v->url;?>" data-sub-html="<h4><?=$v->title;?></h4><p><?=$v->desc;?></p>">
+                <a href="">
+                    <img class="img-responsive" style="max-height: 250px;" src="/<?=$v->url;?>">
+                </a>
             </div>
+        <?php endforeach; ?>
 
-        </div>
     </div>
+</div>
+
+<script src="/js/lightgallery-all.min.js"></script>
 <script type="text/javascript">
-    if (baguetteBox) {
-        baguetteBox.run('.tz-gallery');
-    }
+    $(document).ready(function(){
+        $('#gallery').lightGallery();
+    });
 </script>
+
+
+

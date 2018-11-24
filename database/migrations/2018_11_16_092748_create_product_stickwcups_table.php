@@ -23,7 +23,7 @@ class CreateProductStickwcupsTable extends Migration
             $table->string('shape')->nullable();
             $table->string('style')->nullable();
             $table->string('cup')->nullable();
-            $table->decimal('cup_size')->nullable();
+            $table->integer('cup_size')->nullable();
             $table->string('cover_material')->nullable();
             $table->decimal('overall_length')->nullable();
             $table->decimal('overall_width')->nullable();
