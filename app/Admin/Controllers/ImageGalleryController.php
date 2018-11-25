@@ -15,10 +15,14 @@ class ImageGalleryController extends Controller
 {
     use HasResourceActions;
 
+    const PRODUCT_STICK_WITH_CUP = 'stick_with_cup';
+    const PRODUCT_VIAL = 'vial';
+    const PRODUCT_COMPACT_PALETTE = 'compact_palette';
+
     public static $productCateMap = [
-        'stick_with_cup' => ['display' => 'Stick With Cup', 'table' => 'image_stickwcup'],
-        'vial' => ['display' => 'Vial', 'table' => 'image_vial'],
-        'compact_palette' => ['display' => 'Compact & Palette', 'table' => 'image_compactpalette'],
+        self::PRODUCT_STICK_WITH_CUP => ['display' => 'Stick With Cup', 'table' => 'image_stickwcup', 'uri' => 'stick_with_cup'],
+        self::PRODUCT_VIAL => ['display' => 'Vial', 'table' => 'image_vial', 'uri' => 'vial'],
+        self::PRODUCT_COMPACT_PALETTE => ['display' => 'Compact & Palette', 'table' => 'image_compactpalette', 'uri' => 'compact_palette'],
     ];
 
     public function index($cate, $id, AdminContent $content)

@@ -17,7 +17,7 @@ class ProductCompactpaletteController extends Controller
     use HasResourceActions;
 
     const NAME = 'Compact & Palette';
-    const URI = 'compact_palette';
+    const TAG = ImageGalleryController::PRODUCT_COMPACT_PALETTE;
     const IMAGE_TABLE = 'image_compactpalette';
 
     public static $productClassName = ProductCompactpalette::class;
@@ -52,6 +52,7 @@ class ProductCompactpaletteController extends Controller
         return $content
             ->header('Product '.self::NAME)
             ->description(' ')
+            ->row(view('admin.grid_mail', ['tag' => self::TAG]))
             ->body($this->grid()->render());
     }
 
@@ -97,7 +98,7 @@ class ProductCompactpaletteController extends Controller
         $grid->images('Images')->display(function ($images) {
             $count = count($images);
             if ($count) {
-                return "<a href='/gallery/".self::URI."/{$this->id}' class='btn btn-xs btn-success'><i class='fa fa-image'></i>&nbsp;&nbsp;{$count}</a>";
+                return "<a href='/gallery/".self::TAG."/{$this->id}' class='btn btn-xs btn-success'><i class='fa fa-image'></i>&nbsp;&nbsp;{$count}</a>";
             } else {
                 return "<button type='button' disabled='disabled' class='btn btn-xs btn-default'><i class='fa fa-image'></i>&nbsp;&nbsp;{$count}</button>";
             }
@@ -109,13 +110,19 @@ class ProductCompactpaletteController extends Controller
         $grid->created_at('Created At');
 //        $grid->updated_at('Updated');
 
-        $grid->actions(function (Grid\Displayers\Actions $actions) {
+        $productTag = self::TAG;
+        $grid->actions(function (Grid\Displayers\Actions $actions) use ($productTag) {
+            // append一个操作
+            $id = $actions->getKey();
+            $script = "javascript:productGridMailBox('{$id}');";
+            $actions->append('<a href="'.$script.'"><i class="fa fa-envelope"></i></a>');
         });
 
         $grid->tools(function (Grid\Tools $tools) {
             $tools->batch(function (Grid\Tools\BatchActions $actions) {
                 $actions->disableDelete();
             });
+            $tools->append('<a href="javascript:;" class="btn btn-sm btn-primary" style="float: right;margin-right: 10px;"><i class="fa fa-eject"></i>&nbsp;&nbsp;Import</a>');
         });
 
         $grid->filter(function ($filter) {
@@ -204,7 +211,7 @@ class ProductCompactpaletteController extends Controller
 
         $show->panel()->tools(function (\Encore\Admin\Show\Tools $tools) use ($imagesNum, $id) {
             if ($imagesNum) {
-                $tools->append('<a href="/gallery/'.self::URI.'/'.$id.'" class="btn btn-sm btn-success" style="width: 150px;margin-right: 5px;"><i class="fa fa-image"></i>&emsp;Check&nbsp;'.$imagesNum.'&nbsp;images</a>');
+                $tools->append('<a href="/gallery/'.self::TAG.'/'.$id.'" class="btn btn-sm btn-success" style="width: 150px;margin-right: 5px;"><i class="fa fa-image"></i>&emsp;Check&nbsp;'.$imagesNum.'&nbsp;images</a>');
             } else {
                 $tools->append('<button type="button" class="btn btn-sm btn-default" disabled="disabled" style="width: 100px;margin-right: 5px;"><i class="fa fa-image"></i>&emsp;No&nbsp;&nbsp;image</button>');
             }

@@ -20,4 +20,6 @@ Route::group([
 //    $router->get('/product_attribute/{id}', 'ProductCategoryController@attributeEdit');
     $router->resource('/product_categories', ProductCategoryController::class);
 
+    $router->post('/send_product_mail/product_grid', 'SendMailController@productGridMail');
+
 });
