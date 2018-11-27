@@ -19,17 +19,17 @@ class SendMailController extends Controller
         $address = $request->address;
 
         if ('747591224@qq.com' != $address) {
-            $this->ajaxRes(-1, 'Wrong Mail Address');
+            $this->ajaxRes(-1, 'Wrong Email Address');
         }
 
         if (!array_key_exists($cate, ImageGalleryController::$productCateMap)) {
             $this->ajaxRes(-1, 'No such product');
         } else {
-            $content = '这是一封来自Laravel的测试邮件.';
+            $content = 'Test email.';
             $toMail = $address;
 
             Mail::raw($content, function ($message) use ($toMail) {
-                $message->subject('[ 测试 ] 测试邮件SendMail - ' .date('Y-m-d H:i:s'));
+                $message->subject('[ Test ] testing SendMail - ' .date('Y-m-d H:i:s'));
                 $message->to($toMail);
             });
             $this->ajaxRes(0, 'Success');

@@ -18,38 +18,38 @@ class ProductCategoryController extends Controller
     public function index(AdminContent $content)
     {
         return $content
-            ->header('Product Category List')
+            ->header('Admin > Product Categories')
             ->body($this->grid()->render());
     }
 
     public function edit($id, AdminContent $content)
     {
         return $content
-            ->header('Product Category Edit')
+            ->header('Admin > Product Categories > Edit')
             ->body($this->form()->edit($id));
     }
 
     public function create(AdminContent $content)
     {
         return $content
-            ->header('Product Category Create')
+            ->header('Admin > Product Categories > Create')
             ->body($this->form());
     }
 
     public function show($id, AdminContent $content)
     {
         return $content
-            ->header('Product Category Detail')
+            ->header('Admin > Product Categories > Detail')
             ->description(' ')
             ->row($this->detail($id));
     }
 
-//    public function attributeEdit($id, AdminContent $content)
-//    {
-//        return $content
-//            ->header('Product Category Attribute Edit')
-//            ->body($this->attributesForm($id)->edit($id));
-//    }
+    public function attributeEdit($id, AdminContent $content)
+    {
+        return $content
+            ->header('Product Category Attribute Edit')
+            ->body($this->attributesForm($id)->edit($id));
+    }
 
     public function grid()
     {
@@ -105,31 +105,31 @@ class ProductCategoryController extends Controller
         return $form;
     }
 
-//    public function attributesForm($id)
-//    {
-//        $form = new Form(new ProductCategory());
-//
-//        $form->display('id', 'ID');
-//
-//        $form->hasMany('attributes', function (Form\NestedForm $form) {
-//            $form->text('attribute_name', 'Attribute Name');
-//            $form->textarea('attribute_desc', 'Attribute Desc');
-//            $form->select('form_type', 'Form Type')->options(ProductAttribute::$formTypeMap);
-//            $form->select('data_type', 'Data Type')->options(ProductAttribute::$dataTypeMap);
-//            $form->text('options', 'Options');
-//            $form->text('default', 'Default Value');
-//        });
-//
-//        $form->tools(function (Form\Tools $tools) {
-//            $tools->disableList();
-//            $tools->disableView();
-//            $tools->disableDelete();
-//            $tools->add('<a href="/product_categories" class="btn btn-sm btn-default"><i class="fa fa-list"></i>&nbsp;&nbsp;list</a>');
-//        });
-//        $form->setAction("/product_categories/{$id}");
-//
-//        return $form;
-//    }
+    public function attributesForm($id)
+    {
+        $form = new Form(new ProductCategory());
+
+        $form->display('id', 'ID');
+
+        $form->hasMany('attributes', function (Form\NestedForm $form) {
+            $form->text('attribute_name', 'Attribute Name');
+            $form->textarea('attribute_desc', 'Attribute Desc');
+            $form->select('form_type', 'Form Type')->options(ProductAttribute::$formTypeMap);
+            $form->select('data_type', 'Data Type')->options(ProductAttribute::$dataTypeMap);
+            $form->text('options', 'Options');
+            $form->text('default', 'Default Value');
+        });
+
+        $form->tools(function (Form\Tools $tools) {
+            $tools->disableList();
+            $tools->disableView();
+            $tools->disableDelete();
+            $tools->add('<a href="/product_categories" class="btn btn-sm btn-default"><i class="fa fa-list"></i>&nbsp;&nbsp;list</a>');
+        });
+        $form->setAction("/product_attributes/{$id}/save");
+
+        return $form;
+    }
 
     protected function detail($id)
     {

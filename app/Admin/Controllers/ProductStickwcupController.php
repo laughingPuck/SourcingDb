@@ -11,6 +11,7 @@ use Encore\Admin\Grid;
 use Encore\Admin\Controllers\HasResourceActions;
 use App\Admin\Models\ProductStickwcup;
 use Illuminate\Support\Facades\DB;
+use App\Admin\Widgets\Action\DeleteRow;
 
 class ProductStickwcupController extends Controller
 {
@@ -54,7 +55,7 @@ class ProductStickwcupController extends Controller
     public function index(AdminContent $content)
     {
         return $content
-            ->header('Product '.self::NAME)
+            ->header('Products > '.self::NAME)
             ->description(' ')
             ->row(view('admin.grid_mail', ['tag' => self::TAG]))
             ->body($this->grid()->render());
@@ -63,7 +64,7 @@ class ProductStickwcupController extends Controller
     public function edit($id, AdminContent $content)
     {
         return $content
-            ->header('Product '.self::NAME.' Edit')
+            ->header('Products > '.self::NAME.' > Edit')
             ->description(' ')
             ->body($this->form()->edit($id));
     }
@@ -71,16 +72,17 @@ class ProductStickwcupController extends Controller
     public function create(AdminContent $content)
     {
         return $content
-            ->header('Product '.self::NAME.' Create')
-            ->description('')
+            ->header('Products > '.self::NAME.' > Create')
+            ->description(' ')
             ->body($this->form());
     }
 
     public function show($id, AdminContent $content)
     {
         return $content
-            ->header('Product '.self::NAME.' Detail')
+            ->header('Products > '.self::NAME.' > Detail')
             ->description(' ')
+            ->row(view('admin.grid_mail', ['tag' => self::TAG]))
             ->row($this->detail($id))
             ->row($this->showImages($id));
     }
@@ -89,11 +91,12 @@ class ProductStickwcupController extends Controller
     {
         $grid = new Grid(new self::$productClassName());
 
-//        $grid->id('ID')->sortable();
-        $grid->manufactory_name('Manufactory Name');
+//        $grid->cosmopak_item('Cosmopak Item#');
+//        $grid->vendor_item('Vendor Item#');
         $grid->material('Material');
         $grid->shape('Shape');
         $grid->style('Style');
+        $grid->cup('Cup#');
         $grid->mechanism('Mechanism');
         $grid->overall_height('Overall Height');
         $grid->overall_width('Overall Width');
@@ -110,30 +113,37 @@ class ProductStickwcupController extends Controller
 //            return $type ? 'on' : 'off';
 //        });
         $grid->created_at('Created At');
-//        $grid->updated_at('Updated');
-        $grid->actions(function (Grid\Displayers\Actions $actions) {
+
+        $tag = self::TAG;
+        $grid->actions(function (Grid\Displayers\Actions $actions) use ($tag) {
+            $actions->disableDelete();
+            $actions->disableEdit();
+            $actions->disableView();
             // append一个操作
             $id = $actions->getKey();
             $script = "javascript:productGridMailBox('{$id}');";
-            $actions->append('<a href="'.$script.'"><i class="fa fa-envelope"></i></a>');
+
+            $actions->append('<a href="/'.$tag.'/'.$id.'/edit" class="btn btn-xs btn-primary" style="margin-right: 5px;"><i class="fa fa-edit"></i>&nbsp;&nbsp;Edit</a>');
+            $actions->append('<a href="/'.$tag.'/'.$id.'" class="btn btn-xs btn-info" style="margin-right: 5px;"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</a>');
+            $actions->append('<a href="'.$script.'" class="btn btn-xs btn-success" style="margin-right: 5px;"><i class="fa fa-envelope"></i>&nbsp;&nbsp;Mail</a>');
+            $actions->append(new DeleteRow($actions->getKey(), $tag));
         });
 
         $grid->tools(function (Grid\Tools $tools) {
             $tools->batch(function (Grid\Tools\BatchActions $actions) {
                 $actions->disableDelete();
             });
-            $tools->append('<a href="javascript:;" class="btn btn-sm btn-primary" style="float: right;margin-right: 10px;"><i class="fa fa-eject"></i>&nbsp;&nbsp;Import</a>');
         });
 
         $grid->filter(function ($filter) {
             $filter->disableIdFilter();
             $filter->between('created_at', 'Created At')->datetime();
-            $filter->between('overall_height', 'Overall Height');
-            $filter->between('overall_width', 'Overall Width');
+            $filter->like('cosmopak_item', 'Cosmopak#');
+            $filter->like('vendor_item', 'Vendor#');
             $filter->equal('material', 'Material')->select(self::$materialMap);
             $filter->equal('shape', 'Shape')->select(self::$shapeMap);
             $filter->equal('style', 'Style')->select(self::$styleMap);
-            $filter->equal('cup', 'Cup')->select(self::$cupMap);
+            $filter->equal('cup', 'Cup#')->select(self::$cupMap);
             $filter->equal('mechanism', 'Mechanism')->select(self::$mechanismMap);
             $filter->where(function ($query) {
                 switch ($this->input) {
@@ -144,10 +154,12 @@ class ProductStickwcupController extends Controller
                         $query->doesntHave('images');
                         break;
                 }
-            }, 'Has Images')->select([
+            }, 'Images')->select([
                 '1' => 'Only with images',
                 '0' => 'Only without images',
             ]);
+            $filter->between('overall_height', 'Overall Height');
+            $filter->between('overall_width', 'Overall Width');
         });
 
         $grid->expandFilter();
@@ -161,22 +173,22 @@ class ProductStickwcupController extends Controller
 
         $form->display('id', 'ID');
 
-        $form->text('cosmopak_item', 'Cosmopak Item')->rules('required');
-        $form->text('vendor_item', 'Vendor Item')->rules('required');
+        $form->text('cosmopak_item', 'Cosmopak Item#')->rules('required');
+        $form->text('vendor_item', 'Vendor Item#')->rules('required');
         $form->text('manufactory_name', 'Manufactory Name')->rules('required');
         $form->text('item_description', 'Item Description')->rules('required');
         $form->divider();
         $form->select('material', 'Material')->options(self::$materialMap)->rules('required')->setWidth(4);
         $form->select('shape', 'Shape')->options(self::$shapeMap)->rules('required')->setWidth(4);
         $form->select('style', 'Style')->options(self::$styleMap)->rules('required')->setWidth(4);
-        $form->select('cup', 'Cup')->options(self::$cupMap)->rules('required')->setWidth(4);
-        $form->select('mechanism', 'Mechanism')->options(self::$mechanismMap)->rules('required')->setWidth(4);
-        $form->divider();
+        $form->select('cup', 'Cup#')->options(self::$cupMap)->rules('required')->setWidth(4);
         $form->text('cup_size', 'Cup Size')->rules('required|regex:/^\d+$/|max:1', ['regex' => 'The Price must be a number'])->setWidth(4);
         $form->text('cover_material', 'Cover Material')->rules('required');
+        $form->divider();
         $form->text('overall_length', 'Overall Length')->rules('required')->setWidth(4);
         $form->text('overall_width', 'Overall Width')->rules('required')->setWidth(4);
         $form->text('overall_height', 'Overall Height')->rules('required')->setWidth(4);
+        $form->select('mechanism', 'Mechanism')->options(self::$mechanismMap)->rules('required')->setWidth(4);
         $form->text('storage_location', 'Storage Location')->rules('required');
         $form->text('sample_available', 'Sample Available')->rules('required');
         $form->text('related_projects', 'Related Projects')->rules('required');
@@ -207,25 +219,28 @@ class ProductStickwcupController extends Controller
 
         $show->panel()->tools(function (\Encore\Admin\Show\Tools $tools) use ($imagesNum, $id) {
             if ($imagesNum) {
-                $tools->append('<a href="/gallery/'.self::TAG.'/'.$id.'" class="btn btn-sm btn-success" style="width: 150px;margin-right: 5px;"><i class="fa fa-image"></i>&emsp;Check&nbsp;'.$imagesNum.'&nbsp;images</a>');
+                $tools->append('<a href="/gallery/'.self::TAG.'/'.$id.'" class="btn btn-sm btn-success" style="margin-right: 5px;"><i class="fa fa-image"></i>&emsp;'.$imagesNum.'&nbsp;images</a>');
             } else {
                 $tools->append('<button type="button" class="btn btn-sm btn-default" disabled="disabled" style="width: 100px;margin-right: 5px;"><i class="fa fa-image"></i>&emsp;No&nbsp;&nbsp;image</button>');
             }
+
+            $script = "javascript:productGridMailBox('{$id}');";
+            $tools->append('<a href="'.$script.'" class="btn btn-sm btn-info" style="margin-right: 5px;"><i class="fa fa-envelope"></i>&nbsp;&nbsp;Email to</a>');
         });
 
         $show->id('ID');
-        $show->cosmopak_item('Cosmopak Item');
-        $show->vendor_item('Vendor Item');
+        $show->cosmopak_item('Cosmopak Item#');
+        $show->vendor_item('Vendor Item#');
         $show->manufactory_name('Manufactory Name');
         $show->item_description('Item Description');
         $show->divider();
         $show->material('Material');
         $show->shape('Shape');
         $show->style('Style');
-        $show->cup('Cup');
-        $show->divider();
+        $show->cup('Cup#');
         $show->cup_size('Cup Size');
         $show->cover_material('Cover Material');
+        $show->divider();
         $show->overall_length('Overall Height');
         $show->overall_width('Overall Width');
         $show->overall_height('Overall Height');

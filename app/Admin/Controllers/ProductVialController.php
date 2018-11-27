@@ -11,6 +11,7 @@ use Encore\Admin\Grid;
 use Encore\Admin\Controllers\HasResourceActions;
 use App\Admin\Models\ProductVial;
 use Illuminate\Support\Facades\DB;
+use App\Admin\Widgets\Action\DeleteRow;
 
 class ProductVialController extends Controller
 {
@@ -54,7 +55,7 @@ class ProductVialController extends Controller
     public function index(AdminContent $content)
     {
         return $content
-            ->header('Product '.self::NAME)
+            ->header('Products > '.self::NAME)
             ->description(' ')
             ->row(view('admin.grid_mail', ['tag' => self::TAG]))
             ->body($this->grid()->render());
@@ -63,7 +64,7 @@ class ProductVialController extends Controller
     public function edit($id, AdminContent $content)
     {
         return $content
-            ->header('Product '.self::NAME.' Edit')
+            ->header('Products > '.self::NAME.' > Edit')
             ->description(' ')
             ->body($this->form()->edit($id));
     }
@@ -71,16 +72,17 @@ class ProductVialController extends Controller
     public function create(AdminContent $content)
     {
         return $content
-            ->header('Product '.self::NAME.' Create')
-            ->description('')
+            ->header('Products > '.self::NAME.' > Create')
+            ->description(' ')
             ->body($this->form());
     }
 
     public function show($id, AdminContent $content)
     {
         return $content
-            ->header('Product '.self::NAME.' Detail')
+            ->header('Products > '.self::NAME.' > Detail')
             ->description(' ')
+            ->row(view('admin.grid_mail', ['tag' => self::TAG]))
             ->row($this->detail($id))
             ->row($this->showImages($id));
     }
@@ -90,12 +92,12 @@ class ProductVialController extends Controller
         $grid = new Grid(new self::$productClassName());
 
 //        $grid->id('ID')->sortable();
-        $grid->manufactory_name('Manufactory Name');
+//        $grid->manufactory_name('Manufactory Name');
         $grid->cap_material('Cap Material');
         $grid->base_material('Base Material');
         $grid->stem_material('Stem Material');
         $grid->shape('Shape');
-        $grid->vial('Vial');
+        $grid->vial('Vial#');
         $grid->overall_height('Overall Height');
         $grid->overall_width('Overall Width');
         $grid->images('Images')->display(function ($images) {
@@ -114,29 +116,35 @@ class ProductVialController extends Controller
 //        $grid->updated_at('Updated');
         $productTag = self::TAG;
         $grid->actions(function (Grid\Displayers\Actions $actions) use ($productTag) {
+            $actions->disableDelete();
+            $actions->disableEdit();
+            $actions->disableView();
             // append一个操作
             $id = $actions->getKey();
             $script = "javascript:productGridMailBox('{$id}');";
-            $actions->append('<a href="'.$script.'"><i class="fa fa-envelope"></i></a>');
+
+            $actions->append('<a href="/'.$productTag.'/'.$id.'/edit" class="btn btn-xs btn-primary" style="margin-right: 5px;"><i class="fa fa-edit"></i>&nbsp;&nbsp;Edit</a>');
+            $actions->append('<a href="/'.$productTag.'/'.$id.'" class="btn btn-xs btn-info" style="margin-right: 5px;"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</a>');
+            $actions->append('<a href="'.$script.'" class="btn btn-xs btn-success" style="margin-right: 5px;"><i class="fa fa-envelope"></i>&nbsp;&nbsp;Mail</a>');
+            $actions->append(new DeleteRow($actions->getKey(), $productTag));
         });
 
         $grid->tools(function (Grid\Tools $tools) {
             $tools->batch(function (Grid\Tools\BatchActions $actions) {
                 $actions->disableDelete();
             });
-            $tools->append('<a href="javascript:;" class="btn btn-sm btn-primary" style="float: right;margin-right: 10px;"><i class="fa fa-eject"></i>&nbsp;&nbsp;Import</a>');
         });
 
         $grid->filter(function ($filter) {
             $filter->disableIdFilter();
             $filter->between('created_at', 'Created At')->datetime();
-            $filter->between('overall_height', 'Overall Height');
-            $filter->between('overall_width', 'Overall Width');
+            $filter->like('cosmopak_item', 'Cosmopak#');
+            $filter->like('vendor_item', 'Vendor#');
             $filter->equal('cap_material', 'Cap Material')->select(self::$materialMap);
             $filter->equal('base_material', 'Base Material')->select(self::$materialMap);
             $filter->equal('stem_material', 'Stem Material')->select(self::$materialMap);
             $filter->equal('shape', 'Shape')->select(self::$shapeMap);
-            $filter->equal('vial', 'Vial')->select(self::$vialMap);
+            $filter->equal('vial', 'Vial#')->select(self::$vialMap);
             $filter->where(function ($query) {
                 switch ($this->input) {
                     case '1':
@@ -146,10 +154,12 @@ class ProductVialController extends Controller
                         $query->doesntHave('images');
                         break;
                 }
-            }, 'Has Images')->select([
+            }, 'Images')->select([
                 '1' => 'Only with images',
                 '0' => 'Only without images',
             ]);
+            $filter->between('overall_height', 'Overall Height');
+            $filter->between('overall_width', 'Overall Width');
         });
 
         $grid->expandFilter();
@@ -163,8 +173,8 @@ class ProductVialController extends Controller
 
         $form->display('id', 'ID');
 
-        $form->text('cosmopak_item', 'Cosmopak Item')->rules('required');
-        $form->text('vendor_item', 'Vendor Item')->rules('required');
+        $form->text('cosmopak_item', 'Cosmopak Item#')->rules('required');
+        $form->text('vendor_item', 'Vendor Item#')->rules('required');
         $form->text('manufactory_name', 'Manufactory Name')->rules('required');
         $form->text('item_description', 'Item Description')->rules('required');
         $form->divider();
@@ -172,7 +182,7 @@ class ProductVialController extends Controller
         $form->select('base_material', 'Base Material')->options(self::$materialMap)->rules('required')->setWidth(4);
         $form->select('stem_material', 'Stem Material')->options(self::$materialMap)->rules('required')->setWidth(4);
         $form->select('shape', 'Shape')->options(self::$shapeMap)->rules('required')->setWidth(4);
-        $form->select('vial', 'Vial')->options(self::$vialMap)->rules('required')->setWidth(4);
+        $form->select('vial', 'Vial#')->options(self::$vialMap)->rules('required')->setWidth(4);
         $form->divider();
         $form->text('overall_length', 'Overall Length')->rules('required')->setWidth(4);
         $form->text('overall_width', 'Overall Width')->rules('required')->setWidth(4);
@@ -208,15 +218,18 @@ class ProductVialController extends Controller
 
         $show->panel()->tools(function (\Encore\Admin\Show\Tools $tools) use ($imagesNum, $id) {
             if ($imagesNum) {
-                $tools->append('<a href="/gallery/'.self::TAG.'/'.$id.'" class="btn btn-sm btn-success" style="width: 150px;margin-right: 5px;"><i class="fa fa-image"></i>&emsp;Check&nbsp;'.$imagesNum.'&nbsp;images</a>');
+                $tools->append('<a href="/gallery/'.self::TAG.'/'.$id.'" class="btn btn-sm btn-success" style="margin-right: 5px;"><i class="fa fa-image"></i>&emsp;'.$imagesNum.'&nbsp;images</a>');
             } else {
                 $tools->append('<button type="button" class="btn btn-sm btn-default" disabled="disabled" style="width: 100px;margin-right: 5px;"><i class="fa fa-image"></i>&emsp;No&nbsp;&nbsp;image</button>');
             }
+
+            $script = "javascript:productGridMailBox('{$id}');";
+            $tools->append('<a href="'.$script.'" class="btn btn-sm btn-info" style="margin-right: 5px;"><i class="fa fa-envelope"></i>&nbsp;&nbsp;Email to</a>');
         });
 
         $show->id('ID');
-        $show->cosmopak_item('Cosmopak Item');
-        $show->vendor_item('Vendor Item');
+        $show->cosmopak_item('Cosmopak Item#');
+        $show->vendor_item('Vendor Item#');
         $show->manufactory_name('Manufactory Name');
         $show->item_description('Item Description');
         $show->divider();
@@ -224,7 +237,7 @@ class ProductVialController extends Controller
         $show->base_material('Base Material');
         $show->stem_material('Stem Material');
         $show->shape('Shape');
-        $show->vial('Vial');
+        $show->vial('Vial#');
         $show->divider();
         $show->overall_length('Overall Height');
         $show->overall_width('Overall Width');

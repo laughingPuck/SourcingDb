@@ -50,7 +50,7 @@ class ProductCompactpaletteController extends Controller
     public function index(AdminContent $content)
     {
         return $content
-            ->header('Product '.self::NAME)
+            ->header('Products > '.self::NAME)
             ->description(' ')
             ->row(view('admin.grid_mail', ['tag' => self::TAG]))
             ->body($this->grid()->render());
@@ -59,7 +59,7 @@ class ProductCompactpaletteController extends Controller
     public function edit($id, AdminContent $content)
     {
         return $content
-            ->header('Product '.self::NAME.' Edit')
+            ->header('Products > '.self::NAME.' > Edit')
             ->description(' ')
             ->body($this->form()->edit($id));
     }
@@ -67,16 +67,17 @@ class ProductCompactpaletteController extends Controller
     public function create(AdminContent $content)
     {
         return $content
-            ->header('Product '.self::NAME.' Create')
-            ->description('')
+            ->header('Products > '.self::NAME.' > Create')
+            ->description(' ')
             ->body($this->form());
     }
 
     public function show($id, AdminContent $content)
     {
         return $content
-            ->header('Product '.self::NAME.' Detail')
+            ->header('Products > '.self::NAME.' > Detail')
             ->description(' ')
+            ->row(view('admin.grid_mail', ['tag' => self::TAG]))
             ->row($this->detail($id))
             ->row($this->showImages($id));
     }
@@ -86,10 +87,10 @@ class ProductCompactpaletteController extends Controller
         $grid = new Grid(new self::$productClassName());
 
 //        $grid->id('ID')->sortable();
-        $grid->manufactory_name('Manufactory Name');
+//        $grid->manufactory_name('Manufactory Name');
         $grid->shape('Shape');
-        $grid->pan_well('Pan Well');
-        $grid->pan_well_width('Pan Well With');
+        $grid->pan_well('Pan Well#');
+        $grid->pan_well_width('Pan Well With/radius');
         $grid->applicator_well('Applicator Well');
         $grid->latch_system('Latch System');
         $grid->window('Window');
@@ -122,17 +123,16 @@ class ProductCompactpaletteController extends Controller
             $tools->batch(function (Grid\Tools\BatchActions $actions) {
                 $actions->disableDelete();
             });
-            $tools->append('<a href="javascript:;" class="btn btn-sm btn-primary" style="float: right;margin-right: 10px;"><i class="fa fa-eject"></i>&nbsp;&nbsp;Import</a>');
         });
 
         $grid->filter(function ($filter) {
             $filter->disableIdFilter();
             $filter->between('created_at', 'Created At')->datetime();
-            $filter->between('overall_length', 'Overall Length');
-            $filter->between('overall_width', 'Overall Width');
-            $filter->between('pan_well_width', 'Pan Well Width');
+            $filter->like('cosmopak_item', 'Cosmopak#');
+            $filter->like('vendor_item', 'Vendor#');
             $filter->equal('shape', 'Shape')->select(self::$shapeMap);
-            $filter->equal('pan_well', 'Pan Well')->select(self::$panWellMap);
+            $filter->equal('pan_well', 'Pan Well#')->select(self::$panWellMap);
+            $filter->between('pan_well_width', 'Pan Well Width');
             $filter->equal('applicator_well', 'Applicator Well')->select(self::$switchMap);
             $filter->equal('latch_system', 'Latch System')->select(self::$latchSystemMap);
             $filter->equal('window', 'Window')->select(self::$switchMap);
@@ -145,10 +145,12 @@ class ProductCompactpaletteController extends Controller
                         $query->doesntHave('images');
                         break;
                 }
-            }, 'Has Images')->select([
+            }, 'Images')->select([
                 '1' => 'Only with images',
                 '0' => 'Only without images',
             ]);
+            $filter->between('overall_length', 'Overall Length');
+            $filter->between('overall_width', 'Overall Width');
         });
 
         $grid->expandFilter();
@@ -162,26 +164,27 @@ class ProductCompactpaletteController extends Controller
 
         $form->display('id', 'ID');
 
-        $form->text('cosmopak_item', 'Cosmopak Item')->rules('required');
-        $form->text('vendor_item', 'Vendor Item')->rules('required');
+        $form->text('cosmopak_item', 'Cosmopak Item#')->rules('required');
+        $form->text('vendor_item', 'Vendor Item#')->rules('required');
         $form->text('manufactory_name', 'Manufactory Name')->rules('required');
         $form->text('item_description', 'Item Description')->rules('required');
+        $form->divider();
         $form->text('material', 'Material')->rules('required');
-        $form->divider();
         $form->select('shape', 'Shape')->options(self::$shapeMap)->rules('required')->setWidth(4);
-        $form->select('pan_well', 'Pan Well')->options(self::$panWellMap)->rules('required')->setWidth(4);
-        $form->select('mirror', 'Mirror')->options(self::$switchMap)->rules('required')->setWidth(4);
-        $form->select('window', 'Window')->options(self::$switchMap)->rules('required')->setWidth(4);
-        $form->select('applicator_well', 'Applicator Well')->options(self::$switchMap)->rules('required')->setWidth(4);
-        $form->select('injector_pin', 'Injector Pin')->options(self::$switchMap)->rules('required')->setWidth(4);
-        $form->divider();
+        $form->select('pan_well', 'Pan Well#')->options(self::$panWellMap)->rules('required')->setWidth(4);
         $form->text('overall_length', 'Overall Length')->rules('required')->setWidth(4);
         $form->text('overall_width', 'Overall Width')->rules('required')->setWidth(4);
         $form->text('overall_height', 'Overall Height')->rules('required')->setWidth(4);
+        $form->divider();
+        $form->select('mirror', 'Mirror')->options(self::$switchMap)->rules('required')->setWidth(4);
+        $form->select('window', 'Window')->options(self::$switchMap)->rules('required')->setWidth(4);
         $form->text('pan_well_shape', 'Pan Well Shape')->rules('required');
         $form->text('pan_well_width', 'Pan Well Width')->rules('required')->setWidth(4);
         $form->text('pan_well_height', 'Pan Well Height')->rules('required')->setWidth(4);
+        $form->select('applicator_well', 'Applicator Well')->options(self::$switchMap)->rules('required')->setWidth(4);
         $form->text('latch_system', 'Latch System')->rules('required')->setWidth(4);
+        $form->select('injector_pin', 'Injector Pin')->options(self::$switchMap)->rules('required')->setWidth(4);
+        $form->divider();
         $form->text('storage_location', 'Storage Location')->rules('required');
         $form->text('sample_available', 'Sample Available')->rules('required');
         $form->text('related_projects', 'Related Projects')->rules('required');
@@ -211,49 +214,24 @@ class ProductCompactpaletteController extends Controller
 
         $show->panel()->tools(function (\Encore\Admin\Show\Tools $tools) use ($imagesNum, $id) {
             if ($imagesNum) {
-                $tools->append('<a href="/gallery/'.self::TAG.'/'.$id.'" class="btn btn-sm btn-success" style="width: 150px;margin-right: 5px;"><i class="fa fa-image"></i>&emsp;Check&nbsp;'.$imagesNum.'&nbsp;images</a>');
+                $tools->append('<a href="/gallery/'.self::TAG.'/'.$id.'" class="btn btn-sm btn-success" style="margin-right: 5px;"><i class="fa fa-image"></i>&emsp;'.$imagesNum.'&nbsp;images</a>');
             } else {
                 $tools->append('<button type="button" class="btn btn-sm btn-default" disabled="disabled" style="width: 100px;margin-right: 5px;"><i class="fa fa-image"></i>&emsp;No&nbsp;&nbsp;image</button>');
             }
+
+            $script = "javascript:productGridMailBox('{$id}');";
+            $tools->append('<a href="'.$script.'" class="btn btn-sm btn-info" style="margin-right: 5px;"><i class="fa fa-envelope"></i>&nbsp;&nbsp;Email to</a>');
         });
 
-        $table->increments('id')->unsigned();
-        $table->string('cosmopak_item');
-        $table->string('vendor_item');
-        $table->string('manufactory_name');
-        $table->string('item_description');
-        $table->string('material');
-        $table->string('shape');
-        $table->string('pan_well');
-        $table->decimal('overall_length');
-        $table->decimal('overall_width');
-        $table->decimal('overall_height');
-        $table->tinyInteger('mirror')->unsigned();
-        $table->tinyInteger('window')->unsigned();
-        $table->string('pan_well_shape');
-        $table->decimal('pan_well_width');
-        $table->decimal('pan_well_height');
-        $table->tinyInteger('applicator_well')->unsigned();
-        $table->tinyInteger('injector_pin')->unsigned();
-        $table->string('latch_system');
-        $table->string('storage_location');
-        $table->string('sample_available');
-        $table->string('related_projects');
-        $table->string('moq');
-        $table->decimal('price');
-        $table->tinyInteger('state')->default(1)->unsigned();
-        $table->timestamps();
-        $table->softDeletes();
-
         $show->id('ID');
-        $show->cosmopak_item('Cosmopak Item');
-        $show->vendor_item('Vendor Item');
+        $show->cosmopak_item('Cosmopak Item#');
+        $show->vendor_item('Vendor Item#');
         $show->manufactory_name('Manufactory Name');
         $show->item_description('Item Description');
         $show->divider();
         $show->material('Material');
         $show->shape('Shape');
-        $show->pan_well('Pan Well');
+        $show->pan_well('Pan Well#');
         $show->divider();
         $show->overall_length('Overall Height');
         $show->overall_width('Overall Width');
@@ -264,8 +242,8 @@ class ProductCompactpaletteController extends Controller
         $show->pan_well_width('Pan Well Width');
         $show->pan_well_height('Pan Well Height');
         $show->applicator_well('Applicator Well');
-        $show->injector_pin('Injector Pin');
         $show->latch_system('Latch System');
+        $show->injector_pin('Injector Pin');
         $show->storage_location('Storage Location');
         $show->sample_available('Sample Available');
         $show->related_projects('Related Projects');
