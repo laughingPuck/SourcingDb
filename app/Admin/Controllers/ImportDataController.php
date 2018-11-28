@@ -2,9 +2,7 @@
 
 namespace App\Admin\Controllers;
 
-use App\Admin\Models\ProductCompactpalette;
-use App\Admin\Models\ProductStickwcup;
-use App\Admin\Models\ProductVial;
+use App\Admin\Conf\Products;
 use App\Admin\Widgets\AdminContent;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Show;
@@ -17,16 +15,6 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class ImportDataController extends Controller
 {
-    const CATEGORY_STICK_WITH_CUP = 1;
-    const CATEGORY_VIAL = 2;
-    const CATEGORY_COMPACT_PALETTE = 3;
-
-    public static $modelMap = [
-        self::CATEGORY_STICK_WITH_CUP => ProductStickwcup::class,
-        self::CATEGORY_VIAL => ProductVial::class,
-        self::CATEGORY_COMPACT_PALETTE => ProductCompactpalette::class,
-    ];
-
     public function index(AdminContent $content, $msg = [])
     {
         if ($msg) {
@@ -48,17 +36,17 @@ class ImportDataController extends Controller
             $this->index(new AdminContent(), ['type' => 'error', 'content' => 'The File is required!']);
         } elseif (!$request->category) {
             $this->index(new AdminContent(), ['type' => 'error', 'content' => 'The Category is required!']);
-        } elseif (!array_key_exists($request->category, self::$modelMap)) {
+        } elseif (!array_key_exists($request->category, Products::$productCateMap)) {
             $this->index(new AdminContent(), ['type' => 'error', 'content' => 'Category not fund!']);
         } else {
-            $className = self::$modelMap[$request->category];
+            $className = Products::$productCateMap[$request->category]['model'];
 
             $fileBasePath = 'storage/app/';
             $filePath = $request->file('file')->store('admin/temp');
 
 //        var_dump($file->getPath().$file->getFilename(), $file->getClientOriginalExtension());exit;
 
-            $unlinkPath = base_path().'/'.$fileBasePath.$filePath;
+            $unlinkPath = storage_path('app').'/'.$filePath;
             $controller = $this;
             Excel::load($fileBasePath.$filePath, function($reader) use ($className, $controller, $unlinkPath) {
                 $data = $reader->all();
@@ -82,7 +70,7 @@ class ImportDataController extends Controller
     protected function importForm()
     {
         $form = new Form();
-        $form->select('category', 'Category')->rules('required')->options(ProductCategory::all()->pluck('cate_name', 'id'))->setWidth(3);
+        $form->select('category', 'Category')->rules('required')->options(ProductCategory::all()->pluck('cate_name', 'link'))->setWidth(3);
         $form->file('file')->setWidth(5);
         $form->disableReset();
         return $form;

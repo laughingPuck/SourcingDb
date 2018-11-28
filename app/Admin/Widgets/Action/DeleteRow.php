@@ -67,7 +67,7 @@ SCRIPT;
     {
         Admin::script($this->script());
 
-        return '<a href="javascript:void(0);" data-id="'.$this->id.'" data-tag="'.$this->tag.'" class="grid-row-delete btn btn-xs btn-danger" style="margin-right: 5px;"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete</a>';
+        return '<a href="javascript:void(0);" data-id="'.$this->id.'" data-tag="'.$this->tag.'" class="grid-row-delete btn btn-xs btn-danger" style="margin: 5px 5px;"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete</a>';
     }
 
     public function __toString()

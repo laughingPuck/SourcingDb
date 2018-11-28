@@ -2,6 +2,7 @@
 
 namespace App\Admin\Controllers;
 
+use App\Admin\Conf\Products;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Form;
 use Encore\Admin\Show;
@@ -18,7 +19,7 @@ class ProductStickwcupController extends Controller
     use HasResourceActions;
 
     const NAME = 'Stick With Cup';
-    const TAG = ImageGalleryController::PRODUCT_STICK_WITH_CUP;
+    const TAG = Products::PRODUCT_STICK_WITH_CUP;
     const IMAGE_TABLE = 'image_stickwcup';
 
     public static $productClassName = ProductStickwcup::class;
@@ -57,7 +58,7 @@ class ProductStickwcupController extends Controller
         return $content
             ->header('Products > '.self::NAME)
             ->description(' ')
-            ->row(view('admin.grid_mail', ['tag' => self::TAG]))
+            ->row(view('admin.tool.product_mail', ['tag' => self::TAG]))
             ->body($this->grid()->render());
     }
 
@@ -82,7 +83,7 @@ class ProductStickwcupController extends Controller
         return $content
             ->header('Products > '.self::NAME.' > Detail')
             ->description(' ')
-            ->row(view('admin.grid_mail', ['tag' => self::TAG]))
+            ->row(view('admin.tool.product_mail', ['tag' => self::TAG]))
             ->row($this->detail($id))
             ->row($this->showImages($id));
     }
@@ -91,19 +92,30 @@ class ProductStickwcupController extends Controller
     {
         $grid = new Grid(new self::$productClassName());
 
-//        $grid->cosmopak_item('Cosmopak Item#');
-//        $grid->vendor_item('Vendor Item#');
+        $grid->cosmopak_item('Cosmopak Item#');
+        $grid->vendor_item('Vendor Item#');
+        $grid->manufactory_name('Manufactory Name');
+        $grid->item_description('Item Description');
         $grid->material('Material');
         $grid->shape('Shape');
         $grid->style('Style');
         $grid->cup('Cup#');
-        $grid->mechanism('Mechanism');
+        $grid->cup_size('Cup Size');
+        $grid->cover_material('Cover Material');
+        $grid->overall_length('Overall Length');
         $grid->overall_height('Overall Height');
         $grid->overall_width('Overall Width');
+        $grid->mechanism('Mechanism');
+        $grid->storage_location('Storage Location');
+        $grid->sample_available('Sample Available');
+        $grid->related_projects('Related Projects');
+        $grid->moq('Moq');
+        $grid->price('Price');
+        $grid->mold_status('Mold Status');
         $grid->images('Images')->display(function ($images) {
             $count = count($images);
             if ($count) {
-                return "<a href='/gallery/".self::TAG."/{$this->id}' class='btn btn-xs btn-success'><i class='fa fa-image'></i>&nbsp;&nbsp;{$count}</a>";
+                return "<a href='gallery/".self::TAG."/{$this->id}' class='btn btn-xs btn-success'><i class='fa fa-image'></i>&nbsp;&nbsp;{$count}</a>";
             } else {
                 return "<button type='button' disabled='disabled' class='btn btn-xs btn-default'><i class='fa fa-image'></i>&nbsp;&nbsp;{$count}</button>";
             }
@@ -123,9 +135,9 @@ class ProductStickwcupController extends Controller
             $id = $actions->getKey();
             $script = "javascript:productGridMailBox('{$id}');";
 
-            $actions->append('<a href="/'.$tag.'/'.$id.'/edit" class="btn btn-xs btn-primary" style="margin-right: 5px;"><i class="fa fa-edit"></i>&nbsp;&nbsp;Edit</a>');
-            $actions->append('<a href="/'.$tag.'/'.$id.'" class="btn btn-xs btn-info" style="margin-right: 5px;"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</a>');
-            $actions->append('<a href="'.$script.'" class="btn btn-xs btn-success" style="margin-right: 5px;"><i class="fa fa-envelope"></i>&nbsp;&nbsp;Mail</a>');
+            $actions->append('<a href="'.$tag.'/'.$id.'/edit" class="btn btn-xs btn-primary" style="margin: 5px 5px;"><i class="fa fa-edit"></i>&nbsp;&nbsp;Edit</a>');
+            $actions->append('<a href="'.$tag.'/'.$id.'" class="btn btn-xs btn-info" style="margin: 5px 5px;"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</a>');
+            $actions->append('<a href="'.$script.'" class="btn btn-xs btn-success" style="margin: 5px 5px;"><i class="fa fa-envelope"></i>&nbsp;&nbsp;Mail</a>');
             $actions->append(new DeleteRow($actions->getKey(), $tag));
         });
 
@@ -163,6 +175,7 @@ class ProductStickwcupController extends Controller
         });
 
         $grid->expandFilter();
+        $grid->disableExport();
 
         return $grid;
     }
@@ -219,7 +232,7 @@ class ProductStickwcupController extends Controller
 
         $show->panel()->tools(function (\Encore\Admin\Show\Tools $tools) use ($imagesNum, $id) {
             if ($imagesNum) {
-                $tools->append('<a href="/gallery/'.self::TAG.'/'.$id.'" class="btn btn-sm btn-success" style="margin-right: 5px;"><i class="fa fa-image"></i>&emsp;'.$imagesNum.'&nbsp;images</a>');
+                $tools->append('<a href="/'.config('admin.route.prefix').'/gallery/'.self::TAG.'/'.$id.'" class="btn btn-sm btn-success" style="margin-right: 5px;"><i class="fa fa-image"></i>&emsp;'.$imagesNum.'&nbsp;images</a>');
             } else {
                 $tools->append('<button type="button" class="btn btn-sm btn-default" disabled="disabled" style="width: 100px;margin-right: 5px;"><i class="fa fa-image"></i>&emsp;No&nbsp;&nbsp;image</button>');
             }
@@ -262,7 +275,7 @@ class ProductStickwcupController extends Controller
     protected function showImages($id)
     {
         $images = DB::table(self::IMAGE_TABLE)->where('product_id', $id)->whereNull('deleted_at')->get();
-        $box = new Box('Images', view('admin.productimages', ['imageList' => $images]));
+        $box = new Box('Images', view('admin.product_images', ['imageList' => $images]));
         $box->style('default');
 
         return $box;

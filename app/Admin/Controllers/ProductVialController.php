@@ -2,6 +2,7 @@
 
 namespace App\Admin\Controllers;
 
+use App\Admin\Conf\Products;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Form;
 use Encore\Admin\Show;
@@ -18,7 +19,7 @@ class ProductVialController extends Controller
     use HasResourceActions;
 
     const NAME = 'Vial';
-    const TAG = ImageGalleryController::PRODUCT_VIAL;
+    const TAG = Products::PRODUCT_VIAL;
     const IMAGE_TABLE = 'image_vial';
 
     public static $productClassName = ProductVial::class;
@@ -57,7 +58,7 @@ class ProductVialController extends Controller
         return $content
             ->header('Products > '.self::NAME)
             ->description(' ')
-            ->row(view('admin.grid_mail', ['tag' => self::TAG]))
+            ->row(view('admin.tool.product_mail', ['tag' => self::TAG]))
             ->body($this->grid()->render());
     }
 
@@ -82,7 +83,7 @@ class ProductVialController extends Controller
         return $content
             ->header('Products > '.self::NAME.' > Detail')
             ->description(' ')
-            ->row(view('admin.grid_mail', ['tag' => self::TAG]))
+            ->row(view('admin.tool.product_mail', ['tag' => self::TAG]))
             ->row($this->detail($id))
             ->row($this->showImages($id));
     }
@@ -103,7 +104,7 @@ class ProductVialController extends Controller
         $grid->images('Images')->display(function ($images) {
             $count = count($images);
             if ($count) {
-                return "<a href='/gallery/".self::TAG."/{$this->id}' class='btn btn-xs btn-success'><i class='fa fa-image'></i>&nbsp;&nbsp;{$count}</a>";
+                return "<a href='gallery/".self::TAG."/{$this->id}' class='btn btn-xs btn-success'><i class='fa fa-image'></i>&nbsp;&nbsp;{$count}</a>";
             } else {
                 return "<button type='button' disabled='disabled' class='btn btn-xs btn-default'><i class='fa fa-image'></i>&nbsp;&nbsp;{$count}</button>";
             }
@@ -123,8 +124,8 @@ class ProductVialController extends Controller
             $id = $actions->getKey();
             $script = "javascript:productGridMailBox('{$id}');";
 
-            $actions->append('<a href="/'.$productTag.'/'.$id.'/edit" class="btn btn-xs btn-primary" style="margin-right: 5px;"><i class="fa fa-edit"></i>&nbsp;&nbsp;Edit</a>');
-            $actions->append('<a href="/'.$productTag.'/'.$id.'" class="btn btn-xs btn-info" style="margin-right: 5px;"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</a>');
+            $actions->append('<a href="'.$productTag.'/'.$id.'/edit" class="btn btn-xs btn-primary" style="margin-right: 5px;"><i class="fa fa-edit"></i>&nbsp;&nbsp;Edit</a>');
+            $actions->append('<a href="'.$productTag.'/'.$id.'" class="btn btn-xs btn-info" style="margin-right: 5px;"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</a>');
             $actions->append('<a href="'.$script.'" class="btn btn-xs btn-success" style="margin-right: 5px;"><i class="fa fa-envelope"></i>&nbsp;&nbsp;Mail</a>');
             $actions->append(new DeleteRow($actions->getKey(), $productTag));
         });
@@ -163,6 +164,7 @@ class ProductVialController extends Controller
         });
 
         $grid->expandFilter();
+        $grid->disableExport();
 
         return $grid;
     }
@@ -218,7 +220,7 @@ class ProductVialController extends Controller
 
         $show->panel()->tools(function (\Encore\Admin\Show\Tools $tools) use ($imagesNum, $id) {
             if ($imagesNum) {
-                $tools->append('<a href="/gallery/'.self::TAG.'/'.$id.'" class="btn btn-sm btn-success" style="margin-right: 5px;"><i class="fa fa-image"></i>&emsp;'.$imagesNum.'&nbsp;images</a>');
+                $tools->append('<a href="/'.config('admin.route.prefix').'/gallery/'.self::TAG.'/'.$id.'" class="btn btn-sm btn-success" style="margin-right: 5px;"><i class="fa fa-image"></i>&emsp;'.$imagesNum.'&nbsp;images</a>');
             } else {
                 $tools->append('<button type="button" class="btn btn-sm btn-default" disabled="disabled" style="width: 100px;margin-right: 5px;"><i class="fa fa-image"></i>&emsp;No&nbsp;&nbsp;image</button>');
             }
@@ -260,7 +262,7 @@ class ProductVialController extends Controller
     protected function showImages($id)
     {
         $images = DB::table(self::IMAGE_TABLE)->where('product_id', $id)->whereNull('deleted_at')->get();
-        $box = new Box('Images', view('admin.productimages', ['imageList' => $images]));
+        $box = new Box('Images', view('admin.product_images', ['imageList' => $images]));
         $box->style('default');
 
         return $box;
