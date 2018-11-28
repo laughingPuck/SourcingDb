@@ -12,6 +12,9 @@ use Encore\Admin\Grid;
 use Encore\Admin\Controllers\HasResourceActions;
 use App\Admin\Models\ProductCompactpalette;
 use Illuminate\Support\Facades\DB;
+use Encore\Admin\Auth\Permission;
+use Encore\Admin\Facades\Admin;
+use App\Admin\Widgets\Action\DeleteRow;
 
 class ProductCompactpaletteController extends Controller
 {
@@ -59,6 +62,7 @@ class ProductCompactpaletteController extends Controller
 
     public function edit($id, AdminContent $content)
     {
+        Permission::check('page-products-write');
         return $content
             ->header('Products > '.self::NAME.' > Edit')
             ->description(' ')
@@ -67,6 +71,7 @@ class ProductCompactpaletteController extends Controller
 
     public function create(AdminContent $content)
     {
+        Permission::check('page-products-write');
         return $content
             ->header('Products > '.self::NAME.' > Create')
             ->description(' ')
@@ -86,16 +91,34 @@ class ProductCompactpaletteController extends Controller
     public function grid()
     {
         $grid = new Grid(new self::$productClassName());
-//        $grid->id('ID')->sortable();
-//        $grid->manufactory_name('Manufactory Name');
+
+        $grid->cosmopak_item('Cosmopak Item#');
+        if (Admin::user()->can('page-sensitive-column')) {
+            $grid->vendor_item('Vendor Item#');
+            $grid->manufactory_name('Manufactory Name');
+        }
+        $grid->item_description('Item Description');
+        $grid->divider();
+        $grid->material('Material');
         $grid->shape('Shape');
         $grid->pan_well('Pan Well#');
-        $grid->pan_well_width('Pan Well With/radius');
+        $grid->divider();
+        $grid->overall_length('Overall Height');
+        $grid->overall_width('Overall Width');
+        $grid->overall_height('Overall Height');
+        $grid->mirror('Mirror');
+        $grid->window('Window');
+        $grid->pan_well_shape('Pan Well Shape');
+        $grid->pan_well_width('Pan Well Width/radius');
+        $grid->pan_well_height('Pan Well Height');
         $grid->applicator_well('Applicator Well');
         $grid->latch_system('Latch System');
-        $grid->window('Window');
-        $grid->overall_length('Overall Length');
-        $grid->overall_width('Overall Width');
+        $grid->injector_pin('Injector Pin');
+        $grid->storage_location('Storage Location');
+        $grid->sample_available('Sample Available');
+        $grid->related_projects('Related Projects');
+        $grid->moq('Moq');
+        $grid->price('Price');
         $grid->images('Images')->display(function ($images) {
             $count = count($images);
             if ($count) {
@@ -111,8 +134,8 @@ class ProductCompactpaletteController extends Controller
         $grid->created_at('Created At');
 //        $grid->updated_at('Updated');
 
-        $tag = self::TAG;
-        $grid->actions(function (Grid\Displayers\Actions $actions) use ($tag) {
+        $productTag = self::TAG;
+        $grid->actions(function (Grid\Displayers\Actions $actions) use ($productTag) {
             $actions->disableDelete();
             $actions->disableEdit();
             $actions->disableView();
@@ -120,10 +143,12 @@ class ProductCompactpaletteController extends Controller
             $id = $actions->getKey();
             $script = "javascript:productGridMailBox('{$id}');";
 
-            $actions->append('<a href="'.$tag.'/'.$id.'/edit" class="btn btn-xs btn-primary" style="margin: 5px 5px;"><i class="fa fa-edit"></i>&nbsp;&nbsp;Edit</a>');
-            $actions->append('<a href="'.$tag.'/'.$id.'" class="btn btn-xs btn-info" style="margin: 5px 5px;"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</a>');
+            $actions->append('<a href="'.$productTag.'/'.$id.'" class="btn btn-xs btn-info" style="margin: 5px 5px;"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</a>');
             $actions->append('<a href="'.$script.'" class="btn btn-xs btn-success" style="margin: 5px 5px;"><i class="fa fa-envelope"></i>&nbsp;&nbsp;Mail</a>');
-            $actions->append(new DeleteRow($actions->getKey(), $tag));
+            if (Admin::user()->can('page-products-write')) {
+                $actions->append('<a href="'.$productTag.'/'.$id.'/edit" class="btn btn-xs btn-primary" style="margin: 5px 5px;"><i class="fa fa-edit"></i>&nbsp;&nbsp;Edit</a>');
+                $actions->append(new DeleteRow($actions->getKey(), $productTag));
+            }
         });
 
         $grid->tools(function (Grid\Tools $tools) {
@@ -136,7 +161,9 @@ class ProductCompactpaletteController extends Controller
             $filter->disableIdFilter();
             $filter->between('created_at', 'Created At')->datetime();
             $filter->like('cosmopak_item', 'Cosmopak#');
-            $filter->like('vendor_item', 'Vendor#');
+            if (Admin::user()->can('page-sensitive-column')) {
+                $filter->like('vendor_item', 'Vendor#');
+            }
             $filter->equal('shape', 'Shape')->select(self::$shapeMap);
             $filter->equal('pan_well', 'Pan Well#')->select(self::$panWellMap);
             $filter->between('pan_well_width', 'Pan Well Width');
@@ -162,6 +189,9 @@ class ProductCompactpaletteController extends Controller
 
         $grid->expandFilter();
         $grid->disableExport();
+        if (!Admin::user()->can('page-products-write')) {
+            $grid->disableCreateButton();
+        }
 
         return $grid;
     }
@@ -221,6 +251,11 @@ class ProductCompactpaletteController extends Controller
         $imagesNum = DB::table(self::IMAGE_TABLE)->where('product_id', $id)->whereNull('deleted_at')->count();
 
         $show->panel()->tools(function (\Encore\Admin\Show\Tools $tools) use ($imagesNum, $id) {
+            if (!Admin::user()->can('page-products-write')) {
+                $tools->disableEdit();
+                $tools->disableDelete();
+            }
+
             if ($imagesNum) {
                 $tools->append('<a href="/'.config('admin.route.prefix').'/gallery/'.self::TAG.'/'.$id.'" class="btn btn-sm btn-success" style="margin-right: 5px;"><i class="fa fa-image"></i>&emsp;'.$imagesNum.'&nbsp;images</a>');
             } else {
@@ -233,8 +268,10 @@ class ProductCompactpaletteController extends Controller
 
         $show->id('ID');
         $show->cosmopak_item('Cosmopak Item#');
-        $show->vendor_item('Vendor Item#');
-        $show->manufactory_name('Manufactory Name');
+        if (Admin::user()->can('page-sensitive-column')) {
+            $show->vendor_item('Vendor Item#');
+            $show->manufactory_name('Manufactory Name');
+        }
         $show->item_description('Item Description');
         $show->divider();
         $show->material('Material');

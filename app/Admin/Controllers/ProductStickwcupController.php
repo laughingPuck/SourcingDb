@@ -13,6 +13,8 @@ use Encore\Admin\Controllers\HasResourceActions;
 use App\Admin\Models\ProductStickwcup;
 use Illuminate\Support\Facades\DB;
 use App\Admin\Widgets\Action\DeleteRow;
+use Encore\Admin\Auth\Permission;
+use Encore\Admin\Facades\Admin;
 
 class ProductStickwcupController extends Controller
 {
@@ -64,6 +66,7 @@ class ProductStickwcupController extends Controller
 
     public function edit($id, AdminContent $content)
     {
+        Permission::check('page-products-write');
         return $content
             ->header('Products > '.self::NAME.' > Edit')
             ->description(' ')
@@ -72,6 +75,7 @@ class ProductStickwcupController extends Controller
 
     public function create(AdminContent $content)
     {
+        Permission::check('page-products-write');
         return $content
             ->header('Products > '.self::NAME.' > Create')
             ->description(' ')
@@ -93,8 +97,10 @@ class ProductStickwcupController extends Controller
         $grid = new Grid(new self::$productClassName());
 
         $grid->cosmopak_item('Cosmopak Item#');
-        $grid->vendor_item('Vendor Item#');
-        $grid->manufactory_name('Manufactory Name');
+        if (Admin::user()->can('page-sensitive-column')) {
+            $grid->vendor_item('Vendor Item#');
+            $grid->manufactory_name('Manufactory Name');
+        }
         $grid->item_description('Item Description');
         $grid->material('Material');
         $grid->shape('Shape');
@@ -126,8 +132,8 @@ class ProductStickwcupController extends Controller
 //        });
         $grid->created_at('Created At');
 
-        $tag = self::TAG;
-        $grid->actions(function (Grid\Displayers\Actions $actions) use ($tag) {
+        $productTag = self::TAG;
+        $grid->actions(function (Grid\Displayers\Actions $actions) use ($productTag) {
             $actions->disableDelete();
             $actions->disableEdit();
             $actions->disableView();
@@ -135,10 +141,12 @@ class ProductStickwcupController extends Controller
             $id = $actions->getKey();
             $script = "javascript:productGridMailBox('{$id}');";
 
-            $actions->append('<a href="'.$tag.'/'.$id.'/edit" class="btn btn-xs btn-primary" style="margin: 5px 5px;"><i class="fa fa-edit"></i>&nbsp;&nbsp;Edit</a>');
-            $actions->append('<a href="'.$tag.'/'.$id.'" class="btn btn-xs btn-info" style="margin: 5px 5px;"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</a>');
+            $actions->append('<a href="'.$productTag.'/'.$id.'" class="btn btn-xs btn-info" style="margin: 5px 5px;"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</a>');
             $actions->append('<a href="'.$script.'" class="btn btn-xs btn-success" style="margin: 5px 5px;"><i class="fa fa-envelope"></i>&nbsp;&nbsp;Mail</a>');
-            $actions->append(new DeleteRow($actions->getKey(), $tag));
+            if (Admin::user()->can('page-products-write')) {
+                $actions->append('<a href="'.$productTag.'/'.$id.'/edit" class="btn btn-xs btn-primary" style="margin: 5px 5px;"><i class="fa fa-edit"></i>&nbsp;&nbsp;Edit</a>');
+                $actions->append(new DeleteRow($actions->getKey(), $productTag));
+            }
         });
 
         $grid->tools(function (Grid\Tools $tools) {
@@ -151,7 +159,9 @@ class ProductStickwcupController extends Controller
             $filter->disableIdFilter();
             $filter->between('created_at', 'Created At')->datetime();
             $filter->like('cosmopak_item', 'Cosmopak#');
-            $filter->like('vendor_item', 'Vendor#');
+            if (Admin::user()->can('page-sensitive-column')) {
+                $filter->like('vendor_item', 'Vendor#');
+            }
             $filter->equal('material', 'Material')->select(self::$materialMap);
             $filter->equal('shape', 'Shape')->select(self::$shapeMap);
             $filter->equal('style', 'Style')->select(self::$styleMap);
@@ -176,6 +186,9 @@ class ProductStickwcupController extends Controller
 
         $grid->expandFilter();
         $grid->disableExport();
+        if (!Admin::user()->can('page-products-write')) {
+            $grid->disableCreateButton();
+        }
 
         return $grid;
     }
@@ -231,6 +244,11 @@ class ProductStickwcupController extends Controller
         $imagesNum = DB::table(self::IMAGE_TABLE)->where('product_id', $id)->whereNull('deleted_at')->count();
 
         $show->panel()->tools(function (\Encore\Admin\Show\Tools $tools) use ($imagesNum, $id) {
+            if (!Admin::user()->can('page-products-write')) {
+                $tools->disableEdit();
+                $tools->disableDelete();
+            }
+
             if ($imagesNum) {
                 $tools->append('<a href="/'.config('admin.route.prefix').'/gallery/'.self::TAG.'/'.$id.'" class="btn btn-sm btn-success" style="margin-right: 5px;"><i class="fa fa-image"></i>&emsp;'.$imagesNum.'&nbsp;images</a>');
             } else {
@@ -243,8 +261,10 @@ class ProductStickwcupController extends Controller
 
         $show->id('ID');
         $show->cosmopak_item('Cosmopak Item#');
-        $show->vendor_item('Vendor Item#');
-        $show->manufactory_name('Manufactory Name');
+        if (Admin::user()->can('page-sensitive-column')) {
+            $show->vendor_item('Vendor Item#');
+            $show->manufactory_name('Manufactory Name');
+        }
         $show->item_description('Item Description');
         $show->divider();
         $show->material('Material');

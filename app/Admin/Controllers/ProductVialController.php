@@ -13,6 +13,8 @@ use Encore\Admin\Controllers\HasResourceActions;
 use App\Admin\Models\ProductVial;
 use Illuminate\Support\Facades\DB;
 use App\Admin\Widgets\Action\DeleteRow;
+use Encore\Admin\Auth\Permission;
+use Encore\Admin\Facades\Admin;
 
 class ProductVialController extends Controller
 {
@@ -64,6 +66,7 @@ class ProductVialController extends Controller
 
     public function edit($id, AdminContent $content)
     {
+        Permission::check('page-products-write');
         return $content
             ->header('Products > '.self::NAME.' > Edit')
             ->description(' ')
@@ -72,6 +75,7 @@ class ProductVialController extends Controller
 
     public function create(AdminContent $content)
     {
+        Permission::check('page-products-write');
         return $content
             ->header('Products > '.self::NAME.' > Create')
             ->description(' ')
@@ -92,15 +96,29 @@ class ProductVialController extends Controller
     {
         $grid = new Grid(new self::$productClassName());
 
-//        $grid->id('ID')->sortable();
-//        $grid->manufactory_name('Manufactory Name');
+        $grid->cosmopak_item('Cosmopak Item#');
+        if (Admin::user()->can('page-sensitive-column')) {
+            $grid->vendor_item('Vendor Item#');
+            $grid->manufactory_name('Manufactory Name');
+        }
+        $grid->item_description('Item Description');
+        $grid->divider();
         $grid->cap_material('Cap Material');
         $grid->base_material('Base Material');
         $grid->stem_material('Stem Material');
         $grid->shape('Shape');
         $grid->vial('Vial#');
-        $grid->overall_height('Overall Height');
+        $grid->divider();
+        $grid->overall_length('Overall Height');
         $grid->overall_width('Overall Width');
+        $grid->overall_height('Overall Height');
+        $grid->collar('Collar');
+        $grid->storage_location('Storage Location');
+        $grid->sample_available('Sample Available');
+        $grid->related_projects('Related Projects');
+        $grid->moq('Moq');
+        $grid->price('Price');
+        $grid->mold_status('Mold Status');
         $grid->images('Images')->display(function ($images) {
             $count = count($images);
             if ($count) {
@@ -124,10 +142,12 @@ class ProductVialController extends Controller
             $id = $actions->getKey();
             $script = "javascript:productGridMailBox('{$id}');";
 
-            $actions->append('<a href="'.$productTag.'/'.$id.'/edit" class="btn btn-xs btn-primary" style="margin-right: 5px;"><i class="fa fa-edit"></i>&nbsp;&nbsp;Edit</a>');
             $actions->append('<a href="'.$productTag.'/'.$id.'" class="btn btn-xs btn-info" style="margin-right: 5px;"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</a>');
             $actions->append('<a href="'.$script.'" class="btn btn-xs btn-success" style="margin-right: 5px;"><i class="fa fa-envelope"></i>&nbsp;&nbsp;Mail</a>');
-            $actions->append(new DeleteRow($actions->getKey(), $productTag));
+            if (Admin::user()->can('page-products-write')) {
+                $actions->append('<a href="'.$productTag.'/'.$id.'/edit" class="btn btn-xs btn-primary" style="margin: 5px 5px;"><i class="fa fa-edit"></i>&nbsp;&nbsp;Edit</a>');
+                $actions->append(new DeleteRow($actions->getKey(), $productTag));
+            }
         });
 
         $grid->tools(function (Grid\Tools $tools) {
@@ -140,7 +160,9 @@ class ProductVialController extends Controller
             $filter->disableIdFilter();
             $filter->between('created_at', 'Created At')->datetime();
             $filter->like('cosmopak_item', 'Cosmopak#');
-            $filter->like('vendor_item', 'Vendor#');
+            if (Admin::user()->can('page-sensitive-column')) {
+                $filter->like('vendor_item', 'Vendor#');
+            }
             $filter->equal('cap_material', 'Cap Material')->select(self::$materialMap);
             $filter->equal('base_material', 'Base Material')->select(self::$materialMap);
             $filter->equal('stem_material', 'Stem Material')->select(self::$materialMap);
@@ -165,6 +187,9 @@ class ProductVialController extends Controller
 
         $grid->expandFilter();
         $grid->disableExport();
+        if (!Admin::user()->can('page-products-write')) {
+            $grid->disableCreateButton();
+        }
 
         return $grid;
     }
@@ -219,6 +244,11 @@ class ProductVialController extends Controller
         $imagesNum = DB::table(self::IMAGE_TABLE)->where('product_id', $id)->whereNull('deleted_at')->count();
 
         $show->panel()->tools(function (\Encore\Admin\Show\Tools $tools) use ($imagesNum, $id) {
+            if (!Admin::user()->can('page-products-write')) {
+                $tools->disableEdit();
+                $tools->disableDelete();
+            }
+
             if ($imagesNum) {
                 $tools->append('<a href="/'.config('admin.route.prefix').'/gallery/'.self::TAG.'/'.$id.'" class="btn btn-sm btn-success" style="margin-right: 5px;"><i class="fa fa-image"></i>&emsp;'.$imagesNum.'&nbsp;images</a>');
             } else {
@@ -231,8 +261,10 @@ class ProductVialController extends Controller
 
         $show->id('ID');
         $show->cosmopak_item('Cosmopak Item#');
-        $show->vendor_item('Vendor Item#');
-        $show->manufactory_name('Manufactory Name');
+        if (Admin::user()->can('page-sensitive-column')) {
+            $show->vendor_item('Vendor Item#');
+            $show->manufactory_name('Manufactory Name');
+        }
         $show->item_description('Item Description');
         $show->divider();
         $show->cap_material('Cap Material');
