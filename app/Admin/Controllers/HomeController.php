@@ -14,6 +14,6 @@ class HomeController extends Controller
         return $content
             ->header('Home')
             ->description('Products Menu')
-            ->row(view('admin.index', ['imageList' => $images]));
+            ->row(view('admin.index', ['imageList' => $images, 'urlPrefix' => env('APP_URL').'/'.config('admin.route.prefix').'/']));
     }
 }

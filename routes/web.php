@@ -11,6 +11,9 @@
 |
 */
 
+Route::get('/', function () {
+    return redirect('/admin');
+});
 //Route::get('/', 'SessionsController@create');
 //Route::post('login', 'SessionsController@store')->name('login');
 //Route::get('/show', 'SessionsController@show')->name('show');
