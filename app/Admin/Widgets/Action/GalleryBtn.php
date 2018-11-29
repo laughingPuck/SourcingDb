@@ -19,7 +19,7 @@ class GalleryBtn
         $this->style = $style;
     }
 
-    protected function render()
+    public function render()
     {
         $content = '';
         if (self::STYLE_GRID_IMAGES == $this->style) {

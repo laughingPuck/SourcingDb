@@ -146,7 +146,8 @@ class ProductStickwcupController extends Controller
         $grid->price('Price')->width('50');
         $grid->mold_status('Mold Status')->width('80');
         $grid->images('Images')->display(function ($images) {
-            return new GalleryBtn(count($images), $this->id, self::TAG);
+            $btn = new GalleryBtn(count($images), $this->id, self::TAG);
+            return $btn->render();
         })->width('80');
         $grid->created_at('Created At')->width('120');
 

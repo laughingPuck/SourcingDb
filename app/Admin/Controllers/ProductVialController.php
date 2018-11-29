@@ -145,12 +145,9 @@ class ProductVialController extends Controller
         $grid->price('Price')->width('50');
         $grid->mold_status('Mold Status')->width('80');
         $grid->images('Images')->display(function ($images) {
-            return new GalleryBtn(count($images), $this->id, self::TAG);
-        });
-
-//        $grid->state('Display')->display(function ($type) {
-//            return $type ? 'on' : 'off';
-//        });
+            $btn = new GalleryBtn(count($images), $this->id, self::TAG);
+            return $btn->render();
+        })->width('80');
         $grid->created_at('Created At')->width('120');
 //        $grid->updated_at('Updated');
         $grid->disableActions();

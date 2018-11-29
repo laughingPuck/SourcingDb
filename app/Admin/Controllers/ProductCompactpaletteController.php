@@ -145,7 +145,8 @@ class ProductCompactpaletteController extends Controller
         $grid->moq('Moq')->width('50');
         $grid->price('Price')->width('50');
         $grid->images('Images')->display(function ($images) {
-            return new GalleryBtn(count($images), $this->id, self::TAG);
+            $btn = new GalleryBtn(count($images), $this->id, self::TAG);
+            return $btn->render();
         });
 
 //        $grid->state('Display')->display(function ($type) {
