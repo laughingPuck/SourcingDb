@@ -3,6 +3,10 @@
 namespace App\Admin\Controllers;
 
 use App\Admin\Conf\Products;
+use App\Admin\Widgets\Action\EditProductBtn;
+use App\Admin\Widgets\Action\GalleryBtn;
+use App\Admin\Widgets\Action\MailProductBtn;
+use App\Admin\Widgets\Action\ViewRowAction;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Form;
 use Encore\Admin\Show;
@@ -14,7 +18,7 @@ use App\Admin\Models\ProductCompactpalette;
 use Illuminate\Support\Facades\DB;
 use Encore\Admin\Auth\Permission;
 use Encore\Admin\Facades\Admin;
-use App\Admin\Widgets\Action\DeleteRow;
+use App\Admin\Widgets\Action\DeleteRowAction;
 
 class ProductCompactpaletteController extends Controller
 {
@@ -92,64 +96,79 @@ class ProductCompactpaletteController extends Controller
     {
         $grid = new Grid(new self::$productClassName());
 
-        $grid->cosmopak_item('Cosmopak Item#');
-        if (Admin::user()->can('page-sensitive-column')) {
-            $grid->vendor_item('Vendor Item#');
-            $grid->manufactory_name('Manufactory Name');
+        // actions
+        $grid->column('View', ' ')->display(function () {
+            $btn = new ViewRowAction($this->id, self::TAG);
+            return $btn->render();
+        });
+        $grid->column('Mail', ' ')->display(function () {
+            $btn = new MailProductBtn($this->id);
+            return $btn->render();
+        });
+        if (Admin::user()->can('page-products-write')) {
+            $grid->column('Edit', ' ')->display(function () {
+                $btn = new EditProductBtn($this->id, self::TAG);
+                return $btn->render();
+            });
+            $grid->column('Delete', ' ')->display(function () {
+                $btn = new DeleteRowAction($this->id, self::TAG);
+                return $btn->render();
+            });
         }
-        $grid->item_description('Item Description');
-        $grid->divider();
-        $grid->material('Material');
-        $grid->shape('Shape');
-        $grid->pan_well('Pan Well#');
-        $grid->divider();
-        $grid->overall_length('Overall Height');
-        $grid->overall_width('Overall Width');
-        $grid->overall_height('Overall Height');
-        $grid->mirror('Mirror');
-        $grid->window('Window');
-        $grid->pan_well_shape('Pan Well Shape');
-        $grid->pan_well_width('Pan Well Width/radius');
-        $grid->pan_well_height('Pan Well Height');
-        $grid->applicator_well('Applicator Well');
-        $grid->latch_system('Latch System');
-        $grid->injector_pin('Injector Pin');
-        $grid->storage_location('Storage Location');
-        $grid->sample_available('Sample Available');
-        $grid->related_projects('Related Projects');
-        $grid->moq('Moq');
-        $grid->price('Price');
+        $grid->column('', ' ')->display(function () {
+            return '<p style="width: 20px;"></p>';
+        });
+
+        $grid->cosmopak_item('Cosmopak Item#')->width('120');
+        if (Admin::user()->can('page-sensitive-column')) {
+            $grid->vendor_item('Vendor Item#')->width('120');
+            $grid->manufactory_name('Manufactory Name')->width('120');
+        }
+        $grid->item_description('Item Description')->width('120');
+        $grid->material('Material')->width('80');
+        $grid->shape('Shape')->width('50');
+        $grid->pan_well('Pan Well#')->width('80');
+        $grid->overall_length('Overall Height')->width('120');
+        $grid->overall_width('Overall Width')->width('120');
+        $grid->overall_height('Overall Height')->width('120');
+        $grid->mirror('Mirror')->width('50');
+        $grid->window('Window')->width('50');
+        $grid->pan_well_shape('Pan Well Shape')->width('120');
+        $grid->pan_well_width('Pan Well Width/radius')->width('140');
+        $grid->pan_well_height('Pan Well Height')->width('120');
+        $grid->applicator_well('Applicator Well')->width('120');
+        $grid->latch_system('Latch System')->width('120');
+        $grid->injector_pin('Injector Pin')->width('120');
+        $grid->storage_location('Storage Location')->width('120');
+        $grid->sample_available('Sample Available')->width('120');
+        $grid->related_projects('Related Projects')->width('120');
+        $grid->moq('Moq')->width('50');
+        $grid->price('Price')->width('50');
         $grid->images('Images')->display(function ($images) {
-            $count = count($images);
-            if ($count) {
-                return "<a href='gallery/".self::TAG."/{$this->id}' class='btn btn-xs btn-success'><i class='fa fa-image'></i>&nbsp;&nbsp;{$count}</a>";
-            } else {
-                return "<button type='button' disabled='disabled' class='btn btn-xs btn-default'><i class='fa fa-image'></i>&nbsp;&nbsp;{$count}</button>";
-            }
+            return new GalleryBtn(count($images), $this->id, self::TAG);
         });
 
 //        $grid->state('Display')->display(function ($type) {
 //            return $type ? 'on' : 'off';
 //        });
-        $grid->created_at('Created At');
+        $grid->created_at('Created At')->width('120');
 //        $grid->updated_at('Updated');
 
-        $productTag = self::TAG;
-        $grid->actions(function (Grid\Displayers\Actions $actions) use ($productTag) {
-            $actions->disableDelete();
-            $actions->disableEdit();
-            $actions->disableView();
-            // append一个操作
-            $id = $actions->getKey();
-            $script = "javascript:productGridMailBox('{$id}');";
-
-            $actions->append('<a href="'.$productTag.'/'.$id.'" class="btn btn-xs btn-info" style="margin: 5px 5px;"><i class="fa fa-eye"></i>&nbsp;&nbsp;View</a>');
-            $actions->append('<a href="'.$script.'" class="btn btn-xs btn-success" style="margin: 5px 5px;"><i class="fa fa-envelope"></i>&nbsp;&nbsp;Mail</a>');
-            if (Admin::user()->can('page-products-write')) {
-                $actions->append('<a href="'.$productTag.'/'.$id.'/edit" class="btn btn-xs btn-primary" style="margin: 5px 5px;"><i class="fa fa-edit"></i>&nbsp;&nbsp;Edit</a>');
-                $actions->append(new DeleteRow($actions->getKey(), $productTag));
-            }
-        });
+        $grid->disableActions();
+//        $productTag = self::TAG;
+//        $grid->actions(function (Grid\Displayers\Actions $actions) use ($productTag) {
+//            $actions->disableDelete();
+//            $actions->disableEdit();
+//            $actions->disableView();
+//            // append一个操作
+//            $id = $actions->getKey();
+//            $actions->append(new ViewRowAction($id, $productTag));
+//            $actions->append(new MailProductBtn($id));
+//            if (Admin::user()->can('page-products-write')) {
+//                $actions->append(new EditProductBtn($id, $productTag));
+//                $actions->append(new DeleteRowAction($id, $productTag));
+//            }
+//        });
 
         $grid->tools(function (Grid\Tools $tools) {
             $tools->batch(function (Grid\Tools\BatchActions $actions) {
@@ -189,6 +208,7 @@ class ProductCompactpaletteController extends Controller
 
         $grid->expandFilter();
         $grid->disableExport();
+        $grid->disableRowSelector();
         if (!Admin::user()->can('page-products-write')) {
             $grid->disableCreateButton();
         }
@@ -255,15 +275,8 @@ class ProductCompactpaletteController extends Controller
                 $tools->disableEdit();
                 $tools->disableDelete();
             }
-
-            if ($imagesNum) {
-                $tools->append('<a href="/'.config('admin.route.prefix').'/gallery/'.self::TAG.'/'.$id.'" class="btn btn-sm btn-success" style="margin-right: 5px;"><i class="fa fa-image"></i>&emsp;'.$imagesNum.'&nbsp;images</a>');
-            } else {
-                $tools->append('<button type="button" class="btn btn-sm btn-default" disabled="disabled" style="width: 100px;margin-right: 5px;"><i class="fa fa-image"></i>&emsp;No&nbsp;&nbsp;image</button>');
-            }
-
-            $script = "javascript:productGridMailBox('{$id}');";
-            $tools->append('<a href="'.$script.'" class="btn btn-sm btn-info" style="margin-right: 5px;"><i class="fa fa-envelope"></i>&nbsp;&nbsp;Email to</a>');
+            $tools->append(new GalleryBtn($imagesNum, $id, self::TAG, GalleryBtn::STYLE_DETAIL_TOOL));
+            $tools->append(new MailProductBtn($id, MailProductBtn::STYLE_DETAIL_TOOL));
         });
 
         $show->id('ID');

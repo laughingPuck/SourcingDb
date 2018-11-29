@@ -49,7 +49,7 @@
             type: 'post',
             async: false,
             data: {id:id,cate:tag,address:$('#emailBox').val()},
-            url: '/send_product_mail/product_grid',
+            url: '/admin/send_product_mail/product_grid',
             dataType: "json",
             cache: false,
             success: function(json){
