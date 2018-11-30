@@ -51,11 +51,6 @@ class ProductVialController extends Controller
         'Other Applicator' => 'Other Applicator',
         'Not sure' => 'Not sure',
     ];
-    public static $switchMap = [
-        1 => 'Yes',
-        2 => 'No',
-        3 => 'Not sure',
-    ];
 
     public function index(AdminContent $content)
     {
@@ -135,8 +130,8 @@ class ProductVialController extends Controller
         $grid->ofc_vial('OFC/Vail')->width('80');
         $grid->applicator('Applicator')->width('80');
         $grid->thick_wall('Thick Wall')->display(function ($value) {
-            if (array_key_exists($value, self::$switchMap)) {
-                return self::$switchMap[$value];
+            if (array_key_exists($value, Products::$switchMap)) {
+                return Products::$switchMap[$value];
             }
             return null;
         })->width('80');
@@ -191,7 +186,7 @@ class ProductVialController extends Controller
             $filter->equal('vial', 'Vial#')->select(self::$vialMap);
             $filter->between('ofc_vial', 'OFC/Vial');
             $filter->equal('applicator', 'Applicator')->select(self::$applicatorMap);
-            $filter->equal('thick_wall', 'Thick Wall')->select(self::$switchMap);
+            $filter->equal('thick_wall', 'Thick Wall')->select(Products::$switchMap);
             $filter->where(function ($query) {
                 switch ($this->input) {
                     case '1':
@@ -237,7 +232,7 @@ class ProductVialController extends Controller
         $form->select('vial', 'Vial#')->options(self::$vialMap)->rules('required')->setWidth(4);
         $form->text('ofc_vial', 'OFC/Vial')->rules('required')->setWidth(4);
         $form->select('applicator', 'Applicator')->options(self::$applicatorMap)->rules('required')->setWidth(4);
-        $form->select('thick_wall', 'Thick Wall')->options(self::$switchMap)->rules('required')->setWidth(4);
+        $form->select('thick_wall', 'Thick Wall')->options(Products::$switchMap)->rules('required')->setWidth(4);
         $form->divider();
         $form->text('overall_length', 'Overall Length')->rules('required')->setWidth(4);
         $form->text('overall_width', 'Overall Width')->rules('required')->setWidth(4);
@@ -295,7 +290,7 @@ class ProductVialController extends Controller
         $show->vial('Vial#');
         $show->ofc_vial('OFC/Vail');
         $show->applicator('Applicator');
-        $switchMap = self::$switchMap;
+        $switchMap = Products::$switchMap;
         $show->thick_wall('Thick Wall')->as(function ($value) use ($switchMap) {
             if (array_key_exists($value, $switchMap)) {
                 return $switchMap[$value];

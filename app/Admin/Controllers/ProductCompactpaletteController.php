@@ -41,11 +41,6 @@ class ProductCompactpaletteController extends Controller
         '2+' => '2+',
         'Not sure' => 'Not sure',
     ];
-    public static $switchMap = [
-        1 => 'Yes',
-        2 => 'No',
-        3 => 'Not sure',
-    ];
     public static $latchSystemMap = [
         'Rasied Bump Fit' => 'Rasied Bump Fit',
         'Latch Button' => 'Latch Button',
@@ -130,14 +125,14 @@ class ProductCompactpaletteController extends Controller
         $grid->overall_width('Overall Width')->width('120');
         $grid->overall_height('Overall Height')->width('120');
         $grid->mirror('Mirror')->display(function ($value) {
-            if (array_key_exists($value, self::$switchMap)) {
-                return self::$switchMap[$value];
+            if (array_key_exists($value, Products::$switchMap)) {
+                return Products::$switchMap[$value];
             }
             return null;
         })->width('50');
         $grid->window('Window')->display(function ($value) {
-            if (array_key_exists($value, self::$switchMap)) {
-                return self::$switchMap[$value];
+            if (array_key_exists($value, Products::$switchMap)) {
+                return Products::$switchMap[$value];
             }
             return null;
         })->width('50');
@@ -145,15 +140,15 @@ class ProductCompactpaletteController extends Controller
         $grid->pan_well_width('Pan Well Width/radius')->width('140');
         $grid->pan_well_height('Pan Well Height')->width('120');
         $grid->applicator_well('Applicator Well')->display(function ($value) {
-            if (array_key_exists($value, self::$switchMap)) {
-                return self::$switchMap[$value];
+            if (array_key_exists($value, Products::$switchMap)) {
+                return Products::$switchMap[$value];
             }
             return null;
         })->width('100');
         $grid->latch_system('Latch System')->width('120');
         $grid->injector_pin('Injector Pin')->display(function ($value) {
-            if (array_key_exists($value, self::$switchMap)) {
-                return self::$switchMap[$value];
+            if (array_key_exists($value, Products::$switchMap)) {
+                return Products::$switchMap[$value];
             }
             return null;
         })->width('80');
@@ -205,9 +200,9 @@ class ProductCompactpaletteController extends Controller
             $filter->equal('shape', 'Shape')->select(self::$shapeMap);
             $filter->equal('pan_well', 'Pan Well#')->select(self::$panWellMap);
             $filter->between('pan_well_width', 'Pan Well Width');
-            $filter->equal('applicator_well', 'Applicator Well')->select(self::$switchMap);
+            $filter->equal('applicator_well', 'Applicator Well')->select(Products::$switchMap);
             $filter->equal('latch_system', 'Latch System')->select(self::$latchSystemMap);
-            $filter->equal('window', 'Window')->select(self::$switchMap);
+            $filter->equal('window', 'Window')->select(Products::$switchMap);
             $filter->where(function ($query) {
                 switch ($this->input) {
                     case '1':
@@ -253,14 +248,14 @@ class ProductCompactpaletteController extends Controller
         $form->text('overall_width', 'Overall Width')->rules('required')->setWidth(4);
         $form->text('overall_height', 'Overall Height')->rules('required')->setWidth(4);
         $form->divider();
-        $form->select('mirror', 'Mirror')->options(self::$switchMap)->rules('required')->setWidth(4);
-        $form->select('window', 'Window')->options(self::$switchMap)->rules('required')->setWidth(4);
+        $form->select('mirror', 'Mirror')->options(Products::$switchMap)->rules('required')->setWidth(4);
+        $form->select('window', 'Window')->options(Products::$switchMap)->rules('required')->setWidth(4);
         $form->text('pan_well_shape', 'Pan Well Shape')->rules('required');
         $form->text('pan_well_width', 'Pan Well Width')->rules('required')->setWidth(4);
         $form->text('pan_well_height', 'Pan Well Height')->rules('required')->setWidth(4);
-        $form->select('applicator_well', 'Applicator Well')->options(self::$switchMap)->rules('required')->setWidth(4);
+        $form->select('applicator_well', 'Applicator Well')->options(Products::$switchMap)->rules('required')->setWidth(4);
         $form->text('latch_system', 'Latch System')->rules('required')->setWidth(4);
-        $form->select('injector_pin', 'Injector Pin')->options(self::$switchMap)->rules('required')->setWidth(4);
+        $form->select('injector_pin', 'Injector Pin')->options(Products::$switchMap)->rules('required')->setWidth(4);
         $form->divider();
         $form->text('storage_location', 'Storage Location')->rules('required');
         $form->text('sample_available', 'Sample Available')->rules('required');
@@ -298,7 +293,7 @@ class ProductCompactpaletteController extends Controller
             $tools->append(new MailProductBtn($id, MailProductBtn::STYLE_DETAIL_TOOL));
         });
 
-        $switch = self::$switchMap;
+        $switch = Products::$switchMap;
 
         $show->id('ID');
         $show->cosmopak_item('Cosmopak Item#');
