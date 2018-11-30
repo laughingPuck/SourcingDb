@@ -24,9 +24,7 @@ class ProductCompactpaletteController extends Controller
 {
     use HasResourceActions;
 
-    const NAME = 'Compact & Palette';
     const TAG = Products::PRODUCT_COMPACT_PALETTE;
-    const IMAGE_TABLE = 'image_compactpalette';
 
     public static $productClassName = ProductCompactpalette::class;
 
@@ -58,7 +56,7 @@ class ProductCompactpaletteController extends Controller
     public function index(AdminContent $content)
     {
         return $content
-            ->header('Products > '.self::NAME)
+            ->header('Products > '.Products::$productCateMap[self::TAG]['display'])
             ->description(' ')
             ->row(view('admin.tool.product_mail', ['tag' => self::TAG]))
             ->body($this->grid()->render());
@@ -68,7 +66,7 @@ class ProductCompactpaletteController extends Controller
     {
         Permission::check('page-products-write');
         return $content
-            ->header('Products > '.self::NAME.' > Edit')
+            ->header('Products > '.Products::$productCateMap[self::TAG]['display'].' > Edit')
             ->description(' ')
             ->body($this->form()->edit($id));
     }
@@ -77,7 +75,7 @@ class ProductCompactpaletteController extends Controller
     {
         Permission::check('page-products-write');
         return $content
-            ->header('Products > '.self::NAME.' > Create')
+            ->header('Products > '.Products::$productCateMap[self::TAG]['display'].' > Create')
             ->description(' ')
             ->body($this->form());
     }
@@ -85,7 +83,7 @@ class ProductCompactpaletteController extends Controller
     public function show($id, AdminContent $content)
     {
         return $content
-            ->header('Products > '.self::NAME.' > Detail')
+            ->header('Products > '.Products::$productCateMap[self::TAG]['display'].' > Detail')
             ->description(' ')
             ->row(view('admin.tool.product_mail', ['tag' => self::TAG]))
             ->row($this->detail($id))
@@ -289,7 +287,7 @@ class ProductCompactpaletteController extends Controller
         $productClass = self::$productClassName;
         $show = new Show($productClass::findOrFail($id));
 
-        $imagesNum = DB::table(self::IMAGE_TABLE)->where('product_id', $id)->whereNull('deleted_at')->count();
+        $imagesNum = DB::table(Products::$productCateMap[self::TAG]['img_table'])->where('product_id', $id)->whereNull('deleted_at')->count();
 
         $show->panel()->tools(function (\Encore\Admin\Show\Tools $tools) use ($imagesNum, $id) {
             if (!Admin::user()->can('page-products-write')) {
@@ -360,7 +358,7 @@ class ProductCompactpaletteController extends Controller
 
     protected function showImages($id)
     {
-        $images = DB::table(self::IMAGE_TABLE)->where('product_id', $id)->whereNull('deleted_at')->get();
+        $images = DB::table(Products::$productCateMap[self::TAG]['img_table'])->where('product_id', $id)->whereNull('deleted_at')->get();
         $box = new Box('Images', view('admin.product_images', ['imageList' => $images]));
         $box->style('default');
 

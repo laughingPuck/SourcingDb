@@ -24,9 +24,7 @@ class ProductStickwcupController extends Controller
 {
     use HasResourceActions;
 
-    const NAME = 'Stick With Cup';
     const TAG = Products::PRODUCT_STICK_WITH_CUP;
-    const IMAGE_TABLE = 'image_stickwcup';
 
     public static $productClassName = ProductStickwcup::class;
 
@@ -62,7 +60,7 @@ class ProductStickwcupController extends Controller
     public function index(AdminContent $content)
     {
         return $content
-            ->header('Products > '.self::NAME)
+            ->header('Products > '.Products::$productCateMap[self::TAG]['display'])
             ->description(' ')
             ->row(view('admin.tool.product_mail', ['tag' => self::TAG]))
             ->body($this->grid()->render());
@@ -72,7 +70,7 @@ class ProductStickwcupController extends Controller
     {
         Permission::check('page-products-write');
         return $content
-            ->header('Products > '.self::NAME.' > Edit')
+            ->header('Products > '.Products::$productCateMap[self::TAG]['display'].' > Edit')
             ->description(' ')
             ->body($this->form()->edit($id));
     }
@@ -81,7 +79,7 @@ class ProductStickwcupController extends Controller
     {
         Permission::check('page-products-write');
         return $content
-            ->header('Products > '.self::NAME.' > Create')
+            ->header('Products > '.Products::$productCateMap[self::TAG]['display'].' > Create')
             ->description(' ')
             ->body($this->form());
     }
@@ -89,7 +87,7 @@ class ProductStickwcupController extends Controller
     public function show($id, AdminContent $content)
     {
         return $content
-            ->header('Products > '.self::NAME.' > Detail')
+            ->header('Products > '.Products::$productCateMap[self::TAG]['display'].' > Detail')
             ->description(' ')
             ->row(view('admin.tool.product_mail', ['tag' => self::TAG]))
             ->row($this->detail($id))
@@ -259,7 +257,7 @@ class ProductStickwcupController extends Controller
         $productClass = self::$productClassName;
         $show = new Show($productClass::findOrFail($id));
 
-        $imagesNum = DB::table(self::IMAGE_TABLE)->where('product_id', $id)->whereNull('deleted_at')->count();
+        $imagesNum = DB::table(Products::$productCateMap[self::TAG]['img_table'])->where('product_id', $id)->whereNull('deleted_at')->count();
 
         $show->panel()->tools(function (\Encore\Admin\Show\Tools $tools) use ($imagesNum, $id) {
             if (!Admin::user()->can('page-products-write')) {
@@ -305,7 +303,7 @@ class ProductStickwcupController extends Controller
 
     protected function showImages($id)
     {
-        $images = DB::table(self::IMAGE_TABLE)->where('product_id', $id)->whereNull('deleted_at')->get();
+        $images = DB::table(Products::$productCateMap[self::TAG]['img_table'])->where('product_id', $id)->whereNull('deleted_at')->get();
         $box = new Box('Images', view('admin.product_images', ['imageList' => $images]));
         $box->style('default');
 
