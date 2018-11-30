@@ -22,7 +22,7 @@ use Encore\Admin\Facades\Admin;
 use Encore\Admin\Grid\Column;
 
 Encore\Admin\Form::forget(['map', 'editor']);
-//Admin::js('/js/baguetteBox.min.js');
+Admin::js('/js/lightgallery-all.min.js');
 
 Column::extend('width', function ($value, $width){
     return "<p style='white-space: nowrap;overflow: hidden;text-overflow: ellipsis;min-width: {$width}px;'>$value</p>";

@@ -13,7 +13,6 @@
     </div>
 </div>
 
-<script src="/js/lightgallery-all.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function(){
         $('#gallery').lightGallery();
