@@ -53,10 +53,10 @@ class ProductVialController extends Controller
         'Other Applicator' => 'Other Applicator',
         'Not sure' => 'Not sure',
     ];
-    public static $thickWallMap = [
-        'Yes' => 'Yes',
-        'No' => 'No',
-        'Not sure' => 'Not sure',
+    public static $switchMap = [
+        1 => 'Yes',
+        2 => 'No',
+        3 => 'Not sure',
     ];
 
     public function index(AdminContent $content)
@@ -134,6 +134,14 @@ class ProductVialController extends Controller
         $grid->stem_material('Stem Material')->width('120');
         $grid->shape('Shape')->width('50');
         $grid->vial('Vial#')->width('50');
+        $grid->ofc_vial('OFC/Vail')->width('80');
+        $grid->applicator('Applicator')->width('80');
+        $grid->thick_wall('Thick Wall')->display(function ($value) {
+            if (array_key_exists($value, self::$switchMap)) {
+                return self::$switchMap[$value];
+            }
+            return null;
+        })->width('80');
         $grid->overall_length('Overall Height')->width('120');
         $grid->overall_width('Overall Width')->width('120');
         $grid->overall_height('Overall Height')->width('120');
@@ -183,6 +191,9 @@ class ProductVialController extends Controller
             $filter->equal('stem_material', 'Stem Material')->select(self::$materialMap);
             $filter->equal('shape', 'Shape')->select(self::$shapeMap);
             $filter->equal('vial', 'Vial#')->select(self::$vialMap);
+            $filter->between('ofc_vial', 'OFC/Vial');
+            $filter->equal('applicator', 'Applicator')->select(self::$applicatorMap);
+            $filter->equal('thick_wall', 'Thick Wall')->select(self::$switchMap);
             $filter->where(function ($query) {
                 switch ($this->input) {
                     case '1':
@@ -226,6 +237,9 @@ class ProductVialController extends Controller
         $form->select('stem_material', 'Stem Material')->options(self::$materialMap)->rules('required')->setWidth(4);
         $form->select('shape', 'Shape')->options(self::$shapeMap)->rules('required')->setWidth(4);
         $form->select('vial', 'Vial#')->options(self::$vialMap)->rules('required')->setWidth(4);
+        $form->text('ofc_vial', 'OFC/Vial')->rules('required')->setWidth(4);
+        $form->select('applicator', 'Applicator')->options(self::$applicatorMap)->rules('required')->setWidth(4);
+        $form->select('thick_wall', 'Thick Wall')->options(self::$switchMap)->rules('required')->setWidth(4);
         $form->divider();
         $form->text('overall_length', 'Overall Length')->rules('required')->setWidth(4);
         $form->text('overall_width', 'Overall Width')->rules('required')->setWidth(4);
@@ -281,6 +295,15 @@ class ProductVialController extends Controller
         $show->stem_material('Stem Material');
         $show->shape('Shape');
         $show->vial('Vial#');
+        $show->ofc_vial('OFC/Vail');
+        $show->applicator('Applicator');
+        $switchMap = self::$switchMap;
+        $show->thick_wall('Thick Wall')->as(function ($value) use ($switchMap) {
+            if (array_key_exists($value, $switchMap)) {
+                return $switchMap[$value];
+            }
+            return null;
+        });
         $show->divider();
         $show->overall_length('Overall Height');
         $show->overall_width('Overall Width');

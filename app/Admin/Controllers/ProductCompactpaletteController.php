@@ -131,14 +131,34 @@ class ProductCompactpaletteController extends Controller
         $grid->overall_length('Overall Height')->width('120');
         $grid->overall_width('Overall Width')->width('120');
         $grid->overall_height('Overall Height')->width('120');
-        $grid->mirror('Mirror')->width('50');
-        $grid->window('Window')->width('50');
+        $grid->mirror('Mirror')->display(function ($value) {
+            if (array_key_exists($value, self::$switchMap)) {
+                return self::$switchMap[$value];
+            }
+            return null;
+        })->width('50');
+        $grid->window('Window')->display(function ($value) {
+            if (array_key_exists($value, self::$switchMap)) {
+                return self::$switchMap[$value];
+            }
+            return null;
+        })->width('50');
         $grid->pan_well_shape('Pan Well Shape')->width('120');
         $grid->pan_well_width('Pan Well Width/radius')->width('140');
         $grid->pan_well_height('Pan Well Height')->width('120');
-        $grid->applicator_well('Applicator Well')->width('120');
+        $grid->applicator_well('Applicator Well')->display(function ($value) {
+            if (array_key_exists($value, self::$switchMap)) {
+                return self::$switchMap[$value];
+            }
+            return null;
+        })->width('100');
         $grid->latch_system('Latch System')->width('120');
-        $grid->injector_pin('Injector Pin')->width('120');
+        $grid->injector_pin('Injector Pin')->display(function ($value) {
+            if (array_key_exists($value, self::$switchMap)) {
+                return self::$switchMap[$value];
+            }
+            return null;
+        })->width('80');
         $grid->storage_location('Storage Location')->width('120');
         $grid->sample_available('Sample Available')->width('120');
         $grid->related_projects('Related Projects')->width('120');
@@ -280,6 +300,8 @@ class ProductCompactpaletteController extends Controller
             $tools->append(new MailProductBtn($id, MailProductBtn::STYLE_DETAIL_TOOL));
         });
 
+        $switch = self::$switchMap;
+
         $show->id('ID');
         $show->cosmopak_item('Cosmopak Item#');
         if (Admin::user()->can('page-sensitive-column')) {
@@ -295,14 +317,34 @@ class ProductCompactpaletteController extends Controller
         $show->overall_length('Overall Height');
         $show->overall_width('Overall Width');
         $show->overall_height('Overall Height');
-        $show->mirror('Mirror');
-        $show->window('Window');
+        $show->mirror('Mirror')->as(function ($value) use ($switch) {
+            if (array_key_exists($value, $switch)) {
+                return $switch[$value];
+            }
+            return null;
+        });
+        $show->window('Window')->as(function ($value) use ($switch) {
+            if (array_key_exists($value, $switch)) {
+                return $switch[$value];
+            }
+            return null;
+        });
         $show->pan_well_shape('Pan Well Shape');
         $show->pan_well_width('Pan Well Width');
         $show->pan_well_height('Pan Well Height');
-        $show->applicator_well('Applicator Well');
+        $show->applicator_well('Applicator Well')->as(function ($value) use ($switch) {
+            if (array_key_exists($value, $switch)) {
+                return $switch[$value];
+            }
+            return null;
+        });
         $show->latch_system('Latch System');
-        $show->injector_pin('Injector Pin');
+        $show->injector_pin('Injector Pin')->as(function ($value) use ($switch) {
+            if (array_key_exists($value, $switch)) {
+                return $switch[$value];
+            }
+            return null;
+        });
         $show->storage_location('Storage Location');
         $show->sample_available('Sample Available');
         $show->related_projects('Related Projects');
