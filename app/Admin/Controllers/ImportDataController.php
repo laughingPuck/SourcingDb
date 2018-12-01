@@ -11,12 +11,17 @@ use Illuminate\Http\Request;
 use Encore\Admin\Widgets\Form;
 use App\Admin\Models\ProductCategory;
 use Encore\Admin\Widgets\Box;
+use Illuminate\Support\Facades\Schema;
 use Maatwebsite\Excel\Facades\Excel;
+use Encore\Admin\Widgets\Tab;
+use Encore\Admin\Widgets\Table;
 
 class ImportDataController extends Controller
 {
     public function index(AdminContent $content, $msg = [])
     {
+//        $className = Products::$productCateMap[$request->category]['product_table'];
+
         if ($msg) {
             if ($msg['type'] == 'error') {
                 $content = $content->withError('Import error', $msg['content']);
@@ -27,7 +32,8 @@ class ImportDataController extends Controller
         return $content
             ->header('Admin > Import')
             ->description(' ')
-            ->body($this->importBox());
+            ->row($this->importBox())
+            ->row($this->tabBox());
     }
 
     public function import(Request $request)
@@ -45,7 +51,6 @@ class ImportDataController extends Controller
             $filePath = $request->file('file')->store('admin/temp');
 
 //        var_dump($file->getPath().$file->getFilename(), $file->getClientOriginalExtension());exit;
-
             $unlinkPath = storage_path('app').'/'.$filePath;
             $controller = $this;
             Excel::load($fileBasePath.$filePath, function($reader) use ($className, $controller, $unlinkPath) {
@@ -82,5 +87,33 @@ class ImportDataController extends Controller
         $box->style('default');
 
         return $box;
+    }
+
+    protected function tabBox()
+    {
+        $tab = new Tab();
+        $tab->title('Required Fields');
+
+        $list = ProductCategory::all();
+        foreach ($list as $cate) {
+            if (!array_key_exists($cate->link, Products::$productCateMap)) {
+                continue;
+            }
+            $columns = Schema::getColumnListing(Products::$productCateMap[$cate->link]['product_table']);
+            unset($columns[array_search('id', $columns)]);
+            unset($columns[array_search('created_at', $columns)]);
+            unset($columns[array_search('updated_at', $columns)]);
+            unset($columns[array_search('deleted_at', $columns)]);
+            unset($columns[array_search('state', $columns)]);
+            $rows = [];
+
+            foreach ($columns as $v) {
+                $rows[] = [$v];
+            }
+            $table = new Table([], $rows);
+            $tab->add($cate->cate_name, $table->render());
+        }
+
+        return $tab;
     }
 }
