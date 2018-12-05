@@ -35,7 +35,7 @@ $('.grid-row-delete').unbind('click').click(function() {
         return new Promise(function(resolve) {
             $.ajax({
                     method: 'post',
-                    url: '/'+ tag +'/' + id,
+                    url: '/admin/'+ tag +'/' + id,
                     data: {
                 _method:'delete',
                         _token:LA.token,

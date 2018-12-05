@@ -78,6 +78,8 @@ class ImportDataController extends Controller
         $form->select('category', 'Category')->rules('required')->options(ProductCategory::all()->pluck('cate_name', 'link'))->setWidth(3);
         $form->file('file')->setWidth(5);
         $form->disableReset();
+
+        $form->setAction('admin/import');
         return $form;
     }
 
