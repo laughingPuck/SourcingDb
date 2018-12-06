@@ -224,12 +224,12 @@ class ProductStickwcupController extends Controller
         $form->select('shape', 'Shape')->options(self::$shapeMap)->rules('required')->setWidth(4);
         $form->select('style', 'Style')->options(self::$styleMap)->rules('required')->setWidth(4);
         $form->select('cup', 'Cup#')->options(self::$cupMap)->rules('required')->setWidth(4);
-        $form->text('cup_size', 'Cup Size')->rules('required|regex:/^\d+$/|max:1', ['regex' => 'The Price must be a number'])->setWidth(4);
+        $form->text('cup_size', 'Cup Size')->rules('required|regex:/^\d+$/|max:1', ['regex' => 'The Cup Size must be a number'])->setWidth(4);
         $form->text('cover_material', 'Cover Material')->rules('required');
         $form->divider();
-        $form->text('overall_length', 'Overall Length')->rules('required')->setWidth(4);
-        $form->text('overall_width', 'Overall Width')->rules('required')->setWidth(4);
-        $form->text('overall_height', 'Overall Height')->rules('required')->setWidth(4);
+        $form->text('overall_length', 'Overall Length')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Length must be a number'])->setWidth(4);
+        $form->text('overall_width', 'Overall Width')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Width must be a number'])->setWidth(4);
+        $form->text('overall_height', 'Overall Height')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Height must be a number'])->setWidth(4);
         $form->select('mechanism', 'Mechanism')->options(self::$mechanismMap)->rules('required')->setWidth(4);
         $form->text('storage_location', 'Storage Location')->rules('required');
         $form->text('sample_available', 'Sample Available')->rules('required');

@@ -234,9 +234,9 @@ class ProductVialController extends Controller
         $form->select('applicator', 'Applicator')->options(self::$applicatorMap)->rules('required')->setWidth(4);
         $form->select('thick_wall', 'Thick Wall')->options(Products::$switchMap)->rules('required')->setWidth(4);
         $form->divider();
-        $form->text('overall_length', 'Overall Length')->rules('required')->setWidth(4);
-        $form->text('overall_width', 'Overall Width')->rules('required')->setWidth(4);
-        $form->text('overall_height', 'Overall Height')->rules('required')->setWidth(4);
+        $form->text('overall_length', 'Overall Length')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Length must be a number'])->setWidth(4);
+        $form->text('overall_width', 'Overall Width')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Width must be a number'])->setWidth(4);
+        $form->text('overall_height', 'Overall Height')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Height must be a number'])->setWidth(4);
         $form->text('collar', 'Collar')->rules('required');
         $form->text('storage_location', 'Storage Location')->rules('required');
         $form->text('sample_available', 'Sample Available')->rules('required');
