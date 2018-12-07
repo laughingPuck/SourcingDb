@@ -79,7 +79,8 @@ class ImportDataController extends Controller
         $form->file('file')->setWidth(5);
         $form->disableReset();
 
-        $form->setAction('admin/import');
+//        $form->setAction('admin/import');
+        $form->action('/admin/import');
         return $form;
     }
 
