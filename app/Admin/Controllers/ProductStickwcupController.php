@@ -201,10 +201,12 @@ class ProductStickwcupController extends Controller
         });
 
         $grid->expandFilter();
-        $grid->exporter(new ProductExporter());
+        $exceptField = [];
         if (!Admin::user()->can('page-products-write')) {
+            $exceptField = ['vendor_item', 'manufactory_name'];
             $grid->disableCreateButton();
         }
+        $grid->exporter(new ProductExporter($grid, self::TAG, $exceptField));
 
         return $grid;
     }
