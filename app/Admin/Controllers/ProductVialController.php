@@ -3,6 +3,7 @@
 namespace App\Admin\Controllers;
 
 use App\Admin\Conf\Products;
+use App\Admin\Extensions\ProductExporter;
 use App\Admin\Widgets\Action\EditProductBtn;
 use App\Admin\Widgets\Action\GalleryBtn;
 use App\Admin\Widgets\Action\MailProductBtn;
@@ -205,8 +206,7 @@ class ProductVialController extends Controller
         });
 
         $grid->expandFilter();
-        $grid->disableExport();
-        $grid->disableRowSelector();
+        $grid->exporter(new ProductExporter());
         if (!Admin::user()->can('page-products-write')) {
             $grid->disableCreateButton();
         }
