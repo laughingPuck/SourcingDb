@@ -15,9 +15,17 @@ use Illuminate\Support\Facades\Schema;
 use Maatwebsite\Excel\Facades\Excel;
 use Encore\Admin\Widgets\Tab;
 use Encore\Admin\Widgets\Table;
+use Illuminate\Support\Facades\DB;
 
 class ImportDataController extends Controller
 {
+    public static $exceptionField = [
+        'id',
+        'state',
+        'created_at',
+        'updated_at'
+    ];
+
     public function index(AdminContent $content, $msg = [])
     {
 //        $className = Products::$productCateMap[$request->category]['product_table'];
@@ -46,6 +54,7 @@ class ImportDataController extends Controller
             $this->index(new AdminContent(), ['type' => 'error', 'content' => 'Category not fund!']);
         } else {
             $className = Products::$productCateMap[$request->category]['model'];
+            $tableName = Products::$productCateMap[$request->category]['product_table'];
 
             $fileBasePath = 'storage/app/';
             $filePath = $request->file('file')->store('admin/temp');
@@ -53,21 +62,29 @@ class ImportDataController extends Controller
 //        var_dump($file->getPath().$file->getFilename(), $file->getClientOriginalExtension());exit;
             $unlinkPath = storage_path('app').'/'.$filePath;
             $controller = $this;
-            Excel::load($fileBasePath.$filePath, function($reader) use ($className, $controller, $unlinkPath) {
-                $data = $reader->all();
-                $i = 0;
-                if ($data) {
-                    foreach ($data as $row) {
-                        $model = new $className();
-                        foreach ($row as $k => $v) {
-                            $model->$k = $v;
+            Excel::load($fileBasePath.$filePath, function($reader) use ($className, $controller, $unlinkPath, $tableName) {
+                DB::transaction(function () use ($reader, $className, $controller, $unlinkPath, $tableName) {
+                    $data = $reader->all();
+                    $i = 0;
+                    if ($data) {
+                        foreach ($data as $row) {
+                            $model = new $className();
+                            foreach ($row as $k => $v) {
+                                if (in_array($k, self::$exceptionField)) {
+                                    continue;
+                                }
+                                if (!Schema::hasColumn($tableName, $k)) {
+                                    continue;
+                                }
+                                $model->$k = $v;
+                            }
+                            $model->save();
+                            $i++;
                         }
-                        $model->save();
-                        $i++;
                     }
-                }
-                $controller->index(new AdminContent(), ['type' => 'success', 'content' => "Import {$i} rows successful!"]);
-                @unlink($unlinkPath);
+                    $controller->index(new AdminContent(), ['type' => 'success', 'content' => "Import {$i} rows successful!"]);
+                    @unlink($unlinkPath);
+                });
             });
         }
     }
