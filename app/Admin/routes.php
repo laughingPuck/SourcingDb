@@ -30,4 +30,6 @@ Route::group([
     $router->get('/import', 'ImportDataController@index');
     $router->post('/import', 'ImportDataController@import');
 
+    $router->get('/product_pdf/download/{cate}/{id}', 'ProductPDFController@download');
+
 });

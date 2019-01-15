@@ -7,6 +7,7 @@ use App\Admin\Extensions\ProductExporter;
 use App\Admin\Widgets\Action\EditProductBtn;
 use App\Admin\Widgets\Action\GalleryBtn;
 use App\Admin\Widgets\Action\MailProductBtn;
+use App\Admin\Widgets\Action\PDFProductBtn;
 use App\Admin\Widgets\Action\ViewRowAction;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Form;
@@ -97,6 +98,10 @@ class ProductCompactpaletteController extends Controller
         });
         $grid->column('Mail', ' ')->display(function () {
             $btn = new MailProductBtn($this->id);
+            return $btn->render();
+        });
+        $grid->column('PDF', ' ')->display(function () {
+            $btn = new PDFProductBtn($this->id, self::TAG);
             return $btn->render();
         });
         if (Admin::user()->can('page-products-write')) {
