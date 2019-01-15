@@ -26,9 +26,9 @@ class PDFProductBtn
     {
         $content = '';
         if (self::STYLE_GRID_ACTION == $this->style) {
-            $content = '<a href="product_pdf/download/'.$this->cate.'/'.$this->id.'" target="_blank" class="btn btn-xs btn-default"><i class="fa fa-pdf"></i>&nbsp;&nbsp;PDF</a>';
+            $content = '<a href="product_pdf/download/'.$this->cate.'/'.$this->id.'" target="_blank" class="btn btn-xs btn-info"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</a>';
         } elseif (self::STYLE_DETAIL_TOOL == $this->style) {
-            $content = '<a href="product_pdf/download/'.$this->cate.'/'.$this->id.'" style="margin-right: 5px;"><i class="fa fa-pdf"></i>&nbsp;&nbsp;PDF</a>';
+            $content = '<a href="product_pdf/download/'.$this->cate.'/'.$this->id.'" style="margin-right: 5px;"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;PDF</a>';
         }
         return $content;
     }

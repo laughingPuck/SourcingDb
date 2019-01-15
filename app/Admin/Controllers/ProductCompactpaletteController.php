@@ -100,10 +100,6 @@ class ProductCompactpaletteController extends Controller
             $btn = new MailProductBtn($this->id);
             return $btn->render();
         });
-        $grid->column('PDF', ' ')->display(function () {
-            $btn = new PDFProductBtn($this->id, self::TAG);
-            return $btn->render();
-        });
         if (Admin::user()->can('page-products-write')) {
             $grid->column('Edit', ' ')->display(function () {
                 $btn = new EditProductBtn($this->id, self::TAG);
@@ -114,6 +110,12 @@ class ProductCompactpaletteController extends Controller
                 return $btn->render();
             });
         }
+
+        $grid->column('PDF', ' ')->display(function () {
+            $btn = new PDFProductBtn($this->id, self::TAG);
+            return $btn->render();
+        });
+
         $grid->column('', ' ')->display(function () {
             return '<p style="width: 20px;"></p>';
         });
