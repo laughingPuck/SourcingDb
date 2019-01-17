@@ -4,6 +4,7 @@ namespace App\Admin\Controllers;
 
 use App\Admin\Conf\Products;
 use App\Admin\Extensions\ProductExporter;
+use App\Admin\Widgets\Action\DocumentBtn;
 use App\Admin\Widgets\Action\EditProductBtn;
 use App\Admin\Widgets\Action\GalleryBtn;
 use App\Admin\Widgets\Action\MailProductBtn;
@@ -20,6 +21,7 @@ use Illuminate\Support\Facades\DB;
 use Encore\Admin\Auth\Permission;
 use Encore\Admin\Facades\Admin;
 use App\Admin\Widgets\Action\DeleteRowAction;
+use Illuminate\Support\MessageBag;
 
 class ProductCompactpaletteController extends Controller
 {
@@ -158,8 +160,22 @@ class ProductCompactpaletteController extends Controller
         $grid->related_projects('Related Projects')->width('120');
         $grid->moq('Moq')->width('50');
         $grid->price('Price')->width('50');
+
+        $grid->cover_image('Image')->display(function () {
+            $image = DB::table(Products::$productCateMap[self::TAG]['img_table'])->where('product_id', $this->id)->whereNull('deleted_at')->first();
+            if ($image) {
+                return "<img src='/{$image->url}' alt='{$image->title}' style='height: 80px;' />";
+            } else {
+                return '';
+            }
+        });
+
         $grid->images('Images')->display(function ($images) {
             $btn = new GalleryBtn(count($images), $this->id, self::TAG);
+            return $btn->render();
+        });
+        $grid->files('Files')->display(function ($files) {
+            $btn = new DocumentBtn(count($files), $this->id, self::TAG);
             return $btn->render();
         });
 
@@ -273,6 +289,40 @@ class ProductCompactpaletteController extends Controller
             $form->switch('state', 'Display')->value(1);
         });
 
+        $form->hasMany('files', function (Form\NestedForm $form) {
+            $form->file('url', 'File');
+            $form->text('title', 'Title');
+            $form->text('desc', 'Desc');
+            $form->switch('state', 'Display')->value(1);
+        });
+
+        $form->saving(function ($form){
+            if ($form->files) {
+                foreach ($form->files as $file) {
+                    if (isset($file['url']) && $file['url']->getClientMimeType() != 'application/pdf') {
+                        $error = new MessageBag([
+                            'title'   => 'save error',
+                            'message' => 'Only support PDF files.',
+                        ]);
+                        return back()->with(compact('error'));
+                    }
+                }
+            }
+        });
+
+//        $form->submitted(function ($form){
+//            var_dump($form->files);exit;
+//            foreach ($form->files as $file) {
+//                if (isset($file['url']->mimeType) && $file['url']->mimeType != 'application/pdf') {
+//                    $error = new MessageBag([
+//                        'title'   => 'save error',
+//                        'message' => 'Only support PDF files.',
+//                    ]);
+//                    return back()->with(compact('error'));
+//                }
+//            }
+//        });
+
         $form->display('created_at', 'Created At');
         $form->display('updated_at', 'Updated At');
 
@@ -285,13 +335,15 @@ class ProductCompactpaletteController extends Controller
         $show = new Show($productClass::findOrFail($id));
 
         $imagesNum = DB::table(Products::$productCateMap[self::TAG]['img_table'])->where('product_id', $id)->whereNull('deleted_at')->count();
+        $filesNum = DB::table(Products::$productCateMap[self::TAG]['file_table'])->where('product_id', $id)->whereNull('deleted_at')->count();
 
-        $show->panel()->tools(function (\Encore\Admin\Show\Tools $tools) use ($imagesNum, $id) {
+        $show->panel()->tools(function (\Encore\Admin\Show\Tools $tools) use ($imagesNum, $filesNum, $id) {
             if (!Admin::user()->can('page-products-write')) {
                 $tools->disableEdit();
                 $tools->disableDelete();
             }
             $tools->append(new GalleryBtn($imagesNum, $id, self::TAG, GalleryBtn::STYLE_DETAIL_TOOL));
+            $tools->append(new DocumentBtn($filesNum, $id, self::TAG, GalleryBtn::STYLE_DETAIL_TOOL));
             $tools->append(new MailProductBtn($id, MailProductBtn::STYLE_DETAIL_TOOL));
         });
 
