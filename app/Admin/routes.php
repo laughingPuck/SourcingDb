@@ -22,6 +22,7 @@ Route::group([
 
     /** others **/
     $router->get('/gallery/{cate}/{id}', 'ImageGalleryController@index');
+    $router->get('/document/{cate}/{id}', 'DocumentsController@index');
 
 //    $router->get('/product_attribute/{id}', 'ProductCategoryController@attributeEdit');
 
@@ -31,5 +32,6 @@ Route::group([
     $router->post('/import', 'ImportDataController@import');
 
     $router->get('/product_pdf/download/{cate}/{id}', 'ProductPDFController@download');
+    $router->get('/product_pdf/document/{cate}/{id}', 'ProductPDFController@document');
 
 });

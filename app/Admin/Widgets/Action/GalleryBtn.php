@@ -30,7 +30,11 @@ class GalleryBtn
             }
         } elseif (self::STYLE_DETAIL_TOOL == $this->style) {
             if ($this->imagesCount) {
-                $content = '<a href="/'.config('admin.route.prefix').'/gallery/'.$this->tag.'/'.$this->id.'" class="btn btn-sm btn-success" style="margin-right: 5px;"><i class="fa fa-image"></i>&emsp;'.$this->imagesCount.'&nbsp;images</a>';
+                $btnTxt = 'image';
+                if ($this->imagesCount > 1) {
+                    $btnTxt = 'images';
+                }
+                $content = '<a href="/'.config('admin.route.prefix').'/gallery/'.$this->tag.'/'.$this->id.'" class="btn btn-sm btn-success" style="margin-right: 5px;"><i class="fa fa-image"></i>&emsp;'.$this->imagesCount.'&nbsp;'.$btnTxt.'</a>';
             } else {
                 $content = '<button type="button" class="btn btn-sm btn-default" disabled="disabled" style="width: 100px;margin-right: 5px;"><i class="fa fa-image"></i>&emsp;No&nbsp;&nbsp;image</button>';
             }

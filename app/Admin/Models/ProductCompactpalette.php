@@ -15,4 +15,9 @@ class ProductCompactpalette extends Model
     {
         return $this->hasMany(ImageCompactpalette::class, 'product_id', 'id');
     }
+
+    public function files()
+    {
+        return $this->hasMany(FileCompactpalette::class, 'product_id', 'id');
+    }
 }

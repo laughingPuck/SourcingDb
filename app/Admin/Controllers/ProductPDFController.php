@@ -29,7 +29,7 @@ class ProductPDFController extends Controller
         $html .= "<br/><h1>Images:</h1><br/>";
         if ($images) {
             foreach ($images as $v) {
-                $html .= "<img src=\"http://sdb.networkexpert.net/{$v->url}\" width='200' style='max-height: 200px;' alt=\"{$v->title}\">";
+                $html .= "<img src=\"".env('APP_URL')."/{$v->url}\" width='200' style='max-height: 200px;' alt=\"{$v->title}\">";
             }
         } else {
             $html .= "no image";
@@ -38,5 +38,16 @@ class ProductPDFController extends Controller
         $html2pdf = new Html2Pdf();
         $html2pdf->writeHTML($html);
         $html2pdf->output('1.pdf', 'D');
+    }
+
+    public function document($cate, $id)
+    {
+        $file = DB::table(Products::$productCateMap[$cate]['file_table'])->where('id', $id)->whereNull('deleted_at')->first();
+        $url = env('APP_URL').'/'.$file->url;
+        $name = md5($file->title);
+        header('Content-type: application/pdf');
+        header('Content-Disposition: attachment; filename="' . $name . '"');
+        echo file_get_contents($url);
+        exit;
     }
 }
