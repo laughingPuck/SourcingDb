@@ -19,6 +19,8 @@ Route::group([
 //    $router->resource('/import', ImportDataController::class);
     /** product categories **/
     $router->resource('/product_categories', ProductCategoryController::class);
+    /** product email log **/
+    $router->resource('/product_email_logs', ProductEmailLogController::class);
 
     /** others **/
     $router->get('/gallery/{cate}/{id}', 'ImageGalleryController@index');

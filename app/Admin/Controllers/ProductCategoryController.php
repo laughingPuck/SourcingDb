@@ -19,6 +19,7 @@ class ProductCategoryController extends Controller
     {
         return $content
             ->header('Admin > Product Categories')
+            ->description(' ')
             ->body($this->grid()->render());
     }
 
