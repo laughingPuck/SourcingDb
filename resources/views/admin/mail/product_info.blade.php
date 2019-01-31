@@ -10,8 +10,8 @@
         <td class="header">Item</td>
         <td class="header">Value</td>
     </tr>
-    @if ($info[0])
-        @foreach ($info[0] as $k => $v)
+    @if ($info)
+        @foreach ($info as $k => $v)
             <tr>
                 <td class="item">{{ $k }}</td>
                 <td>{{ $v }}</td>
