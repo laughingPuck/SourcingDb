@@ -158,6 +158,14 @@ class ProductCompactpaletteController extends Controller
         $grid->related_projects('Related Projects')->width('120');
         $grid->moq('Moq')->width('50');
         $grid->price('Price')->width('50');
+        $grid->cover_image('Image')->display(function () {
+            $image = DB::table(Products::$productCateMap[self::TAG]['img_table'])->where('product_id', $this->id)->whereNull('deleted_at')->first();
+            if ($image) {
+                return "<img src='/{$image->url}' alt='{$image->title}' style='height: 80px;' />";
+            } else {
+                return '';
+            }
+        });
         $grid->images('Images')->display(function ($images) {
             $btn = new GalleryBtn(count($images), $this->id, self::TAG);
             return $btn->render();
