@@ -15,7 +15,7 @@ class ProductInfo extends Mailable
     public $cate;
     public $id;
 
-    public $infoExceptions = ['vendor_item', 'manufactory_name', 'price'];
+    public $infoExceptions = ['vendor_item', 'manufactory_name', 'price', 'created_at', 'updated_at', 'deleted_at', 'state'];
 
     public function __construct($cate, $id, $infoExceptions = [])
     {
