@@ -39,8 +39,8 @@ class Products
     ];
 
     public static $switchMap = [
-        'Yes' => 'Yes',
-        'No' => 'No',
-        'Not sure' => 'Not sure',
+        '1' => 'Yes',
+        '0' => 'No',
+        '-1' => 'Not sure',
     ];
 }
