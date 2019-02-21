@@ -232,7 +232,7 @@ class ProductCompactpaletteController extends Controller
                 $filter->like('vendor_item', 'Vendor#');
             }
             $filter->equal('shape', 'Shape')->select(self::$shapeMap);
-            $filter->equal('edges style', 'Edges Style')->select(self::$edgesStyleMap);
+            $filter->equal('edges_style', 'Edges Style')->select(self::$edgesStyleMap);
             $filter->equal('pan_well', 'Pan Well#')->select(self::$panWellMap);
             $filter->equal('material', 'Material')->select(self::$materialMap);
             $filter->between('pan_well_width', 'Pan Well Width');
