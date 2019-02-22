@@ -30,8 +30,15 @@ class ProductVialController extends Controller
     public static $productClassName = ProductVial::class;
 
     public static $materialMap = [
-        'Plastic' => 'Plastic',
-        'Alumium' => 'Alumium',
+        'AS' => 'AS',
+        'ABS' => 'ABS',
+        'PP' => 'PP',
+        'PETG' => 'PETG',
+        'PET' => 'PET',
+        'POM' => 'POM',
+        'SAN' => 'SAN',
+        'PMMA' => 'PMMA',
+        'Glass' => 'Glass',
         'Not sure' => 'Not sure',
     ];
     public static $shapeMap = [
@@ -50,6 +57,29 @@ class ProductVialController extends Controller
         'FLocking Plastic Applicator' => 'FLocking Plastic Applicator',
         'Non FLocking Plastic Applicator' => 'Non FLocking Plastic Applicator',
         'Other Applicator' => 'Other Applicator',
+        'Not sure' => 'Not sure',
+    ];
+    public static $edgesStyleMap = [
+        'Sharp' => 'Sharp',
+        'Soft' => 'Soft',
+        'Round' => 'Round',
+    ];
+    public static $colorMap = [
+        'Clear' => 'Clear',
+        'Opaque' => 'Opaque',
+        'Translucent' => 'Translucent',
+    ];
+    public static $wallStyleMap = [
+        'Thin' => 'Thin',
+        'Thick' => 'Thick',
+        'Double Wall' => 'Double Wall',
+        'Overmold' => 'Overmold',
+    ];
+    public static $closureMechanismMap = [
+        'Snap' => 'Snap',
+        'Magnetic' => 'Magnetic',
+        'Button' => 'Button',
+        'Others' => 'Others',
         'Not sure' => 'Not sure',
     ];
 
@@ -124,11 +154,27 @@ class ProductVialController extends Controller
         }
         $grid->item_description('Item Description')->width('120');
         $grid->cap_material('Cap Material')->width('120');
+        $grid->inner_cap_material('Inner Cap Material')->width('120');
+        $grid->collar_material('Collar Material')->width('120');
+        $grid->rod_material('Rod Material')->width('120');
+        $grid->available_applicator_options('Available Applicator Options')->width('180');
         $grid->base_material('Base Material')->width('120');
-        $grid->stem_material('Stem Material')->width('120');
         $grid->shape('Shape')->width('50');
+        $grid->edges_style('Edges Style')->display(function ($value) {
+            if (array_key_exists($value, self::$edgesStyleMap)) {
+                return self::$edgesStyleMap[$value];
+            }
+            return null;
+        })->width('80');
         $grid->vial('Vial#')->width('50');
-        $grid->ofc_vial('OFC/Vail')->width('80');
+        $grid->ofc('OFC(ml)')->width('50');
+        $grid->estimate_capacity('Estimate Capacity(ml)')->width('50');
+        $grid->color('Color')->display(function ($value) {
+            if (array_key_exists($value, self::$colorMap)) {
+                return self::$colorMap[$value];
+            }
+            return null;
+        })->width('80');
         $grid->applicator('Applicator')->width('80');
         $grid->thick_wall('Thick Wall')->display(function ($value) {
             if (array_key_exists($value, Products::$switchMap)) {
@@ -136,13 +182,20 @@ class ProductVialController extends Controller
             }
             return null;
         })->width('80');
-        $grid->overall_length('Overall Height')->width('120');
+        $grid->wall_style('Wall Style')->display(function ($value) {
+            if (array_key_exists($value, self::$wallStyleMap)) {
+                return self::$wallStyleMap[$value];
+            }
+            return null;
+        })->width('120');
+        $grid->closure_mechanism('Closure Mechanism')->display(function ($value) {
+            if (array_key_exists($value, self::$closureMechanismMap)) {
+                return self::$closureMechanismMap[$value];
+            }
+            return null;
+        })->width('120');
         $grid->overall_width('Overall Width')->width('120');
         $grid->overall_height('Overall Height')->width('120');
-        $grid->collar('Collar')->width('50');
-        $grid->storage_location('Storage Location')->width('120');
-        $grid->sample_available('Sample Available')->width('120');
-        $grid->related_projects('Related Projects')->width('120');
         $grid->moq('Moq')->width('50');
         $grid->price('Price')->width('50');
         $grid->mold_status('Mold Status')->width('80');
@@ -188,12 +241,9 @@ class ProductVialController extends Controller
             if (Admin::user()->can('page-sensitive-column')) {
                 $filter->like('vendor_item', 'Vendor#');
             }
-            $filter->equal('cap_material', 'Cap Material')->select(self::$materialMap);
-            $filter->equal('base_material', 'Base Material')->select(self::$materialMap);
-            $filter->equal('stem_material', 'Stem Material')->select(self::$materialMap);
             $filter->equal('shape', 'Shape')->select(self::$shapeMap);
             $filter->equal('vial', 'Vial#')->select(self::$vialMap);
-            $filter->between('ofc_vial', 'OFC/Vial');
+            $filter->equal('base_material', 'Base Material')->select(self::$materialMap);
             $filter->equal('applicator', 'Applicator')->select(self::$applicatorMap);
             $filter->equal('thick_wall', 'Thick Wall')->select(Products::$switchMap);
             $filter->where(function ($query) {
@@ -209,6 +259,7 @@ class ProductVialController extends Controller
                 '1' => 'Only with images',
                 '0' => 'Only without images',
             ]);
+            $filter->between('estimate_capacity', 'Estimate Capacity');
             $filter->between('overall_height', 'Overall Height');
             $filter->between('overall_width', 'Overall Width');
         });
@@ -236,21 +287,24 @@ class ProductVialController extends Controller
         $form->text('item_description', 'Item Description')->rules('required');
         $form->divider();
         $form->select('cap_material', 'Cap Material')->options(self::$materialMap)->rules('required')->setWidth(4);
+        $form->select('inner_cap_material', 'Inner Cap Material')->options(self::$materialMap)->rules('required')->setWidth(4);
+        $form->select('collar_material', 'Collar Material')->options(self::$materialMap)->rules('required')->setWidth(4);
+        $form->select('rod_material', 'Rod Material')->options(self::$materialMap)->rules('required')->setWidth(4);
         $form->select('base_material', 'Base Material')->options(self::$materialMap)->rules('required')->setWidth(4);
-        $form->select('stem_material', 'Stem Material')->options(self::$materialMap)->rules('required')->setWidth(4);
         $form->select('shape', 'Shape')->options(self::$shapeMap)->rules('required')->setWidth(4);
+        $form->select('edges_style', 'Edges Style')->options(self::$edgesStyleMap)->rules('required')->setWidth(4);
+        $form->select('color', 'Color')->options(self::$colorMap)->rules('required')->setWidth(4);
         $form->select('vial', 'Vial#')->options(self::$vialMap)->rules('required')->setWidth(4);
-        $form->text('ofc_vial', 'OFC/Vial')->rules('required')->setWidth(4);
         $form->select('applicator', 'Applicator')->options(self::$applicatorMap)->rules('required')->setWidth(4);
         $form->select('thick_wall', 'Thick Wall')->options(Products::$switchMap)->rules('required')->setWidth(4);
+        $form->select('wall_style', 'Wall Style')->options(self::$wallStyleMap)->rules('required')->setWidth(4);
+        $form->select('closure_mechanism', 'Closure Mechanism')->options(self::$closureMechanismMap)->rules('required')->setWidth(4);
         $form->divider();
-        $form->text('overall_length', 'Overall Length')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Length must be a number'])->setWidth(4);
+        $form->text('ofc', 'OFC(ml)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The OFC must be a number'])->setWidth(4);
+        $form->text('estimate_capacity', 'Estimate Capacity(ml)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Estimate Capacity must be a number'])->setWidth(4);
         $form->text('overall_width', 'Overall Width')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Width must be a number'])->setWidth(4);
         $form->text('overall_height', 'Overall Height')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Height must be a number'])->setWidth(4);
-        $form->text('collar', 'Collar')->rules('required');
-        $form->text('storage_location', 'Storage Location')->rules('required');
-        $form->text('sample_available', 'Sample Available')->rules('required');
-        $form->text('related_projects', 'Related Projects')->rules('required');
+        $form->text('available_applicator_options', 'Available Applicator Options')->rules('required');
         $form->text('moq', 'Moq')->rules('required');
         $form->text('price', 'Price')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Price must be a number'])->setWidth(4);
         $form->text('mold_status', 'Mold Status')->rules('required');
@@ -294,11 +348,29 @@ class ProductVialController extends Controller
         $show->item_description('Item Description');
         $show->divider();
         $show->cap_material('Cap Material');
+        $show->inner_cap_material('Inner Cap Material');
+        $show->collar_material('Collar Material');
+        $show->rod_material('Rod Material');
         $show->base_material('Base Material');
-        $show->stem_material('Stem Material');
         $show->shape('Shape');
+        $edgesStyle = self::$edgesStyleMap;
+        $show->edges_style('Edges Style')->as(function ($value) use ($edgesStyle) {
+            if (array_key_exists($value, $edgesStyle)) {
+                return $edgesStyle[$value];
+            }
+            return null;
+        });
+        $color = self::$colorMap;
+        $show->color('Color')->as(function ($value) use ($color) {
+            if (array_key_exists($value, $color)) {
+                return $color[$value];
+            }
+            return null;
+        });
         $show->vial('Vial#');
-        $show->ofc_vial('OFC/Vail');
+        $show->ofc('OFC(ml)');
+        $show->estimate_capacity('Estimate Capacity(ml)');
+        $show->available_applicator_options('Available Applicator Options');
         $show->applicator('Applicator');
         $switchMap = Products::$switchMap;
         $show->thick_wall('Thick Wall')->as(function ($value) use ($switchMap) {
@@ -307,14 +379,23 @@ class ProductVialController extends Controller
             }
             return null;
         });
+        $wallStyle = self::$wallStyleMap;
+        $show->wall_style('Wall Style')->as(function ($value) use ($wallStyle) {
+            if (array_key_exists($value, $wallStyle)) {
+                return $wallStyle[$value];
+            }
+            return null;
+        });
+        $closureMechanism = self::$closureMechanismMap;
+        $show->closure_mechanism('Closure Mechanism')->as(function ($value) use ($closureMechanism) {
+            if (array_key_exists($value, $closureMechanism)) {
+                return $closureMechanism[$value];
+            }
+            return null;
+        });
         $show->divider();
-        $show->overall_length('Overall Height');
         $show->overall_width('Overall Width');
         $show->overall_height('Overall Height');
-        $show->collar('Collar');
-        $show->storage_location('Storage Location');
-        $show->sample_available('Sample Available');
-        $show->related_projects('Related Projects');
         $show->moq('Moq');
         $show->price('Price');
         $show->mold_status('Mold Status');
