@@ -168,7 +168,7 @@ class ProductVialController extends Controller
         })->width('80');
         $grid->vial('Vial#')->width('50');
         $grid->ofc('OFC(ml)')->width('50');
-        $grid->estimate_capacity('Estimate Capacity(ml)')->width('50');
+        $grid->estimate_capacity('Estimate Capacity(ml)')->width('150');
         $grid->color('Color')->display(function ($value) {
             if (array_key_exists($value, self::$colorMap)) {
                 return self::$colorMap[$value];
