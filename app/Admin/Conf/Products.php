@@ -1,6 +1,7 @@
 <?php
 namespace App\Admin\Conf;
 
+use App\Admin\Models\ProductBottle;
 use App\Admin\Models\ProductCompactpalette;
 use App\Admin\Models\ProductStickwcup;
 use App\Admin\Models\ProductVial;
@@ -10,6 +11,7 @@ class Products
     const PRODUCT_STICK_WITH_CUP = 'stick_with_cup';
     const PRODUCT_VIAL = 'vial';
     const PRODUCT_COMPACT_PALETTE = 'compact_palette';
+    const PRODUCT_BOTTLE = 'bottle';
 
     public static $productCateMap = [
         self::PRODUCT_STICK_WITH_CUP => [
@@ -39,11 +41,19 @@ class Products
             'model' => ProductCompactpalette::class,
             'id' => 3
         ],
+        self::PRODUCT_BOTTLE => [
+            'display' => 'Bottle',
+            'img_table' => 'image_bottle',
+            'product_table' => 'product_bottle',
+            'uri' => 'bottle',
+            'model' => ProductBottle::class,
+            'id' => 4
+        ],
     ];
 
     public static $switchMap = [
-        'Yes' => 'Yes',
-        'No' => 'No',
-        'Not sure' => 'Not sure',
+        '1' => 'Yes',
+        '0' => 'No',
+        '-1' => 'Not sure',
     ];
 }

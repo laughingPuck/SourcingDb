@@ -40,15 +40,32 @@ class ProductCompactpaletteController extends Controller
         'Other' => 'Other',
         'Not sure' => 'Not sure',
     ];
+    public static $edgesStyleMap = [
+        'Soft Edges' => 'Soft Edges',
+        'Sharp Edges' => 'Sharp Edges',
+        'Not sure' => 'Not sure',
+    ];
     public static $panWellMap = [
         '1' => '1',
         '2+' => '2+',
         'Not sure' => 'Not sure',
     ];
-    public static $latchSystemMap = [
-        'Rasied Bump Fit' => 'Rasied Bump Fit',
-        'Latch Button' => 'Latch Button',
+    public static $materialMap = [
+        'AS' => 'AS',
+        'ABS' => 'ABS',
+        'PP' => 'PP',
+        'PETG' => 'PETG',
+        'PET' => 'PET',
+        'POM' => 'POM',
+        'SAN' => 'SAN',
+        'PMMA' => 'PMMA',
+        'Not sure' => 'Not sure',
+    ];
+    public static $closureMechanismMap = [
+        'Snap' => 'Snap',
         'Magnetic' => 'Magnetic',
+        'Button' => 'Button',
+        'Others' => 'Others',
         'Not sure' => 'Not sure',
     ];
 
@@ -128,8 +145,25 @@ class ProductCompactpaletteController extends Controller
             $grid->manufactory_name('Manufactory Name')->width('120');
         }
         $grid->item_description('Item Description')->width('120');
-        $grid->material('Material')->width('80');
+        $grid->material('Material')->display(function ($value) {
+            if (array_key_exists($value, self::$materialMap)) {
+                return self::$materialMap[$value];
+            }
+            return null;
+        })->width('80');
         $grid->shape('Shape')->width('50');
+        $grid->edges_style('Edges Style')->display(function ($value) {
+            if (array_key_exists($value, self::$edgesStyleMap)) {
+                return self::$edgesStyleMap[$value];
+            }
+            return null;
+        })->width('80');
+        $grid->closure_mechanism('Closure Mechanism')->display(function ($value) {
+            if (array_key_exists($value, self::$closureMechanismMap)) {
+                return self::$closureMechanismMap[$value];
+            }
+            return null;
+        })->width('120');
         $grid->pan_well('Pan Well#')->width('80');
         $grid->overall_length('Overall Height')->width('120');
         $grid->overall_width('Overall Width')->width('120');
@@ -155,19 +189,9 @@ class ProductCompactpaletteController extends Controller
             }
             return null;
         })->width('100');
-        $grid->latch_system('Latch System')->width('120');
-        $grid->injector_pin('Injector Pin')->display(function ($value) {
-            if (array_key_exists($value, Products::$switchMap)) {
-                return Products::$switchMap[$value];
-            }
-            return null;
-        })->width('80');
-        $grid->storage_location('Storage Location')->width('120');
-        $grid->sample_available('Sample Available')->width('120');
-        $grid->related_projects('Related Projects')->width('120');
         $grid->moq('Moq')->width('50');
         $grid->price('Price')->width('50');
-
+        $grid->mold_status('Mold Status')->width('80');
         $grid->cover_image('Image')->display(function () {
             $image = DB::table(Products::$productCateMap[self::TAG]['img_table'])->where('product_id', $this->id)->whereNull('deleted_at')->first();
             if ($image) {
@@ -176,7 +200,6 @@ class ProductCompactpaletteController extends Controller
                 return '';
             }
         });
-
         $grid->images('Images')->display(function ($images) {
             $btn = new GalleryBtn(count($images), $this->id, self::TAG);
             return $btn->render();
@@ -222,11 +245,14 @@ class ProductCompactpaletteController extends Controller
                 $filter->like('vendor_item', 'Vendor#');
             }
             $filter->equal('shape', 'Shape')->select(self::$shapeMap);
+            $filter->equal('edges_style', 'Edges Style')->select(self::$edgesStyleMap);
             $filter->equal('pan_well', 'Pan Well#')->select(self::$panWellMap);
+            $filter->equal('material', 'Material')->select(self::$materialMap);
             $filter->between('pan_well_width', 'Pan Well Width');
             $filter->equal('applicator_well', 'Applicator Well')->select(Products::$switchMap);
-            $filter->equal('latch_system', 'Latch System')->select(self::$latchSystemMap);
+            $filter->equal('closure_mechanism', 'Closure Mechanism')->select(self::$closureMechanismMap);
             $filter->equal('window', 'Window')->select(Products::$switchMap);
+            $filter->equal('mirror', 'Mirror')->select(Products::$switchMap);
             $filter->where(function ($query) {
                 switch ($this->input) {
                     case '1':
@@ -266,8 +292,9 @@ class ProductCompactpaletteController extends Controller
         $form->text('manufactory_name', 'Manufactory Name')->rules('required');
         $form->text('item_description', 'Item Description')->rules('required');
         $form->divider();
-        $form->text('material', 'Material')->rules('required');
+        $form->select('material', 'Material')->options(self::$materialMap)->rules('required')->setWidth(4);
         $form->select('shape', 'Shape')->options(self::$shapeMap)->rules('required')->setWidth(4);
+        $form->select('edges_style', 'Edges Style')->options(self::$edgesStyleMap)->rules('required')->setWidth(4);
         $form->select('pan_well', 'Pan Well#')->options(self::$panWellMap)->rules('required')->setWidth(4);
         $form->text('overall_length', 'Overall Length')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Length must be a number'])->setWidth(4);
         $form->text('overall_width', 'Overall Width')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Width must be a number'])->setWidth(4);
@@ -275,18 +302,15 @@ class ProductCompactpaletteController extends Controller
         $form->divider();
         $form->select('mirror', 'Mirror')->options(Products::$switchMap)->rules('required')->setWidth(4);
         $form->select('window', 'Window')->options(Products::$switchMap)->rules('required')->setWidth(4);
+        $form->select('closure_mechanism', 'Closure Mechanism')->options(self::$closureMechanismMap)->rules('required')->setWidth(4);
         $form->text('pan_well_shape', 'Pan Well Shape')->rules('required');
         $form->text('pan_well_width', 'Pan Well Width')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Pan Well Width must be a number'])->setWidth(4);
         $form->text('pan_well_height', 'Pan Well Height')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Pan Well Height must be a number'])->setWidth(4);
         $form->select('applicator_well', 'Applicator Well')->options(Products::$switchMap)->rules('required')->setWidth(4);
-        $form->text('latch_system', 'Latch System')->rules('required')->setWidth(4);
-        $form->select('injector_pin', 'Injector Pin')->options(Products::$switchMap)->rules('required')->setWidth(4);
         $form->divider();
-        $form->text('storage_location', 'Storage Location')->rules('required');
-        $form->text('sample_available', 'Sample Available')->rules('required');
-        $form->text('related_projects', 'Related Projects')->rules('required');
         $form->text('moq', 'Moq')->rules('required');
         $form->text('price', 'Price')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Price must be a number'])->setWidth(4);
+        $form->text('mold_status', 'Mold Status')->rules('required');
         $form->switch('state', 'Display')->value(1);
 
         $form->hasMany('images', function (Form\NestedForm $form) {
@@ -355,6 +379,8 @@ class ProductCompactpaletteController extends Controller
         });
 
         $switch = Products::$switchMap;
+        $edgesStyle = self::$edgesStyleMap;
+        $closureMechanism = self::$closureMechanismMap;
 
         $show->id('ID');
         $show->cosmopak_item('Cosmopak Item#');
@@ -366,6 +392,12 @@ class ProductCompactpaletteController extends Controller
         $show->divider();
         $show->material('Material');
         $show->shape('Shape');
+        $show->edges_style('Edges Style')->as(function ($value) use ($edgesStyle) {
+            if (array_key_exists($value, $edgesStyle)) {
+                return $edgesStyle[$value];
+            }
+            return null;
+        });
         $show->pan_well('Pan Well#');
         $show->divider();
         $show->overall_length('Overall Height');
@@ -383,6 +415,12 @@ class ProductCompactpaletteController extends Controller
             }
             return null;
         });
+        $show->closure_mechanism('Closure Mechanism')->as(function ($value) use ($closureMechanism) {
+            if (array_key_exists($value, $closureMechanism)) {
+                return $closureMechanism[$value];
+            }
+            return null;
+        });
         $show->pan_well_shape('Pan Well Shape');
         $show->pan_well_width('Pan Well Width');
         $show->pan_well_height('Pan Well Height');
@@ -392,18 +430,9 @@ class ProductCompactpaletteController extends Controller
             }
             return null;
         });
-        $show->latch_system('Latch System');
-        $show->injector_pin('Injector Pin')->as(function ($value) use ($switch) {
-            if (array_key_exists($value, $switch)) {
-                return $switch[$value];
-            }
-            return null;
-        });
-        $show->storage_location('Storage Location');
-        $show->sample_available('Sample Available');
-        $show->related_projects('Related Projects');
         $show->moq('Moq');
         $show->price('Price');
+        $show->mold_status('Mold Status');
         $show->state('State');
 
         $show->created_at('Created At');

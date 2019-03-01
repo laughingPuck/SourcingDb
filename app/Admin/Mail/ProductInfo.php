@@ -15,10 +15,13 @@ class ProductInfo extends Mailable
     public $cate;
     public $id;
 
-    public function __construct($cate, $id)
+    public $infoExceptions = ['vendor_item', 'manufactory_name', 'price', 'created_at', 'updated_at', 'deleted_at', 'state'];
+
+    public function __construct($cate, $id, $infoExceptions = [])
     {
         $this->cate = $cate;
         $this->id = $id;
+        $this->infoExceptions = array_merge($this->infoExceptions, $infoExceptions);
     }
 
     /**
@@ -36,9 +39,15 @@ class ProductInfo extends Mailable
             $info = DB::table($table)->where('id', $this->id)->get();
             $images = DB::table($imgTable)->where('product_id', $this->id)->whereNull('deleted_at')->get();
         }
+
+        $info = isset($info[0]) ? $info[0] : [];
+        foreach ($this->infoExceptions as $item) {
+            if (isset($info->$item)) unset($info->$item);
+        }
+
         $content = $this->view('admin.mail.product_info', ['info' => $info]);
-        foreach ($images as $image) {
-            $content = $content->attach(storage_path('app/admin').'/'.$image->url);
+        if (isset($images[0])) {
+            $content = $content->attach(storage_path('app/admin').'/'.$images[0]->url);
         }
         return $content;
     }

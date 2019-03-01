@@ -4,6 +4,7 @@ namespace App\Admin\Controllers;
 
 use App\Admin\Conf\Products;
 use App\Admin\Extensions\ProductExporter;
+use App\Admin\Models\ProductBottle;
 use App\Admin\Widgets\Action\EditProductBtn;
 use App\Admin\Widgets\Action\GalleryBtn;
 use App\Admin\Widgets\Action\MailProductBtn;
@@ -15,45 +16,79 @@ use App\Admin\Widgets\AdminContent;
 use Encore\Admin\Widgets\Box;
 use Encore\Admin\Grid;
 use Encore\Admin\Controllers\HasResourceActions;
-use App\Admin\Models\ProductStickwcup;
 use Illuminate\Support\Facades\DB;
 use App\Admin\Widgets\Action\DeleteRowAction;
 use Encore\Admin\Auth\Permission;
 use Encore\Admin\Facades\Admin;
 
-class ProductStickwcupController extends Controller
+class ProductBottleController extends Controller
 {
     use HasResourceActions;
 
-    const TAG = Products::PRODUCT_STICK_WITH_CUP;
+    const TAG = Products::PRODUCT_BOTTLE;
 
-    public static $productClassName = ProductStickwcup::class;
+    public static $productClassName = ProductBottle::class;
 
     public static $materialMap = [
-        'Plastic' => 'Plastic',
-        'Alumium' => 'Alumium',
+        'AS' => 'AS',
+        'ABS' => 'ABS',
+        'PP' => 'PP',
+        'PETG' => 'PETG',
+        'PET' => 'PET',
+        'POM' => 'POM',
+        'SAN' => 'SAN',
+        'PMMA' => 'PMMA',
+        'Glass' => 'Glass',
+        'Not sure' => 'Not sure',
     ];
     public static $shapeMap = [
-        'Round' => 'Round',
+        'Round/Cylindical' => 'Round/Cylindical',
         'Square' => 'Square',
-        'Oval' => 'Oval',
         'Other' => 'Other',
+        'Not sure' => 'Not sure',
     ];
-    public static $styleMap = [
-        'Twist' => 'Twist',
-        'Push up' => 'Push up',
-        'Deodorant' => 'Deodorant',
-    ];
-    public static $cupMap = [
-        'Cup#' => 'Cup#',
+    public static $chamberMap = [
         '1' => '1',
         '2+' => '2+',
         'Not sure' => 'Not sure',
     ];
-    public static $mechanismMap = [
-        'Repel' => 'Repel',
-        'Push up' => 'Push up',
-        'Repel/Propel' => 'Repel/Propel',
+    public static $applicatorMap = [
+        'Brush' => 'Brush',
+        'FLocking Plastic Applicator' => 'FLocking Plastic Applicator',
+        'Non FLocking Plastic Applicator' => 'Non FLocking Plastic Applicator',
+        'Other Applicator' => 'Other Applicator',
+        'Not sure' => 'Not sure',
+    ];
+    public static $edgesStyleMap = [
+        'Sharp' => 'Sharp',
+        'Soft' => 'Soft',
+        'Round' => 'Round',
+    ];
+    public static $colorMap = [
+        'Clear' => 'Clear',
+        'Opaque' => 'Opaque',
+        'Translucent' => 'Translucent',
+    ];
+    public static $wallStyleMap = [
+        'Thin' => 'Thin',
+        'Thick' => 'Thick',
+        'Double Wall' => 'Double Wall',
+        'Overmold' => 'Overmold',
+    ];
+    public static $closureMechanismMap = [
+        'Snap' => 'Snap',
+        'Magnetic' => 'Magnetic',
+        'Button' => 'Button',
+        'Others' => 'Others',
+        'Not sure' => 'Not sure',
+    ];
+    public static $actuatorMaterial = [
+        'Straw Pump' => 'Straw Pump',
+        'Airless Pump' => 'Airless Pump',
+        'Mist Spray' => 'Mist Spray',
+        'Foam Pump' => 'Foam Pump',
+        'Dropper' => 'Dropper',
+        'Screw Cap' => 'Screw Cap',
         'Other' => 'Other',
         'Not sure' => 'Not sure',
     ];
@@ -128,19 +163,21 @@ class ProductStickwcupController extends Controller
             $grid->manufactory_name('Manufactory Name')->width('120');
         }
         $grid->item_description('Item Description')->width('120');
-        $grid->material('Material')->width('80');
-        $grid->shape('Shape')->width('80');
-        $grid->style('Style')->width('80');
-        $grid->cup('Cup#')->width('80');
-        $grid->cup_size('Cup Size')->width('100');
-        $grid->cover_material('Cover Material')->width('120');
+        $grid->shape('Shape')->width('50');
+        $grid->chamber('Chamber')->width('50');
+        $grid->ofc('OFC(ml)')->width('50');
+        $grid->estimate_capacity('Estimate Capacity(ml)')->width('150');
+        $grid->color('Color')->width('80');
+        $grid->cap_material('Cap Material')->width('120');
+        $grid->liner_material('Liner Material')->width('120');
+        $grid->base_material('Base Material')->width('120');
+        $grid->collar_material('Collar Material')->width('120');
+        $grid->actuator_material('Actuator Material')->width('120');
+        $grid->wall_style('Wall Style')->width('120');
+        $grid->closure_mechanism('Closure Mechanism')->width('120');
         $grid->overall_length('Overall Length')->width('120');
-        $grid->overall_height('Overall Height')->width('120');
         $grid->overall_width('Overall Width')->width('120');
-        $grid->mechanism('Mechanism')->width('80');
-        $grid->storage_location('Storage Location')->width('120');
-        $grid->sample_available('Sample Available')->width('120');
-        $grid->related_projects('Related Projects')->width('120');
+        $grid->overall_height('Overall Height')->width('120');
         $grid->moq('Moq')->width('50');
         $grid->price('Price')->width('50');
         $grid->mold_status('Mold Status')->width('80');
@@ -157,22 +194,7 @@ class ProductStickwcupController extends Controller
             return $btn->render();
         })->width('80');
         $grid->created_at('Created At')->width('120');
-
         $grid->disableActions();
-//        $grid->actions(function (Grid\Displayers\Actions $actions) use ($productTag) {
-//            $actions->disableDelete();
-//            $actions->disableEdit();
-//            $actions->disableView();
-//            // append一个操作
-//            $id = $actions->getKey();
-//            $actions->append(new ViewRowAction($id, $productTag));
-//            $actions->append(new MailProductBtn($id));
-//            if (Admin::user()->can('page-products-write')) {
-//                $actions->append(new EditProductBtn($id, $productTag));
-//                $actions->append(new DeleteRowAction($id, $productTag));
-//            }
-//        });
-
         $grid->tools(function (Grid\Tools $tools) {
             $tools->batch(function (Grid\Tools\BatchActions $actions) {
                 $actions->disableDelete();
@@ -186,11 +208,10 @@ class ProductStickwcupController extends Controller
             if (Admin::user()->can('page-sensitive-column')) {
                 $filter->like('vendor_item', 'Vendor#');
             }
-            $filter->equal('material', 'Material')->select(self::$materialMap);
             $filter->equal('shape', 'Shape')->select(self::$shapeMap);
-            $filter->equal('style', 'Style')->select(self::$styleMap);
-            $filter->equal('cup', 'Cup#')->select(self::$cupMap);
-            $filter->equal('mechanism', 'Mechanism')->select(self::$mechanismMap);
+            $filter->equal('base_material', 'Base Material')->select(self::$materialMap);
+            $filter->equal('actuator_material', 'Actuator Material')->select(self::$actuatorMaterial);
+            $filter->equal('chamber', 'Chamber#')->select(self::$chamberMap);
             $filter->where(function ($query) {
                 switch ($this->input) {
                     case '1':
@@ -204,7 +225,7 @@ class ProductStickwcupController extends Controller
                 '1' => 'Only with images',
                 '0' => 'Only without images',
             ]);
-            $filter->between('overall_height', 'Overall Height');
+            $filter->between('estimate_capacity', 'Estimate Capacity');
             $filter->between('overall_width', 'Overall Width');
         });
 
@@ -230,20 +251,23 @@ class ProductStickwcupController extends Controller
         $form->text('manufactory_name', 'Manufactory Name')->rules('required');
         $form->text('item_description', 'Item Description')->rules('required');
         $form->divider();
-        $form->select('material', 'Material')->options(self::$materialMap)->rules('required')->setWidth(4);
         $form->select('shape', 'Shape')->options(self::$shapeMap)->rules('required')->setWidth(4);
-        $form->select('style', 'Style')->options(self::$styleMap)->rules('required')->setWidth(4);
-        $form->select('cup', 'Cup#')->options(self::$cupMap)->rules('required')->setWidth(4);
-        $form->text('cup_size', 'Cup Size')->rules('required|regex:/^\d+$/|max:1', ['regex' => 'The Cup Size must be a number'])->setWidth(4);
-        $form->text('cover_material', 'Cover Material')->rules('required');
+        $form->select('chamber', 'Chamber')->options(self::$chamberMap)->rules('required')->setWidth(4);
+        $form->select('color', 'Color')->options(self::$colorMap)->rules('required')->setWidth(4);
+        $form->select('cap_material', 'Cap Material')->options(self::$materialMap)->rules('required')->setWidth(4);
+        $form->select('liner_material', 'Liner Material')->options(self::$materialMap)->rules('required')->setWidth(4);
+        $form->select('base_material', 'Base Material')->options(self::$materialMap)->rules('required')->setWidth(4);
+        $form->select('collar_material', 'Collar Material')->options(self::$materialMap)->rules('required')->setWidth(4);
+        $form->select('actuator_material', 'Actuator Material')->options(self::$actuatorMaterial)->rules('required')->setWidth(4);
+        $form->select('wall_style', 'Wall Style')->options(self::$wallStyleMap)->rules('required')->setWidth(4);
+        $form->select('closure_mechanism', 'Closure Mechanism')->options(self::$closureMechanismMap)->rules('required')->setWidth(4);
         $form->divider();
+        $form->text('ofc', 'Ofc(ml)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Ofc Width must be a number'])->setWidth(4);
+        $form->text('estimate_capacity', 'Estimate Capacity')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Estimate Capacity Width must be a number'])->setWidth(4);
         $form->text('overall_length', 'Overall Length')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Length must be a number'])->setWidth(4);
         $form->text('overall_width', 'Overall Width')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Width must be a number'])->setWidth(4);
         $form->text('overall_height', 'Overall Height')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Height must be a number'])->setWidth(4);
-        $form->select('mechanism', 'Mechanism')->options(self::$mechanismMap)->rules('required')->setWidth(4);
-        $form->text('storage_location', 'Storage Location')->rules('required');
-        $form->text('sample_available', 'Sample Available')->rules('required');
-        $form->text('related_projects', 'Related Projects')->rules('required');
+        $form->divider();
         $form->text('moq', 'Moq')->rules('required');
         $form->text('price', 'Price')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Price must be a number'])->setWidth(4);
         $form->text('mold_status', 'Mold Status')->rules('required');
@@ -286,20 +310,22 @@ class ProductStickwcupController extends Controller
         }
         $show->item_description('Item Description');
         $show->divider();
-        $show->material('Material');
         $show->shape('Shape');
-        $show->style('Style');
-        $show->cup('Cup#');
-        $show->cup_size('Cup Size');
-        $show->cover_material('Cover Material');
-        $show->divider();
-        $show->overall_length('Overall Height');
+        $show->chamber('Chamber');
+        $show->ofc('OFC(ml)');
+        $show->estimate_capacity('Estimate Capacity');
+        $show->color('Color');
+        $show->cap_material('Cap Material');
+        $show->liner_material('Liner Material');
+        $show->base_material('Base Material');
+        $show->collar_material('Collar Material');
+        $show->actuator_material('Actuator Material');
+        $show->wall_style('Wall Style');
+        $show->closure_mechanism('Closure Mechanism');
+        $show->overall_length('Overall Length');
         $show->overall_width('Overall Width');
         $show->overall_height('Overall Height');
-        $show->mechanism('Mechanism');
-        $show->storage_location('Storage Location');
-        $show->sample_available('Sample Available');
-        $show->related_projects('Related Projects');
+        $show->divider();
         $show->moq('Moq');
         $show->price('Price');
         $show->mold_status('Mold Status');

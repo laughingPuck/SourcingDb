@@ -10,6 +10,8 @@ use Encore\Admin\Grid;
 use Illuminate\Support\Facades\Mail;
 use App\Admin\Conf\Products;
 use Illuminate\Http\Request;
+use Encore\Admin\Facades\Admin;
+use App\Admin\Models\ProductEmailLog;
 
 class SendMailController extends Controller
 {
@@ -19,15 +21,27 @@ class SendMailController extends Controller
         $id = $request->id;
         $address = $request->address;
 
+        if (!preg_match('/^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/', $address)) {
+            $this->ajaxRes(-1, 'Wrong email address');
+        }
 //        if ('747591224@qq.com' != $address) {
 //            $this->ajaxRes(-1, 'Wrong Email Address');
 //        }
-
+//        print_r(Admin::user()->username);exit;
         if (!array_key_exists($cate, Products::$productCateMap)) {
             $this->ajaxRes(-1, 'No such product');
         } else {
             $content = 'Test email.';
             $toMail = $address;
+
+            // log
+            $log = new ProductEmailLog();
+            $log->user_id = Admin::user()->id;
+            $log->username = Admin::user()->username;
+            $log->product_id = $id;
+            $log->product_cate = $cate;
+            $log->to_email = $address;
+            $log->save();
 
             Mail::to($address)->send(new ProductInfo($cate, $id));
 
