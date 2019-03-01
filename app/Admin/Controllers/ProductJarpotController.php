@@ -4,7 +4,7 @@ namespace App\Admin\Controllers;
 
 use App\Admin\Conf\Products;
 use App\Admin\Extensions\ProductExporter;
-use App\Admin\Models\ProductBottle;
+use App\Admin\Models\ProductJarpot;
 use App\Admin\Widgets\Action\EditProductBtn;
 use App\Admin\Widgets\Action\GalleryBtn;
 use App\Admin\Widgets\Action\MailProductBtn;
@@ -21,13 +21,13 @@ use App\Admin\Widgets\Action\DeleteRowAction;
 use Encore\Admin\Auth\Permission;
 use Encore\Admin\Facades\Admin;
 
-class ProductBottleController extends Controller
+class ProductJarpotController extends Controller
 {
     use HasResourceActions;
 
-    const TAG = Products::PRODUCT_BOTTLE;
+    const TAG = Products::PRODUCT_JAR_POT;
 
-    public static $productClassName = ProductBottle::class;
+    public static $productClassName = ProductJarpot::class;
 
     public static $materialMap = [
         'AS' => 'AS',
@@ -42,7 +42,7 @@ class ProductBottleController extends Controller
         'Not sure' => 'Not sure',
     ];
     public static $shapeMap = [
-        'Round/Cylindical' => 'Round/Cylindical',
+        'Round' => 'Round',
         'Square' => 'Square',
         'Other' => 'Other',
         'Not sure' => 'Not sure',
@@ -51,18 +51,6 @@ class ProductBottleController extends Controller
         '1' => '1',
         '2+' => '2+',
         'Not sure' => 'Not sure',
-    ];
-    public static $applicatorMap = [
-        'Brush' => 'Brush',
-        'FLocking Plastic Applicator' => 'FLocking Plastic Applicator',
-        'Non FLocking Plastic Applicator' => 'Non FLocking Plastic Applicator',
-        'Other Applicator' => 'Other Applicator',
-        'Not sure' => 'Not sure',
-    ];
-    public static $edgesStyleMap = [
-        'Sharp' => 'Sharp',
-        'Soft' => 'Soft',
-        'Round' => 'Round',
     ];
     public static $colorMap = [
         'Clear' => 'Clear',
@@ -80,16 +68,6 @@ class ProductBottleController extends Controller
         'Magnetic' => 'Magnetic',
         'Button' => 'Button',
         'Others' => 'Others',
-        'Not sure' => 'Not sure',
-    ];
-    public static $actuatorMaterial = [
-        'Straw Pump' => 'Straw Pump',
-        'Airless Pump' => 'Airless Pump',
-        'Mist Spray' => 'Mist Spray',
-        'Foam Pump' => 'Foam Pump',
-        'Dropper' => 'Dropper',
-        'Screw Cap' => 'Screw Cap',
-        'Other' => 'Other',
         'Not sure' => 'Not sure',
     ];
 
@@ -163,6 +141,7 @@ class ProductBottleController extends Controller
             $grid->manufactory_name('Manufactory Name')->width('120');
         }
         $grid->item_description('Item Description')->width('120');
+
         $grid->shape('Shape')->width('50');
         $grid->chamber('Chamber')->width('50');
         $grid->ofc('OFC(ml)')->width('50');
@@ -171,8 +150,13 @@ class ProductBottleController extends Controller
         $grid->cap_material('Cap Material')->width('120');
         $grid->liner_material('Liner Material')->width('120');
         $grid->base_material('Base Material')->width('120');
-        $grid->collar_material('Collar Material')->width('120');
-        $grid->actuator_material('Actuator Material')->width('120');
+        $grid->cover_disc('Cover Disc')->display(function ($value) {
+            if (array_key_exists($value, Products::$switchMap)) {
+                return Products::$switchMap[$value];
+            }
+            return null;
+        })->width('80');
+        $grid->stifter_material('Stifter Material')->width('120');
         $grid->wall_style('Wall Style')->width('120');
         $grid->closure_mechanism('Closure Mechanism')->width('120');
         $grid->overall_length('Overall Length')->width('120');
@@ -210,8 +194,9 @@ class ProductBottleController extends Controller
             }
             $filter->equal('shape', 'Shape')->select(self::$shapeMap);
             $filter->equal('base_material', 'Base Material')->select(self::$materialMap);
-            $filter->equal('actuator_material', 'Actuator Material')->select(self::$actuatorMaterial);
+            $filter->equal('cover_disc', 'Cover Disc')->select(Products::$switchMap);
             $filter->equal('chamber', 'Chamber#')->select(self::$chamberMap);
+            $filter->equal('wall_style', 'Wall Style')->select(self::$wallStyleMap);
             $filter->where(function ($query) {
                 switch ($this->input) {
                     case '1':
@@ -257,8 +242,8 @@ class ProductBottleController extends Controller
         $form->select('cap_material', 'Cap Material')->options(self::$materialMap)->rules('required')->setWidth(4);
         $form->select('liner_material', 'Liner Material')->options(self::$materialMap)->rules('required')->setWidth(4);
         $form->select('base_material', 'Base Material')->options(self::$materialMap)->rules('required')->setWidth(4);
-        $form->select('collar_material', 'Collar Material')->options(self::$materialMap)->rules('required')->setWidth(4);
-        $form->select('actuator_material', 'Actuator Material')->options(self::$actuatorMaterial)->rules('required')->setWidth(4);
+        $form->select('cover_disc', 'Cover Disc')->options(Products::$switchMap)->rules('required')->setWidth(4);
+        $form->select('stifter_material', 'Stifter Material')->options(self::$materialMap)->rules('required')->setWidth(4);
         $form->select('wall_style', 'Wall Style')->options(self::$wallStyleMap)->rules('required')->setWidth(4);
         $form->select('closure_mechanism', 'Closure Mechanism')->options(self::$closureMechanismMap)->rules('required')->setWidth(4);
         $form->divider();
@@ -318,8 +303,14 @@ class ProductBottleController extends Controller
         $show->cap_material('Cap Material');
         $show->liner_material('Liner Material');
         $show->base_material('Base Material');
-        $show->collar_material('Collar Material');
-        $show->actuator_material('Actuator Material');
+        $switchMap = Products::$switchMap;
+        $show->cover_disc('Cover Disc')->as(function ($value) use ($switchMap) {
+            if (array_key_exists($value, $switchMap)) {
+                return $switchMap[$value];
+            }
+            return null;
+        });
+        $show->stifter_material('Stifter Material');
         $show->wall_style('Wall Style');
         $show->closure_mechanism('Closure Mechanism');
         $show->overall_length('Overall Length');

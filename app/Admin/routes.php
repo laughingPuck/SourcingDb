@@ -16,6 +16,7 @@ Route::group([
     $router->resource('/vial', ProductVialController::class);
     $router->resource('/compact_palette', ProductCompactpaletteController::class);
     $router->resource('/bottle', ProductBottleController::class);
+    $router->resource('/jar_pot', ProductJarpotController::class);
 //    $router->resource('/import', ImportDataController::class);
     /** product categories **/
     $router->resource('/product_categories', ProductCategoryController::class);
