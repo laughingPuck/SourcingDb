@@ -9,7 +9,6 @@ Route::group([
     'namespace'     => config('admin.route.namespace'),
     'middleware'    => config('admin.route.middleware'),
 ], function (Router $router) {
-
     /** home page **/
     $router->get('/', 'HomeController@index');
     /** products **/
