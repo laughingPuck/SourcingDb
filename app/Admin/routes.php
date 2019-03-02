@@ -19,6 +19,9 @@ Route::group([
     $router->resource('/jar_pot', ProductJarpotController::class);
     $router->resource('/stick', ProductStickController::class);
     $router->resource('/brush', ProductBrushController::class);
+    $router->resource('/liquid_pen', ProductLiquidpenController::class);
+    $router->resource('/pencil', ProductPencilController::class);
+    $router->resource('/tube', ProductTubeController::class);
 //    $router->resource('/import', ImportDataController::class);
     /** product categories **/
     $router->resource('/product_categories', ProductCategoryController::class);
