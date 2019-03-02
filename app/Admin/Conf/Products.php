@@ -9,6 +9,7 @@ use App\Admin\Models\ProductLiquidpen;
 use App\Admin\Models\ProductPencil;
 use App\Admin\Models\ProductStick;
 use App\Admin\Models\ProductStickwcup;
+use App\Admin\Models\ProductTube;
 use App\Admin\Models\ProductVial;
 
 class Products
@@ -99,6 +100,14 @@ class Products
             'uri' => 'pencil',
             'model' => ProductPencil::class,
             'id' => 9
+        ],
+        self::PRODUCT_TUBE => [
+            'display' => 'Tube',
+            'img_table' => 'image_tube',
+            'product_table' => 'product_tube',
+            'uri' => 'tube',
+            'model' => ProductTube::class,
+            'id' => 10
         ],
     ];
 
