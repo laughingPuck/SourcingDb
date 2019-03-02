@@ -2,6 +2,7 @@
 namespace App\Admin\Conf;
 
 use App\Admin\Models\ProductBottle;
+use App\Admin\Models\ProductBrush;
 use App\Admin\Models\ProductCompactpalette;
 use App\Admin\Models\ProductJarpot;
 use App\Admin\Models\ProductStick;
@@ -16,6 +17,7 @@ class Products
     const PRODUCT_BOTTLE = 'bottle';
     const PRODUCT_JAR_POT = 'jar_pot';
     const PRODUCT_STICK = 'stick';
+    const PRODUCT_BRUSH = 'brush';
 
     public static $productCateMap = [
         self::PRODUCT_STICK_WITH_CUP => [
@@ -68,6 +70,14 @@ class Products
             'uri' => 'stick',
             'model' => ProductStick::class,
             'id' => 6
+        ],
+        self::PRODUCT_BRUSH => [
+            'display' => 'Brush',
+            'img_table' => 'image_brush',
+            'product_table' => 'product_brush',
+            'uri' => 'brush',
+            'model' => ProductBrush::class,
+            'id' => 7
         ],
     ];
 
