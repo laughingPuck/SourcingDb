@@ -6,6 +6,7 @@ use App\Admin\Models\ProductBrush;
 use App\Admin\Models\ProductCompactpalette;
 use App\Admin\Models\ProductJarpot;
 use App\Admin\Models\ProductLiquidpen;
+use App\Admin\Models\ProductPencil;
 use App\Admin\Models\ProductStick;
 use App\Admin\Models\ProductStickwcup;
 use App\Admin\Models\ProductVial;
@@ -20,6 +21,8 @@ class Products
     const PRODUCT_STICK = 'stick';
     const PRODUCT_BRUSH = 'brush';
     const PRODUCT_LIQUID_PEN = 'liquid_pen';
+    const PRODUCT_PENCIL = 'pencil';
+    const PRODUCT_TUBE = 'tube';
 
     public static $productCateMap = [
         self::PRODUCT_STICK_WITH_CUP => [
@@ -87,7 +90,15 @@ class Products
             'product_table' => 'product_liquidpen',
             'uri' => 'liquid_pen',
             'model' => ProductLiquidpen::class,
-            'id' => 7
+            'id' => 8
+        ],
+        self::PRODUCT_PENCIL => [
+            'display' => 'Pencil',
+            'img_table' => 'image_pencil',
+            'product_table' => 'product_pencil',
+            'uri' => 'pencil',
+            'model' => ProductPencil::class,
+            'id' => 9
         ],
     ];
 
