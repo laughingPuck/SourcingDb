@@ -227,6 +227,9 @@ class ProductStickController extends Controller
             $exceptField = ['vendor_item', 'manufactory_name'];
             $grid->disableCreateButton();
         }
+        if (Admin::user()->username != 'admin') {
+            $grid->disableExport();
+        }
         $grid->exporter(new ProductExporter($grid, self::TAG, $exceptField));
 
         return $grid;
