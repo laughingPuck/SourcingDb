@@ -24,6 +24,7 @@ class Products
     const PRODUCT_LIQUID_PEN = 'liquid_pen';
     const PRODUCT_PENCIL = 'pencil';
     const PRODUCT_TUBE = 'tube';
+    const PRODUCT_OTHER = 'other';
 
     public static $productCateMap = [
         self::PRODUCT_STICK_WITH_CUP => [
@@ -109,6 +110,14 @@ class Products
             'model' => ProductTube::class,
             'id' => 10
         ],
+        self::PRODUCT_OTHER => [
+            'display' => 'Other',
+            'img_table' => 'image_other',
+            'product_table' => 'product_other',
+            'uri' => 'other',
+            'model' => ProductTube::class,
+            'id' => 11
+        ]
     ];
 
     public static $switchMap = [

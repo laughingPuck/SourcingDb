@@ -22,6 +22,7 @@ Route::group([
     $router->resource('/liquid_pen', ProductLiquidpenController::class);
     $router->resource('/pencil', ProductPencilController::class);
     $router->resource('/tube', ProductTubeController::class);
+    $router->resource('/other', ProductOtherController::class);
 //    $router->resource('/import', ImportDataController::class);
     /** product categories **/
     $router->resource('/product_categories', ProductCategoryController::class);
