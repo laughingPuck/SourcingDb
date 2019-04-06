@@ -15,4 +15,9 @@ class ProductVial extends Model
     {
         return $this->hasMany(ImageVial::class, 'product_id', 'id');
     }
+
+    public function files()
+    {
+        return $this->hasMany(FileVial::class, 'product_id', 'id');
+    }
 }

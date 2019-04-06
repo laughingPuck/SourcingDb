@@ -15,4 +15,9 @@ class ProductLiquidpen extends Model
     {
         return $this->hasMany(ImageLiquidpen::class, 'product_id', 'id');
     }
+
+    public function files()
+    {
+        return $this->hasMany(FileLiquidpen::class, 'product_id', 'id');
+    }
 }

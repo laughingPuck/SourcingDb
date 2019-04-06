@@ -130,10 +130,10 @@ class ProductCompactpaletteController extends Controller
             });
         }
 
-//        $grid->column('PDF', ' ')->display(function () {
-//            $btn = new PDFProductBtn($this->id, self::TAG);
-//            return $btn->render();
-//        });
+        $grid->column('PDF', ' ')->display(function () {
+            $btn = new PDFProductBtn($this->id, self::TAG);
+            return $btn->render();
+        });
 
         $grid->column('', ' ')->display(function () {
             return '<p style="width: 20px;"></p>';
@@ -204,10 +204,10 @@ class ProductCompactpaletteController extends Controller
             $btn = new GalleryBtn(count($images), $this->id, self::TAG);
             return $btn->render();
         });
-//        $grid->files('Files')->display(function ($files) {
-//            $btn = new DocumentBtn(count($files), $this->id, self::TAG);
-//            return $btn->render();
-//        });
+        $grid->files('Files')->display(function ($files) {
+            $btn = new DocumentBtn(count($files), $this->id, self::TAG);
+            return $btn->render();
+        });
 
 //        $grid->state('Display')->display(function ($type) {
 //            return $type ? 'on' : 'off';
@@ -377,7 +377,7 @@ class ProductCompactpaletteController extends Controller
                 $tools->disableDelete();
             }
             $tools->append(new GalleryBtn($imagesNum, $id, self::TAG, GalleryBtn::STYLE_DETAIL_TOOL));
-//            $tools->append(new DocumentBtn($filesNum, $id, self::TAG, GalleryBtn::STYLE_DETAIL_TOOL));
+            $tools->append(new DocumentBtn($filesNum, $id, self::TAG, GalleryBtn::STYLE_DETAIL_TOOL));
             $tools->append(new MailProductBtn($id, MailProductBtn::STYLE_DETAIL_TOOL));
         });
 

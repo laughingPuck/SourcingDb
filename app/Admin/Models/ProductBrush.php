@@ -15,4 +15,9 @@ class ProductBrush extends Model
     {
         return $this->hasMany(ImageBrush::class, 'product_id', 'id');
     }
+
+    public function files()
+    {
+        return $this->hasMany(FileBrush::class, 'product_id', 'id');
+    }
 }

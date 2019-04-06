@@ -15,4 +15,9 @@ class ProductJarpot extends Model
     {
         return $this->hasMany(ImageJarpot::class, 'product_id', 'id');
     }
+
+    public function files()
+    {
+        return $this->hasMany(FileJarpot::class, 'product_id', 'id');
+    }
 }

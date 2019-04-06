@@ -15,4 +15,9 @@ class ProductOther extends Model
     {
         return $this->hasMany(ImageOther::class, 'product_id', 'id');
     }
+
+    public function files()
+    {
+        return $this->hasMany(FileOther::class, 'product_id', 'id');
+    }
 }

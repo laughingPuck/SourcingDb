@@ -15,4 +15,9 @@ class ProductBottle extends Model
     {
         return $this->hasMany(ImageBottle::class, 'product_id', 'id');
     }
+
+    public function files()
+    {
+        return $this->hasMany(FileBottle::class, 'product_id', 'id');
+    }
 }

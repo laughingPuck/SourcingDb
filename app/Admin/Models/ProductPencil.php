@@ -15,4 +15,9 @@ class ProductPencil extends Model
     {
         return $this->hasMany(ImagePencil::class, 'product_id', 'id');
     }
+
+    public function files()
+    {
+        return $this->hasMany(FilePencil::class, 'product_id', 'id');
+    }
 }

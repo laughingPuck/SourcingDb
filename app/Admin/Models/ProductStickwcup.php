@@ -15,4 +15,9 @@ class ProductStickwcup extends Model
     {
         return $this->hasMany(ImageStickwcup::class, 'product_id', 'id');
     }
+
+    public function files()
+    {
+        return $this->hasMany(FileStickwcup::class, 'product_id', 'id');
+    }
 }

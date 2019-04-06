@@ -15,4 +15,9 @@ class ProductStick extends Model
     {
         return $this->hasMany(ImageStick::class, 'product_id', 'id');
     }
+
+    public function files()
+    {
+        return $this->hasMany(FileStick::class, 'product_id', 'id');
+    }
 }

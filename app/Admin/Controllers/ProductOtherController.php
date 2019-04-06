@@ -5,9 +5,11 @@ namespace App\Admin\Controllers;
 use App\Admin\Conf\Products;
 use App\Admin\Extensions\ProductExporter;
 use App\Admin\Models\ProductOther;
+use App\Admin\Widgets\Action\DocumentBtn;
 use App\Admin\Widgets\Action\EditProductBtn;
 use App\Admin\Widgets\Action\GalleryBtn;
 use App\Admin\Widgets\Action\MailProductBtn;
+use App\Admin\Widgets\Action\PDFProductBtn;
 use App\Admin\Widgets\Action\ViewRowAction;
 use App\Http\Controllers\Controller;
 use Encore\Admin\Form;
@@ -89,6 +91,12 @@ class ProductOtherController extends Controller
                 return $btn->render();
             });
         }
+
+        $grid->column('PDF', ' ')->display(function () {
+            $btn = new PDFProductBtn($this->id, self::TAG);
+            return $btn->render();
+        });
+
         $grid->column('', ' ')->display(function () {
             return '<p style="width: 20px;"></p>';
         });
@@ -115,6 +123,10 @@ class ProductOtherController extends Controller
             $btn = new GalleryBtn(count($images), $this->id, self::TAG);
             return $btn->render();
         })->width('80');
+        $grid->files('Files')->display(function ($files) {
+            $btn = new DocumentBtn(count($files), $this->id, self::TAG);
+            return $btn->render();
+        });
         $grid->created_at('Created At')->width('120');
         $grid->disableActions();
         $grid->tools(function (Grid\Tools $tools) {
@@ -172,13 +184,15 @@ class ProductOtherController extends Controller
         $show = new Show($productClass::findOrFail($id));
 
         $imagesNum = DB::table(Products::$productCateMap[self::TAG]['img_table'])->where('product_id', $id)->whereNull('deleted_at')->count();
+        $filesNum = DB::table(Products::$productCateMap[self::TAG]['file_table'])->where('product_id', $id)->whereNull('deleted_at')->count();
 
-        $show->panel()->tools(function (\Encore\Admin\Show\Tools $tools) use ($imagesNum, $id) {
+        $show->panel()->tools(function (\Encore\Admin\Show\Tools $tools) use ($imagesNum, $filesNum, $id) {
             if (!Admin::user()->can('page-products-write')) {
                 $tools->disableEdit();
                 $tools->disableDelete();
             }
             $tools->append(new GalleryBtn($imagesNum, $id, self::TAG, GalleryBtn::STYLE_DETAIL_TOOL));
+            $tools->append(new DocumentBtn($filesNum, $id, self::TAG, GalleryBtn::STYLE_DETAIL_TOOL));
             $tools->append(new MailProductBtn($id, MailProductBtn::STYLE_DETAIL_TOOL));
         });
 

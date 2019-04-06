@@ -15,4 +15,9 @@ class ProductTube extends Model
     {
         return $this->hasMany(ImageTube::class, 'product_id', 'id');
     }
+
+    public function files()
+    {
+        return $this->hasMany(FileTube::class, 'product_id', 'id');
+    }
 }
