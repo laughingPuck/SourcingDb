@@ -131,10 +131,10 @@ class ProductLiquidpenController extends Controller
             });
         }
 
-        $grid->column('PDF', ' ')->display(function () {
-            $btn = new PDFProductBtn($this->id, self::TAG);
-            return $btn->render();
-        });
+//        $grid->column('PDF', ' ')->display(function () {
+//            $btn = new PDFProductBtn($this->id, self::TAG);
+//            return $btn->render();
+//        });
 
         $grid->column('', ' ')->display(function () {
             return '<p style="width: 20px;"></p>';
@@ -268,6 +268,13 @@ class ProductLiquidpenController extends Controller
 
         $form->hasMany('images', function (Form\NestedForm $form) {
             $form->image('url', 'Image');
+            $form->text('title', 'Title');
+            $form->text('desc', 'Desc');
+            $form->switch('state', 'Display')->value(1);
+        });
+
+        $form->hasMany('files', function (Form\NestedForm $form) {
+            $form->file('url', 'File');
             $form->text('title', 'Title');
             $form->text('desc', 'Desc');
             $form->switch('state', 'Display')->value(1);
