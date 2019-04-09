@@ -5,11 +5,11 @@ namespace App\Admin\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class FileJarpot extends Model
+class FileBottle extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'file_jarpot';
+    protected $table = 'file_bottle';
 
     protected $fillable = ['title', 'desc', 'url', 'state'];
 }
