@@ -25,7 +25,7 @@
                 @endif
                 <i class="fa fa-angle-left pull-right"></i>
             </a>
-            <ul class="treeview-menu">
+            <ul class="treeview-menu {{ $item['title'] == 'Products' ? 'menu-open' : '' }}" <?php echo $item['title'] == 'Products' ? 'style="display: block;"' : '' ?>>
                 @foreach($item['children'] as $item)
                     @include('admin::partials.menu', $item)
                 @endforeach
