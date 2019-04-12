@@ -15,7 +15,7 @@
             </a>
         </li>
     @else
-        <li class="treeview">
+        <li class="treeview {{ $item['title'] == 'Products' ? 'active' : '' }}">
             <a href="#">
                 <i class="fa {{ $item['icon'] }}"></i>
                 @if (Lang::has($titleTranslation = 'admin.menu_titles.' . trim(str_replace(' ', '_', strtolower($item['title'])))))
