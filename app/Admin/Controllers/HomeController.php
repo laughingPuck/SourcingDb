@@ -13,11 +13,11 @@ class HomeController extends Controller
     {
         $images = DB::table('product_categories')->whereNull('deleted_at')->get();
 
-        foreach ($images as $k => $image) {
-            if (!Admin::user()->can('page-index-all-products') && $image->id >= 4) {
-                unset($images[$k]);
-            }
-        }
+//        foreach ($images as $k => $image) {
+//            if (!Admin::user()->can('page-index-all-products') && $image->id >= 4) {
+//                unset($images[$k]);
+//            }
+//        }
 
         return $content
             ->header('Home')
