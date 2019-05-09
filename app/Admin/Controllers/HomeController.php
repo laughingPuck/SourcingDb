@@ -11,7 +11,7 @@ class HomeController extends Controller
 {
     public function index(Content $content)
     {
-        $images = DB::table('product_categories')->whereNull('deleted_at')->get();
+        $images = DB::table('product_categories')->whereNull('deleted_at')->orderBy('sort')->get();
 
 //        foreach ($images as $k => $image) {
 //            if (!Admin::user()->can('page-index-all-products') && $image->id >= 4) {

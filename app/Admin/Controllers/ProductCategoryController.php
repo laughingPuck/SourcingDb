@@ -65,6 +65,7 @@ class ProductCategoryController extends Controller
         });
         $grid->cate_name('Category Name');
         $grid->link('Link');
+        $grid->sort('Sort');
         $grid->created_at('Created At');
 
         $grid->actions(function (Grid\Displayers\Actions $actions) {
@@ -99,6 +100,7 @@ class ProductCategoryController extends Controller
         $form->image('cover_image', 'Cover Image');
 //        $form->cropper('cover_image','Cover Image')->cRatio(300, 200);
         $form->text('link', 'Link');
+        $form->number('sort', 'Sort');
 
         $form->display('created_at', 'Created At');
         $form->display('updated_at', 'Updated At');
@@ -140,6 +142,7 @@ class ProductCategoryController extends Controller
         $show->cate_name('Category Name');
         $show->cate_desc('Category Desc');
         $show->cover_image()->image();
+        $show->sort('Sort');
         $show->link('Link');
 
         $show->created_at('Created At');
