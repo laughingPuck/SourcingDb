@@ -15,16 +15,16 @@ use App\Admin\Models\ProductVial;
 class Products
 {
     const PRODUCT_STICK_WITH_CUP = 'stick_with_cup';
-    const PRODUCT_VIAL = 'vial';
-    const PRODUCT_COMPACT_PALETTE = 'compact_palette';
-    const PRODUCT_BOTTLE = 'bottle';
-    const PRODUCT_JAR_POT = 'jar_pot';
-    const PRODUCT_STICK = 'stick';
-    const PRODUCT_BRUSH = 'brush';
-    const PRODUCT_LIQUID_PEN = 'liquid_pen';
-    const PRODUCT_PENCIL = 'pencil';
-    const PRODUCT_TUBE = 'tube';
-    const PRODUCT_OTHER = 'other';
+    const PRODUCT_VIAL = 'vials';
+    const PRODUCT_COMPACT_PALETTE = 'compacts_palettes';
+    const PRODUCT_BOTTLE = 'bottles';
+    const PRODUCT_JAR_POT = 'jars_pots';
+    const PRODUCT_STICK = 'solid_formula_sticks';
+    const PRODUCT_BRUSH = 'brushes';
+    const PRODUCT_LIQUID_PEN = 'liquid_formula_pens';
+    const PRODUCT_PENCIL = 'pencils';
+    const PRODUCT_TUBE = 'tubes';
+    const PRODUCT_OTHER = 'others';
 
     public static $productCateMap = [
         self::PRODUCT_STICK_WITH_CUP => [
@@ -37,84 +37,84 @@ class Products
             'id' => 1
         ],
         self::PRODUCT_VIAL => [
-            'display' => 'Vial',
+            'display' => 'Vials',
             'img_table' => 'image_vial',
             'file_table' => 'file_vial',
             'product_table' => 'product_vial',
-            'uri' => 'vial',
+            'uri' => 'vials',
             'model' => ProductVial::class,
             'id' => 2
         ],
         self::PRODUCT_COMPACT_PALETTE => [
-            'display' => 'Compact & Palette',
+            'display' => 'Compacts & Palettes',
             'img_table' => 'image_compactpalette',
             'file_table' => 'file_compactpalette',
             'product_table' => 'product_compactpalette',
-            'uri' => 'compact_palette',
+            'uri' => 'compacts_palettes',
             'model' => ProductCompactpalette::class,
             'id' => 3
         ],
         self::PRODUCT_BOTTLE => [
-            'display' => 'Bottle',
+            'display' => 'Bottles',
             'img_table' => 'image_bottle',
             'product_table' => 'product_bottle',
-            'uri' => 'bottle',
+            'uri' => 'bottles',
             'model' => ProductBottle::class,
             'id' => 4
         ],
         self::PRODUCT_JAR_POT => [
-            'display' => 'Jar & Pot',
+            'display' => 'Jars & Pots',
             'img_table' => 'image_jarpot',
             'product_table' => 'product_jarpot',
-            'uri' => 'jar_pot',
+            'uri' => 'jars_pots',
             'model' => ProductJarpot::class,
             'id' => 5
         ],
         self::PRODUCT_STICK => [
-            'display' => 'Stick',
+            'display' => 'Solid Formula Sticks',
             'img_table' => 'image_stick',
             'product_table' => 'product_stick',
-            'uri' => 'stick',
+            'uri' => 'solid_formula_sticks',
             'model' => ProductStick::class,
             'id' => 6
         ],
         self::PRODUCT_BRUSH => [
-            'display' => 'Brush',
+            'display' => 'Brushes',
             'img_table' => 'image_brush',
             'product_table' => 'product_brush',
-            'uri' => 'brush',
+            'uri' => 'brushes',
             'model' => ProductBrush::class,
             'id' => 7
         ],
         self::PRODUCT_LIQUID_PEN => [
-            'display' => 'Liquid Pen',
+            'display' => 'Liquid Formula Pens',
             'img_table' => 'image_liquidpen',
             'product_table' => 'product_liquidpen',
-            'uri' => 'liquid_pen',
+            'uri' => 'liquid_formula_pens',
             'model' => ProductLiquidpen::class,
             'id' => 8
         ],
         self::PRODUCT_PENCIL => [
-            'display' => 'Pencil',
+            'display' => 'Pencils',
             'img_table' => 'image_pencil',
             'product_table' => 'product_pencil',
-            'uri' => 'pencil',
+            'uri' => 'pencils',
             'model' => ProductPencil::class,
             'id' => 9
         ],
         self::PRODUCT_TUBE => [
-            'display' => 'Tube',
+            'display' => 'Tubes',
             'img_table' => 'image_tube',
             'product_table' => 'product_tube',
-            'uri' => 'tube',
+            'uri' => 'tubes',
             'model' => ProductTube::class,
             'id' => 10
         ],
         self::PRODUCT_OTHER => [
-            'display' => 'Other',
+            'display' => 'Others',
             'img_table' => 'image_other',
             'product_table' => 'product_other',
-            'uri' => 'other',
+            'uri' => 'others',
             'model' => ProductTube::class,
             'id' => 11
         ]

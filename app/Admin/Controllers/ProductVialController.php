@@ -255,8 +255,10 @@ class ProductVialController extends Controller
             $filter->disableIdFilter();
             $filter->between('created_at', 'Created At')->datetime();
             $filter->like('cosmopak_item', 'Cosmopak#');
+            $filter->like('item_description', 'Item Description');
             if (Admin::user()->can('page-sensitive-column')) {
                 $filter->like('vendor_item', 'Vendor#');
+                $filter->like('manufactory_name', 'Manufactory Name');
             }
             $filter->equal('shape', 'Shape')->select(self::$shapeMap);
             $filter->equal('vial', 'Vial#')->select(self::$vialMap);

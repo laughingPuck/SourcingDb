@@ -188,8 +188,10 @@ class ProductPencilController extends Controller
             $filter->disableIdFilter();
             $filter->between('created_at', 'Created At')->datetime();
             $filter->like('cosmopak_item', 'Cosmopak#');
+            $filter->like('item_description', 'Item Description');
             if (Admin::user()->can('page-sensitive-column')) {
                 $filter->like('vendor_item', 'Vendor#');
+                $filter->like('manufactory_name', 'Manufactory Name');
             }
             $filter->equal('use', 'Use')->select(self::$useMap);
             $filter->equal('barrel_material', 'Barrel Material')->select(self::$barrelMaterialMap);
