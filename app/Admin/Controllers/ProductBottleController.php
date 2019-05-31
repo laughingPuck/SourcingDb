@@ -216,11 +216,18 @@ class ProductBottleController extends Controller
         $grid->filter(function ($filter) {
             $filter->disableIdFilter();
             $filter->between('created_at', 'Created At')->datetime();
-            $filter->like('cosmopak_item', 'Cosmopak#');
-            $filter->like('item_description', 'Item Description');
             if (Admin::user()->can('page-sensitive-column')) {
                 $filter->like('vendor_item', 'Vendor#');
-                $filter->like('manufactory_name', 'Manufactory Name');
+                $filter->where(function ($query) {
+                    $query->where('cosmopak_item', 'like', "%{$this->input}%")
+                        ->orWhere('item_description', 'like', "%{$this->input}%")
+                        ->orWhere('manufactory_name', 'like', "%{$this->input}%");
+                }, 'Name,Description or Model Number');
+            } else {
+                $filter->where(function ($query) {
+                    $query->where('cosmopak_item', 'like', "%{$this->input}%")
+                        ->orWhere('item_description', 'like', "%{$this->input}%");
+                }, 'Description or Model Number');
             }
             $filter->equal('shape', 'Shape')->select(self::$shapeMap);
             $filter->equal('base_material', 'Base Material')->select(self::$materialMap);
