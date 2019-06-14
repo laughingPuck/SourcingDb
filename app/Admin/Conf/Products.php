@@ -57,6 +57,7 @@ class Products
         self::PRODUCT_BOTTLE => [
             'display' => 'Bottles',
             'img_table' => 'image_bottle',
+            'file_table' => 'file_bottle',
             'product_table' => 'product_bottle',
             'uri' => 'bottles',
             'model' => ProductBottle::class,
@@ -65,6 +66,7 @@ class Products
         self::PRODUCT_JAR_POT => [
             'display' => 'Jars & Pots',
             'img_table' => 'image_jarpot',
+            'file_table' => 'file_jarpot',
             'product_table' => 'product_jarpot',
             'uri' => 'jars_pots',
             'model' => ProductJarpot::class,
@@ -73,6 +75,7 @@ class Products
         self::PRODUCT_STICK => [
             'display' => 'Solid Formula Sticks',
             'img_table' => 'image_stick',
+            'file_table' => 'file_stick',
             'product_table' => 'product_stick',
             'uri' => 'solid_formula_sticks',
             'model' => ProductStick::class,
@@ -81,6 +84,7 @@ class Products
         self::PRODUCT_BRUSH => [
             'display' => 'Brushes',
             'img_table' => 'image_brush',
+            'file_table' => 'file_brush',
             'product_table' => 'product_brush',
             'uri' => 'brushes',
             'model' => ProductBrush::class,
@@ -89,6 +93,7 @@ class Products
         self::PRODUCT_LIQUID_PEN => [
             'display' => 'Liquid Formula Pens',
             'img_table' => 'image_liquidpen',
+            'file_table' => 'file_liquidpen',
             'product_table' => 'product_liquidpen',
             'uri' => 'liquid_formula_pens',
             'model' => ProductLiquidpen::class,
@@ -97,6 +102,7 @@ class Products
         self::PRODUCT_PENCIL => [
             'display' => 'Pencils',
             'img_table' => 'image_pencil',
+            'file_table' => 'file_pencil',
             'product_table' => 'product_pencil',
             'uri' => 'pencils',
             'model' => ProductPencil::class,
@@ -105,6 +111,7 @@ class Products
         self::PRODUCT_TUBE => [
             'display' => 'Tubes',
             'img_table' => 'image_tube',
+            'file_table' => 'file_tube',
             'product_table' => 'product_tube',
             'uri' => 'tubes',
             'model' => ProductTube::class,
@@ -113,6 +120,7 @@ class Products
         self::PRODUCT_OTHER => [
             'display' => 'Others',
             'img_table' => 'image_other',
+            'file_table' => 'file_other',
             'product_table' => 'product_other',
             'uri' => 'others',
             'model' => ProductTube::class,

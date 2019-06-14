@@ -143,6 +143,18 @@ class ProductJarpotController extends Controller
             return '<p style="width: 20px;"></p>';
         });
 
+        $grid->cover_image('Image')->display(function () {
+            $image = DB::table(Products::$productCateMap[self::TAG]['img_table'])->where('product_id', $this->id)->whereNull('deleted_at')->first();
+            if ($image) {
+                return "<img src='/{$image->url}' alt='{$image->title}' style='height: 80px;' />";
+            } else {
+                return '';
+            }
+        });
+        $grid->images('Images')->display(function ($images) {
+            $btn = new GalleryBtn(count($images), $this->id, self::TAG);
+            return $btn->render();
+        })->width('80');
         $grid->cosmopak_item('Cosmopak Item#')->width('120');
         if (Admin::user()->can('page-sensitive-column')) {
             $grid->vendor_item('Vendor Item#')->width('120');
@@ -173,18 +185,6 @@ class ProductJarpotController extends Controller
         $grid->moq('Moq')->width('50');
         $grid->price('Price')->width('50');
         $grid->mold_status('Mold Status')->width('80');
-        $grid->cover_image('Image')->display(function () {
-            $image = DB::table(Products::$productCateMap[self::TAG]['img_table'])->where('product_id', $this->id)->whereNull('deleted_at')->first();
-            if ($image) {
-                return "<img src='/{$image->url}' alt='{$image->title}' style='height: 80px;' />";
-            } else {
-                return '';
-            }
-        });
-        $grid->images('Images')->display(function ($images) {
-            $btn = new GalleryBtn(count($images), $this->id, self::TAG);
-            return $btn->render();
-        })->width('80');
         $grid->files('Files')->display(function ($files) {
             $btn = new DocumentBtn(count($files), $this->id, self::TAG);
             return $btn->render();

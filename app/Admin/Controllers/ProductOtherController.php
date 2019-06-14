@@ -101,16 +101,6 @@ class ProductOtherController extends Controller
             return '<p style="width: 20px;"></p>';
         });
 
-        $grid->cosmopak_item('Cosmopak Item#')->width('120');
-        if (Admin::user()->can('page-sensitive-column')) {
-            $grid->vendor_item('Vendor Item#')->width('120');
-            $grid->manufactory_name('Manufactory Name')->width('120');
-        }
-        $grid->item_description('Item Description')->width('120');
-        $grid->material('Material')->width('120');
-
-        $grid->moq('Moq')->width('50');
-        $grid->price('Price')->width('50');
         $grid->cover_image('Image')->display(function () {
             $image = DB::table(Products::$productCateMap[self::TAG]['img_table'])->where('product_id', $this->id)->whereNull('deleted_at')->first();
             if ($image) {
@@ -123,6 +113,16 @@ class ProductOtherController extends Controller
             $btn = new GalleryBtn(count($images), $this->id, self::TAG);
             return $btn->render();
         })->width('80');
+        $grid->cosmopak_item('Cosmopak Item#')->width('120');
+        if (Admin::user()->can('page-sensitive-column')) {
+            $grid->vendor_item('Vendor Item#')->width('120');
+            $grid->manufactory_name('Manufactory Name')->width('120');
+        }
+        $grid->item_description('Item Description')->width('120');
+        $grid->material('Material')->width('120');
+
+        $grid->moq('Moq')->width('50');
+        $grid->price('Price')->width('50');
         $grid->files('Files')->display(function ($files) {
             $btn = new DocumentBtn(count($files), $this->id, self::TAG);
             return $btn->render();
