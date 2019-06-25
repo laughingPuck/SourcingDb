@@ -9,7 +9,7 @@
 namespace App\Admin\Extensions;
 
 use Encore\Admin\Grid\Exporters\AbstractExporter;
-use Maatwebsite\Excel\Facades\Excel;
+use App\Admin\Widgets\Excel;
 use Encore\Admin\Grid;
 
 class ProductExporter extends AbstractExporter
