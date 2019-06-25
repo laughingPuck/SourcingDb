@@ -31,7 +31,7 @@ class ProductExporter extends AbstractExporter
         Excel::create($cate, function($excel) use ($exceptFields) {
 
             $excel->sheet('export data', function($sheet) use ($exceptFields) {
-                $exceptFields = array_merge($exceptFields, ['id', 'images', 'state', 'deleted_at']);
+                $exceptFields = array_merge($exceptFields, ['id', 'image', 'files', 'images', 'state', 'deleted_at']);
                 // 这段逻辑是从表格数据中取出需要导出的字段
                 $keys = [];
                 if (isset($this->getData(false)[0])) {
@@ -46,7 +46,6 @@ class ProductExporter extends AbstractExporter
                 $rows = $rows->toArray();
                 array_unshift($rows, $keys);
                 $sheet->rows($rows);
-
             });
 
         })->export('xls');
