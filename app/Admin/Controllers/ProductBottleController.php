@@ -43,6 +43,19 @@ class ProductBottleController extends Controller
         'Glass' => 'Glass',
         'Not sure' => 'Not sure',
     ];
+
+    public static $linerMap = [
+        'Yes' => 'Yes',
+        'No' => 'No',
+        'Not Sure' => 'Not Sure'
+    ];
+
+    public static $collarMap = [
+        'Yes' => 'Yes',
+        'No' => 'No',
+        'Not Sure' => 'Not Sure'
+    ];
+
     public static $shapeMap = [
         'Round/Cylindical' => 'Round/Cylindical',
         'Square' => 'Square',
@@ -81,6 +94,7 @@ class ProductBottleController extends Controller
         'Snap' => 'Snap',
         'Magnetic' => 'Magnetic',
         'Button' => 'Button',
+        'Screw' => 'Screw',
         'Others' => 'Others',
         'Not sure' => 'Not sure',
     ];
@@ -185,21 +199,21 @@ class ProductBottleController extends Controller
         $grid->item_description('Item Description')->width('120');
         $grid->shape('Shape')->width('50');
         $grid->chamber('Chamber')->width('50');
-        $grid->ofc('OFC(ml)')->width('50');
-        $grid->estimate_capacity('Estimate Capacity(ml)')->width('150');
+        $grid->ofc('OFC(mL)')->width('50');
+        $grid->estimate_capacity('Estimate Capacity (mL)')->width('150');
         $grid->color('Color')->width('80');
         $grid->cap_material('Cap Material')->width('120');
-        $grid->liner_material('Liner Material')->width('120');
+        $grid->liner_material('Liner')->width('120');
         $grid->base_material('Base Material')->width('120');
-        $grid->collar_material('Collar Material')->width('120');
-        $grid->actuator_material('Actuator Material')->width('120');
+        $grid->collar_material('Collar')->width('120');
+        $grid->actuator_material('Actuator Type')->width('120');
         $grid->wall_style('Wall Style')->width('120');
         $grid->closure_mechanism('Closure Mechanism')->width('120');
-        $grid->overall_length('Overall Length')->width('120');
-        $grid->overall_width('Overall Width')->width('120');
-        $grid->overall_height('Overall Height')->width('120');
-        $grid->moq('Moq')->width('50');
-        $grid->price('Price')->width('50');
+        $grid->overall_length('Overall Length (mm)')->width('120');
+        $grid->overall_width('Overall Width (mm)')->width('120');
+        $grid->overall_height('Overall Height (mm)')->width('120');
+        $grid->moq('MOQ')->width('50');
+        $grid->price('Price (USD)')->width('50');
         $grid->mold_status('Mold Status')->width('80');
         $grid->files('Files')->display(function ($files) {
             $btn = new DocumentBtn(count($files), $this->id, self::TAG);
@@ -231,7 +245,7 @@ class ProductBottleController extends Controller
             }
             $filter->equal('shape', 'Shape')->select(self::$shapeMap);
             $filter->equal('base_material', 'Base Material')->select(self::$materialMap);
-            $filter->equal('actuator_material', 'Actuator Material')->select(self::$actuatorMaterial);
+            $filter->equal('actuator_material', 'Actuator Type')->select(self::$actuatorMaterial);
             $filter->equal('chamber', 'Chamber#')->select(self::$chamberMap);
             $filter->where(function ($query) {
                 switch ($this->input) {
@@ -246,8 +260,8 @@ class ProductBottleController extends Controller
                 '1' => 'Only with images',
                 '0' => 'Only without images',
             ]);
-            $filter->between('estimate_capacity', 'Estimate Capacity');
-            $filter->between('overall_width', 'Overall Width');
+            $filter->between('estimate_capacity', 'Estimate Capacity (mL)');
+            $filter->between('overall_width', 'Overall Width (mm)');
         });
 
         $grid->expandFilter();
@@ -279,21 +293,21 @@ class ProductBottleController extends Controller
         $form->select('chamber', 'Chamber')->options(self::$chamberMap)->rules('required')->setWidth(4);
         $form->select('color', 'Color')->options(self::$colorMap)->rules('required')->setWidth(4);
         $form->select('cap_material', 'Cap Material')->options(self::$materialMap)->rules('required')->setWidth(4);
-        $form->select('liner_material', 'Liner Material')->options(self::$materialMap)->rules('required')->setWidth(4);
+        $form->select('liner_material', 'Liner')->options(self::$linerMap)->rules('required')->setWidth(4);
         $form->select('base_material', 'Base Material')->options(self::$materialMap)->rules('required')->setWidth(4);
-        $form->select('collar_material', 'Collar Material')->options(self::$materialMap)->rules('required')->setWidth(4);
-        $form->select('actuator_material', 'Actuator Material')->options(self::$actuatorMaterial)->rules('required')->setWidth(4);
+        $form->select('collar_material', 'Collar')->options(self::$collarMap)->rules('required')->setWidth(4);
+        $form->select('actuator_material', 'Actuator Type')->options(self::$actuatorMaterial)->rules('required')->setWidth(4);
         $form->select('wall_style', 'Wall Style')->options(self::$wallStyleMap)->rules('required')->setWidth(4);
         $form->select('closure_mechanism', 'Closure Mechanism')->options(self::$closureMechanismMap)->rules('required')->setWidth(4);
         $form->divider();
-        $form->text('ofc', 'OFC(ml)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Ofc Width must be a number'])->setWidth(4);
-        $form->text('estimate_capacity', 'Estimate Capacity')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Estimate Capacity Width must be a number'])->setWidth(4);
-        $form->text('overall_length', 'Overall Length')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Length must be a number'])->setWidth(4);
-        $form->text('overall_width', 'Overall Width')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Width must be a number'])->setWidth(4);
-        $form->text('overall_height', 'Overall Height')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Height must be a number'])->setWidth(4);
+        $form->text('ofc', 'OFC(mL)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Ofc Width must be a number'])->setWidth(4);
+        $form->text('estimate_capacity', 'Estimate Capacity (mL)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Estimate Capacity (mL) Width must be a number'])->setWidth(4);
+        $form->text('overall_length', 'Overall Length (mm)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Length (mm) must be a number'])->setWidth(4);
+        $form->text('overall_width', 'Overall Width (mm)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Width (mm) must be a number'])->setWidth(4);
+        $form->text('overall_height', 'Overall Height (mm)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Height (mm) must be a number'])->setWidth(4);
         $form->divider();
-        $form->text('moq', 'Moq')->rules('required');
-        $form->text('price', 'Price')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Price must be a number'])->setWidth(4);
+        $form->text('moq', 'MOQ')->rules('required');
+        $form->text('price', 'Price (USD)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Price (USD) must be a number'])->setWidth(4);
         $form->text('mold_status', 'Mold Status')->rules('required');
         $form->switch('state', 'Display')->value(1);
 
@@ -345,22 +359,22 @@ class ProductBottleController extends Controller
         $show->divider();
         $show->shape('Shape');
         $show->chamber('Chamber');
-        $show->ofc('OFC(ml)');
-        $show->estimate_capacity('Estimate Capacity');
+        $show->ofc('OFC(mL)');
+        $show->estimate_capacity('Estimate Capacity (mL)');
         $show->color('Color');
         $show->cap_material('Cap Material');
-        $show->liner_material('Liner Material');
+        $show->liner_material('Liner');
         $show->base_material('Base Material');
-        $show->collar_material('Collar Material');
-        $show->actuator_material('Actuator Material');
+        $show->collar_material('Collar');
+        $show->actuator_material('Actuator Type');
         $show->wall_style('Wall Style');
         $show->closure_mechanism('Closure Mechanism');
-        $show->overall_length('Overall Length');
-        $show->overall_width('Overall Width');
-        $show->overall_height('Overall Height');
+        $show->overall_length('Overall Length (mm)');
+        $show->overall_width('Overall Width (mm)');
+        $show->overall_height('Overall Height (mm)');
         $show->divider();
-        $show->moq('Moq');
-        $show->price('Price');
+        $show->moq('MOQ');
+        $show->price('Price (USD)');
         $show->mold_status('Mold Status');
         $show->state('State');
 

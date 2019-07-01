@@ -46,12 +46,24 @@ class ProductLiquidpenController extends Controller
         'Others' => 'Others',
         'Not sure' => 'Not sure',
     ];
+    public static $closureMechanismMap = [
+        'Screw' => 'Screw',
+        'Snap' => 'Snap',
+        'Magnetic' => 'Magnetic',
+        'Others' => 'Others',
+    ];
     public static $barrelShapeMap = [
         'Round' => 'Round',
         'Square' => 'Square',
         'Oval' => 'Oval',
         'Others' => 'Others',
         'Not sure' => 'Not sure',
+    ];
+    public static $barrelMaterialMap = [
+        'PE' => 'PE',
+        'PP' => 'PP',
+        'Aluminum' => 'Aluminum',
+        'Others' => 'Others'
     ];
     public static $applicatorStyleMap = [
         'Brush' => 'Brush',
@@ -161,11 +173,12 @@ class ProductLiquidpenController extends Controller
 
         $grid->shape('Shape')->width('120');
         $grid->barrel_shape('Barrel Shape')->width('120');
+        $grid->barrel_material('Barrel Material')->width('120');
         $grid->chamber('Chamber')->width('120');
-        $grid->ofc('OFC(ml)')->width('120');
-        $grid->estimate_capacity('Estimate Capacity')->width('120');
+        $grid->ofc('OFC (mL)')->width('120');
+        $grid->estimate_capacity('Estimate Capacity (mL)')->width('120');
         $grid->applicator_style('Applicator Style')->width('120');
-        $grid->applicator_material('Applicator Material')->width('120');
+//        $grid->applicator_material('Applicator Material')->width('120');
         $grid->leak_proof('Leak Proof')->display(function ($value) {
             if (array_key_exists($value, Products::$switchMap)) {
                 return Products::$switchMap[$value];
@@ -174,11 +187,11 @@ class ProductLiquidpenController extends Controller
         })->width('120');
         $grid->mechanism('Mechanism')->width('120');
         $grid->closure_mechanism('Closure Mechanism')->width('120');
-        $grid->overall_length('Overall Length')->width('120');
-        $grid->overall_width('Overall Width')->width('120');
+        $grid->overall_length('Overall Length (mm)')->width('120');
+        $grid->overall_width('Overall Width (mm)')->width('120');
 
-        $grid->moq('Moq')->width('50');
-        $grid->price('Price')->width('50');
+        $grid->moq('MOQ')->width('50');
+        $grid->price('Price (USD)')->width('50');
         $grid->mold_status('Mold Status')->width('80');
         $grid->files('Files')->display(function ($files) {
             $btn = new DocumentBtn(count($files), $this->id, self::TAG);
@@ -227,7 +240,7 @@ class ProductLiquidpenController extends Controller
                 '1' => 'Only with images',
                 '0' => 'Only without images',
             ]);
-            $filter->between('overall_length', 'Overall Length');
+            $filter->between('overall_length', 'Overall Length (mm)');
         });
 
         $grid->expandFilter();
@@ -258,20 +271,21 @@ class ProductLiquidpenController extends Controller
 
         $form->select('shape', 'Shape')->options(self::$barrelShapeMap)->rules('required')->setWidth(4);
         $form->select('barrel_shape', 'Barrel Shape')->options(self::$barrelShapeMap)->rules('required')->setWidth(4);
+        $form->select('barrel_material', 'Barrel Material')->options(self::$barrelMaterialMap)->rules('required')->setWidth(4);
         $form->select('chamber', 'chamber')->options(self::$chamberMap)->rules('required')->setWidth(4);
         $form->select('applicator_style', 'Applicator Style')->options(self::$applicatorStyleMap)->rules('required')->setWidth(4);
         $form->select('leak_proof', 'Leak Proof')->options(Products::$switchMap)->rules('required')->setWidth(4);
-        $form->select('applicator_material', 'Applicator Material')->options(self::$applicatorMaterialMap)->rules('required')->setWidth(4);
+//        $form->select('applicator_material', 'Applicator Material')->options(self::$applicatorMaterialMap)->rules('required')->setWidth(4);
         $form->select('mechanism', 'Mechanism')->options(self::$mechanismMap)->rules('required')->setWidth(4);
-        $form->select('closure_mechanism', 'Closure Mechanism')->options(self::$mechanismMap)->rules('required')->setWidth(4);
+        $form->select('closure_mechanism', 'Closure Mechanism')->options(self::$closureMechanismMap)->rules('required')->setWidth(4);
         $form->divider();
-        $form->text('ofc', 'OFC(ml)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The OFC must be a number'])->setWidth(4);
-        $form->text('estimate_capacity', 'Estimate Capacity(ml)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Estimate Capacity must be a number'])->setWidth(4);
-        $form->text('overall_length', 'Overall Length')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Length must be a number'])->setWidth(4);
-        $form->text('overall_width', 'Overall Width')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Width must be a number'])->setWidth(4);
+        $form->text('ofc', 'OFC (mL)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The OFC must be a number'])->setWidth(4);
+        $form->text('estimate_capacity', 'Estimate Capacity (mL)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Estimate Capacity (mL) must be a number'])->setWidth(4);
+        $form->text('overall_length', 'Overall Length (mm)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Length (mm) must be a number'])->setWidth(4);
+        $form->text('overall_width', 'Overall Width (mm)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Width (mm) must be a number'])->setWidth(4);
         $form->divider();
-        $form->text('moq', 'Moq')->rules('required');
-        $form->text('price', 'Price')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Price must be a number'])->setWidth(4);
+        $form->text('moq', 'MOQ')->rules('required');
+        $form->text('price', 'Price (USD)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Price (USD) must be a number'])->setWidth(4);
         $form->text('mold_status', 'Mold Status')->rules('required');
         $form->switch('state', 'Display')->value(1);
 
@@ -325,8 +339,8 @@ class ProductLiquidpenController extends Controller
         $show->shape('Shape');
         $show->barrel_shape('Barrel Shape');
         $show->chamber('Chamber');
-        $show->ofc('OFC(ml)');
-        $show->estimate_capacity('Estimate Capacity');
+        $show->ofc('OFC (mL)');
+        $show->estimate_capacity('Estimate Capacity (mL)');
         $show->applicator_style('Applicator Style');
         $switchMap = Products::$switchMap;
         $show->leak_proof('Leak Proof')->as(function ($value) use ($switchMap) {
@@ -335,15 +349,15 @@ class ProductLiquidpenController extends Controller
             }
             return null;
         });
-        $show->applicator_material('Applicator Material');
+//        $show->applicator_material('Applicator Material');
         $show->mechanism('Mechanism');
         $show->closure_mechanism('Closure Mechanism');
-        $show->overall_length('Overall Length');
-        $show->overall_width('Overall Width');
+        $show->overall_length('Overall Length (mm)');
+        $show->overall_width('Overall Width (mm)');
         
         $show->divider();
-        $show->moq('Moq');
-        $show->price('Price');
+        $show->moq('MOQ');
+        $show->price('Price (USD)');
         $show->mold_status('Mold Status');
         $show->state('State');
 

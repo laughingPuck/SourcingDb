@@ -78,6 +78,7 @@ class ProductVialController extends Controller
         'Overmold' => 'Overmold',
     ];
     public static $closureMechanismMap = [
+        'Screw' => 'Screw',
         'Snap' => 'Snap',
         'Magnetic' => 'Magnetic',
         'Button' => 'Button',
@@ -192,8 +193,8 @@ class ProductVialController extends Controller
             return null;
         })->width('80');
         $grid->vial('Vial#')->width('50');
-        $grid->ofc('OFC(ml)')->width('50');
-        $grid->estimate_capacity('Estimate Capacity(ml)')->width('150');
+        $grid->ofc('OFC (mL)')->width('50');
+        $grid->estimate_capacity('Estimate Capacity (mL)')->width('150');
         $grid->color('Color')->display(function ($value) {
             if (array_key_exists($value, self::$colorMap)) {
                 return self::$colorMap[$value];
@@ -201,12 +202,12 @@ class ProductVialController extends Controller
             return null;
         })->width('80');
         $grid->applicator('Applicator')->width('80');
-        $grid->thick_wall('Thick Wall')->display(function ($value) {
-            if (array_key_exists($value, Products::$switchMap)) {
-                return Products::$switchMap[$value];
-            }
-            return null;
-        })->width('80');
+//        $grid->thick_wall('Thick Wall')->display(function ($value) {
+//            if (array_key_exists($value, Products::$switchMap)) {
+//                return Products::$switchMap[$value];
+//            }
+//            return null;
+//        })->width('80');
         $grid->wall_style('Wall Style')->display(function ($value) {
             if (array_key_exists($value, self::$wallStyleMap)) {
                 return self::$wallStyleMap[$value];
@@ -219,10 +220,10 @@ class ProductVialController extends Controller
             }
             return null;
         })->width('120');
-        $grid->overall_width('Overall Width')->width('120');
-        $grid->overall_height('Overall Height')->width('120');
-        $grid->moq('Moq')->width('50');
-        $grid->price('Price')->width('50');
+        $grid->overall_width('Overall Width (mm)')->width('120');
+        $grid->overall_height('Overall Height (mm)')->width('120');
+        $grid->moq('MOQ')->width('50');
+        $grid->price('Price (USD)')->width('50');
         $grid->mold_status('Mold Status')->width('80');
         $grid->files('Files')->display(function ($files) {
             $btn = new DocumentBtn(count($files), $this->id, self::TAG);
@@ -271,7 +272,7 @@ class ProductVialController extends Controller
             $filter->equal('vial', 'Vial#')->select(self::$vialMap);
             $filter->equal('base_material', 'Base Material')->select(self::$materialMap);
             $filter->equal('applicator', 'Applicator')->select(self::$applicatorMap);
-            $filter->equal('thick_wall', 'Thick Wall')->select(Products::$switchMap);
+//            $filter->equal('thick_wall', 'Thick Wall')->select(Products::$switchMap);
             $filter->where(function ($query) {
                 switch ($this->input) {
                     case '1':
@@ -285,9 +286,9 @@ class ProductVialController extends Controller
                 '1' => 'Only with images',
                 '0' => 'Only without images',
             ]);
-            $filter->between('estimate_capacity', 'Estimate Capacity');
-            $filter->between('overall_height', 'Overall Height');
-            $filter->between('overall_width', 'Overall Width');
+            $filter->between('estimate_capacity', 'Estimate Capacity (mL)');
+            $filter->between('overall_height', 'Overall Height (mm)');
+            $filter->between('overall_width', 'Overall Width (mm)');
         });
 
         $grid->expandFilter();
@@ -325,17 +326,17 @@ class ProductVialController extends Controller
         $form->select('color', 'Color')->options(self::$colorMap)->rules('required')->setWidth(4);
         $form->select('vial', 'Vial#')->options(self::$vialMap)->rules('required')->setWidth(4);
         $form->select('applicator', 'Applicator')->options(self::$applicatorMap)->rules('required')->setWidth(4);
-        $form->select('thick_wall', 'Thick Wall')->options(Products::$switchMap)->rules('required')->setWidth(4);
+//        $form->select('thick_wall', 'Thick Wall')->options(Products::$switchMap)->rules('required')->setWidth(4);
         $form->select('wall_style', 'Wall Style')->options(self::$wallStyleMap)->rules('required')->setWidth(4);
         $form->select('closure_mechanism', 'Closure Mechanism')->options(self::$closureMechanismMap)->rules('required')->setWidth(4);
         $form->divider();
-        $form->text('ofc', 'OFC(ml)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The OFC must be a number'])->setWidth(4);
-        $form->text('estimate_capacity', 'Estimate Capacity(ml)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Estimate Capacity must be a number'])->setWidth(4);
-        $form->text('overall_width', 'Overall Width')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Width must be a number'])->setWidth(4);
-        $form->text('overall_height', 'Overall Height')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Height must be a number'])->setWidth(4);
+        $form->text('ofc', 'OFC (mL)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The OFC must be a number'])->setWidth(4);
+        $form->text('estimate_capacity', 'Estimate Capacity (mL)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Estimate Capacity (mL) must be a number'])->setWidth(4);
+        $form->text('overall_width', 'Overall Width (mm)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Width (mm) must be a number'])->setWidth(4);
+        $form->text('overall_height', 'Overall Height (mm)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Height (mm) must be a number'])->setWidth(4);
         $form->text('available_applicator_options', 'Available Applicator Options')->rules('required');
-        $form->text('moq', 'Moq')->rules('required');
-        $form->text('price', 'Price')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Price must be a number'])->setWidth(4);
+        $form->text('moq', 'MOQ')->rules('required');
+        $form->text('price', 'Price (USD)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Price (USD) must be a number'])->setWidth(4);
         $form->text('mold_status', 'Mold Status')->rules('required');
         $form->switch('state', 'Display')->value(1);
 
@@ -406,17 +407,17 @@ class ProductVialController extends Controller
             return null;
         });
         $show->vial('Vial#');
-        $show->ofc('OFC(ml)');
-        $show->estimate_capacity('Estimate Capacity(ml)');
+        $show->ofc('OFC (mL)');
+        $show->estimate_capacity('Estimate Capacity (mL)');
         $show->available_applicator_options('Available Applicator Options');
         $show->applicator('Applicator');
         $switchMap = Products::$switchMap;
-        $show->thick_wall('Thick Wall')->as(function ($value) use ($switchMap) {
-            if (array_key_exists($value, $switchMap)) {
-                return $switchMap[$value];
-            }
-            return null;
-        });
+//        $show->thick_wall('Thick Wall')->as(function ($value) use ($switchMap) {
+//            if (array_key_exists($value, $switchMap)) {
+//                return $switchMap[$value];
+//            }
+//            return null;
+//        });
         $wallStyle = self::$wallStyleMap;
         $show->wall_style('Wall Style')->as(function ($value) use ($wallStyle) {
             if (array_key_exists($value, $wallStyle)) {
@@ -432,10 +433,10 @@ class ProductVialController extends Controller
             return null;
         });
         $show->divider();
-        $show->overall_width('Overall Width');
-        $show->overall_height('Overall Height');
-        $show->moq('Moq');
-        $show->price('Price');
+        $show->overall_width('Overall Width (mm)');
+        $show->overall_height('Overall Height (mm)');
+        $show->moq('MOQ');
+        $show->price('Price (USD)');
         $show->mold_status('Mold Status');
         $show->state('State');
 

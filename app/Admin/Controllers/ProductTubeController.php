@@ -62,6 +62,13 @@ class ProductTubeController extends Controller
         'Not sure' => 'Not sure'
     ];
 
+    public static $tubeMaterialMap = [
+        'PE' => 'PE',
+        'PP' => 'PP',
+        'Aluminum' => 'Aluminum',
+        'Others' => 'Others'
+    ];
+
     public function index(AdminContent $content)
     {
         return $content
@@ -155,14 +162,14 @@ class ProductTubeController extends Controller
         $grid->layer('Layer')->width('120');
         $grid->tube_material('Tube Material')->width('120');
         $grid->cap_material('Cap Material')->width('120');
-        $grid->closure_mechanism('Closure Mechanism')->width('120');
-        $grid->applicator('Applicator')->width('120');
-        $grid->applicator_material('Applicator Material')->width('120');
-        $grid->estimate_capacity('Estimate Capacity')->width('120');
-        $grid->tube_diameter('Tube Diameter')->width('120');
-        $grid->overall_length('Overall Length')->width('120');
-        $grid->moq('Moq')->width('50');
-        $grid->price('Price')->width('50');
+//        $grid->closure_mechanism('Closure Mechanism')->width('120');
+//        $grid->applicator('Applicator')->width('120');
+        $grid->applicator_material('Applicator Type')->width('120');
+        $grid->estimate_capacity('Estimate Capacity (mL)')->width('120');
+        $grid->tube_diameter('Tube Diameter (mm)')->width('120');
+        $grid->overall_length('Overall Length (mm)')->width('120');
+        $grid->moq('MOQ')->width('50');
+        $grid->price('Price (USD)')->width('50');
         $grid->mold_status('Mold Status')->width('80');
         $grid->files('Files')->display(function ($files) {
             $btn = new DocumentBtn(count($files), $this->id, self::TAG);
@@ -195,7 +202,7 @@ class ProductTubeController extends Controller
             $filter->equal('tube_shape', 'Tube Shape')->select(self::$tubeShapeMap);
             $filter->equal('layer', 'Layer')->select(self::$layerMap);
             $filter->equal('chamber', 'Chamber')->select(self::$chamberMap);
-            $filter->equal('applicator_material', 'Applicator Material')->select(self::$applicatorMaterialMap);
+            $filter->equal('applicator_material', 'Applicator Type')->select(self::$applicatorMaterialMap);
             $filter->where(function ($query) {
                 switch ($this->input) {
                     case '1':
@@ -209,8 +216,8 @@ class ProductTubeController extends Controller
                 '1' => 'Only with images',
                 '0' => 'Only without images',
             ]);
-            $filter->between('estimate_capacity', 'Estimate Capacity');
-            $filter->between('tube_diameter', 'Tube Diameter');
+            $filter->between('estimate_capacity', 'Estimate Capacity (mL)');
+            $filter->between('tube_diameter', 'Tube Diameter (mm)');
         });
 
         $grid->expandFilter();
@@ -242,18 +249,18 @@ class ProductTubeController extends Controller
         $form->select('tube_shape', 'Tube Shape')->options(self::$tubeShapeMap)->rules('required')->setWidth(4);
         $form->select('chamber', 'Chamber')->options(self::$chamberMap)->rules('required')->setWidth(4);
         $form->select('layer', 'Layer')->options(self::$layerMap)->rules('required')->setWidth(4);
-        $form->select('tube_material', 'Tube Material')->options(self::$applicatorMaterialMap)->rules('required')->setWidth(4);
+        $form->select('tube_material', 'Tube Material')->options(self::$tubeMaterialMap)->rules('required')->setWidth(4);
         $form->select('cap_material', 'Cap Material')->options(self::$applicatorMaterialMap)->rules('required')->setWidth(4);
-        $form->select('applicator_material', 'Applicator Material')->options(self::$applicatorMaterialMap)->rules('required')->setWidth(4);
+        $form->select('applicator_material', 'Applicator Type')->options(self::$applicatorMaterialMap)->rules('required')->setWidth(4);
         $form->divider();
-        $form->text('closure_mechanism', 'Closure Mechanism')->rules('required');
-        $form->text('applicator', 'Applicator')->rules('required');
-        $form->text('estimate_capacity', 'Estimate Capacity')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Estimate Capacity must be a number'])->setWidth(4);
-        $form->text('tube_diameter', 'Tube Diameter')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Tube Diameter must be a number'])->setWidth(4);
-        $form->text('overall_length', 'Overall Length')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Length must be a number'])->setWidth(4);
+//        $form->text('closure_mechanism', 'Closure Mechanism')->rules('required');
+//        $form->text('applicator', 'Applicator')->rules('required');
+        $form->text('estimate_capacity', 'Estimate Capacity (mL)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Estimate Capacity (mL) must be a number'])->setWidth(4);
+        $form->text('tube_diameter', 'Tube Diameter (mm)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Tube Diameter (mm) must be a number'])->setWidth(4);
+        $form->text('overall_length', 'Overall Length (mm)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Length (mm) must be a number'])->setWidth(4);
         $form->divider();
-        $form->text('moq', 'Moq')->rules('required');
-        $form->text('price', 'Price')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Price must be a number'])->setWidth(4);
+        $form->text('moq', 'MOQ')->rules('required');
+        $form->text('price', 'Price (USD)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Price (USD) must be a number'])->setWidth(4);
         $form->text('mold_status', 'Mold Status')->rules('required');
         $form->switch('state', 'Display')->value(1);
 
@@ -309,16 +316,16 @@ class ProductTubeController extends Controller
         $show->layer('Layer');
         $show->tube_material('Tube Material');
         $show->cap_material('Cap Material');
-        $show->closure_mechanism('Closure Mechanism');
-        $show->applicator('Applicator');
-        $show->applicator_material('Applicator Material');
-        $show->estimate_capacity('Estimate Capacity');
-        $show->tube_diameter('Tube Diameter');
-        $show->overall_length('Overall Length');
+//        $show->closure_mechanism('Closure Mechanism');
+//        $show->applicator('Applicator');
+        $show->applicator_material('Applicator Type');
+        $show->estimate_capacity('Estimate Capacity (mL)');
+        $show->tube_diameter('Tube Diameter (mm)');
+        $show->overall_length('Overall Length (mm)');
         
         $show->divider();
-        $show->moq('Moq');
-        $show->price('Price');
+        $show->moq('MOQ');
+        $show->price('Price (USD)');
         $show->mold_status('Mold Status');
         $show->state('State');
 

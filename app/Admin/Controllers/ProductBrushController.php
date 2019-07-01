@@ -38,6 +38,11 @@ class ProductBrushController extends Controller
         'Other' => 'Other',
         'Not sure' => 'Not sure',
     ];
+    public static $capMaterialMap = [
+        'Yes' => 'Yes',
+        'No' => 'No',
+        'Not Sure' => 'Not Sure'
+    ];
     public static $handleShapeMap = [
         'Round' => 'Round',
         'Square' => 'Square',
@@ -156,18 +161,18 @@ class ProductBrushController extends Controller
         $grid->cap_material('Cap Material')->width('120');
         $grid->handle_material('Handle Material')->width('120');
         $grid->handle_shape('Handle Shape')->width('120');
-        $grid->handle_length('Handle Length')->width('120');
+        $grid->handle_length('Handle Length (mm)')->width('120');
         $grid->brush_material('Brush Material')->width('120');
         $grid->brush_shape('Brush Shape')->width('120');
         $grid->brush('Brush')->width('120');
         $grid->ferrual_material('Ferrual Material')->width('120');
-        $grid->ferrual_length('Ferrual Length')->width('120');
-        $grid->overall_length('Overall Length')->width('120');
-        $grid->overall_width('Overall Width')->width('120');
+        $grid->ferrual_length('Ferrual Length (mm)')->width('120');
+        $grid->overall_length('Overall Length (mm)')->width('120');
+        $grid->overall_width('Overall Width (mm)(mm)')->width('120');
         $grid->set_individual('Set Individual')->width('120');
 
-        $grid->moq('Moq')->width('50');
-        $grid->price('Price')->width('50');
+        $grid->moq('MOQ')->width('50');
+        $grid->price('Price (USD)')->width('50');
         $grid->mold_status('Mold Status')->width('80');
         $grid->files('Files')->display(function ($files) {
             $btn = new DocumentBtn(count($files), $this->id, self::TAG);
@@ -215,7 +220,7 @@ class ProductBrushController extends Controller
                 '1' => 'Only with images',
                 '0' => 'Only without images',
             ]);
-            $filter->between('overall_length', 'Overall Length');
+            $filter->between('overall_length', 'Overall Length (mm)');
         });
 
         $grid->expandFilter();
@@ -243,7 +248,7 @@ class ProductBrushController extends Controller
         $form->text('manufactory_name', 'Manufactory Name')->rules('required');
         $form->text('item_description', 'Item Description')->rules('required');
         $form->divider();
-        $form->select('cap_material', 'Cap Material')->options(self::$handleMaterialMap)->rules('required')->setWidth(4);
+        $form->select('cap_material', 'Cap Material')->options(self::$capMaterialMap)->rules('required')->setWidth(4);
         $form->select('handle_material', 'Handle Material')->options(self::$handleMaterialMap)->rules('required')->setWidth(4);
         $form->select('handle_shape', 'Handle Shape')->options(self::$handleShapeMap)->rules('required')->setWidth(4);
         $form->select('brush_material', 'Brush Material')->options(self::$brushMaterialMap)->rules('required')->setWidth(4);
@@ -252,13 +257,13 @@ class ProductBrushController extends Controller
         $form->select('ferrual_material', 'Ferrual Material')->options(self::$handleMaterialMap)->rules('required')->setWidth(4);
         $form->select('set_individual', 'Set Individual')->options(self::$setIndividualMap)->rules('required')->setWidth(4);
         $form->divider();
-        $form->text('ferrual_length', 'Ferrual Length')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Ferrual Length must be a number'])->setWidth(4);
-        $form->text('handle_length', 'Handle Length')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Handle Length must be a number'])->setWidth(4);
-        $form->text('overall_length', 'Overall Length')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Length must be a number'])->setWidth(4);
-        $form->text('overall_width', 'Overall Width')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Width must be a number'])->setWidth(4);
+        $form->text('ferrual_length', 'Ferrual Length (mm)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Ferrual Length (mm) must be a number'])->setWidth(4);
+        $form->text('handle_length', 'Handle Length (mm)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Handle Length (mm) must be a number'])->setWidth(4);
+        $form->text('overall_length', 'Overall Length (mm)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Length (mm) must be a number'])->setWidth(4);
+        $form->text('overall_width', 'Overall Width (mm)(mm)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Width (mm)(mm) must be a number'])->setWidth(4);
         $form->divider();
-        $form->text('moq', 'Moq')->rules('required');
-        $form->text('price', 'Price')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Price must be a number'])->setWidth(4);
+        $form->text('moq', 'MOQ')->rules('required');
+        $form->text('price', 'Price (USD)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Price (USD) must be a number'])->setWidth(4);
         $form->text('mold_status', 'Mold Status')->rules('required');
         $form->switch('state', 'Display')->value(1);
 
@@ -311,18 +316,18 @@ class ProductBrushController extends Controller
         $show->cap_material('Cap Material');
         $show->handle_material('Handle Material');
         $show->handle_shape('Handle Shape');
-        $show->handle_length('Handle Length');
+        $show->handle_length('Handle Length (mm)');
         $show->brush_material('Brush Material');
         $show->brush_shape('Brush Shape');
         $show->brush('Brush');
         $show->ferrual_material('Ferrual Material');
-        $show->ferrual_length('Ferrual Length');
-        $show->overall_length('Overall Length');
-        $show->overall_width('Overall Width');
+        $show->ferrual_length('Ferrual Length (mm)');
+        $show->overall_length('Overall Length (mm)');
+        $show->overall_width('Overall Width (mm)(mm)');
         $show->set_individual('Set Individual');
         $show->divider();
-        $show->moq('Moq');
-        $show->price('Price');
+        $show->moq('MOQ');
+        $show->price('Price (USD)');
         $show->mold_status('Mold Status');
         $show->state('State');
 

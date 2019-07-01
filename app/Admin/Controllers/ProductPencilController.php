@@ -165,12 +165,12 @@ class ProductPencilController extends Controller
         $grid->formula('Formula')->width('120');
         $grid->formula_texture('Formula Texture')->width('120');
         $grid->formula_description('Formula Description')->width('150');
-        $grid->estimate_capacity('Estimate Capacity')->width('120');
-        $grid->overall_length('Overall Length')->width('120');
+        $grid->estimate_capacity('Estimate Capacity (g)')->width('120');
+        $grid->overall_length('Overall Length (mm)')->width('120');
         $grid->overall_diameter('Overall Diameter')->width('120');
 
-        $grid->moq('Moq')->width('50');
-        $grid->price('Price')->width('50');
+        $grid->moq('MOQ')->width('50');
+        $grid->price('Price (USD)')->width('50');
         $grid->mold_status('Mold Status')->width('80');
         $grid->files('Files')->display(function ($files) {
             $btn = new DocumentBtn(count($files), $this->id, self::TAG);
@@ -219,7 +219,7 @@ class ProductPencilController extends Controller
                 '1' => 'Only with images',
                 '0' => 'Only without images',
             ]);
-            $filter->between('overall_length', 'Overall Length');
+            $filter->between('overall_length', 'Overall Length (mm)');
         });
 
         $grid->expandFilter();
@@ -257,11 +257,11 @@ class ProductPencilController extends Controller
         $form->divider();
         $form->text('formula_texture', 'Formula Texture')->rules('required');
         $form->text('formula_description', 'Formula Description')->rules('required');
-        $form->text('estimate_capacity', 'Estimate Capacity')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Estimate Capacity must be a number'])->setWidth(4);
-        $form->text('overall_length', 'Overall Length')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Length must be a number'])->setWidth(4);
+        $form->text('estimate_capacity', 'Estimate Capacity (g)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Estimate Capacity (g) must be a number'])->setWidth(4);
+        $form->text('overall_length', 'Overall Length (mm)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Length (mm) must be a number'])->setWidth(4);
         $form->divider();
-        $form->text('moq', 'Moq')->rules('required');
-        $form->text('price', 'Price')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Price must be a number'])->setWidth(4);
+        $form->text('moq', 'MOQ')->rules('required');
+        $form->text('price', 'Price (USD)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Price (USD) must be a number'])->setWidth(4);
         $form->text('mold_status', 'Mold Status')->rules('required');
         $form->switch('state', 'Display')->value(1);
 
@@ -325,13 +325,13 @@ class ProductPencilController extends Controller
         $show->formula('Formula');
         $show->formula_texture('Formula Texture');
         $show->formula_description('Formula Description');
-        $show->estimate_capacity('Estimate Capacity');
-        $show->overall_length('Overall Length');
+        $show->estimate_capacity('Estimate Capacity (g)');
+        $show->overall_length('Overall Length (mm)');
         $show->overall_diameter('Overall Diameter');
         
         $show->divider();
-        $show->moq('Moq');
-        $show->price('Price');
+        $show->moq('MOQ');
+        $show->price('Price (USD)');
         $show->mold_status('Mold Status');
         $show->state('State');
 

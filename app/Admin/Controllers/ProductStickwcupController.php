@@ -144,7 +144,7 @@ class ProductStickwcupController extends Controller
         $grid->cover_material('Cover Material')->width('120');
         $grid->overall_length('Overall Length')->width('120');
         $grid->overall_height('Overall Height')->width('120');
-        $grid->overall_width('Overall Width')->width('120');
+        $grid->overall_width('Overall Width(mm)')->width('120');
         $grid->mechanism('Mechanism')->width('80');
         $grid->storage_location('Storage Location')->width('120');
         $grid->sample_available('Sample Available')->width('120');
@@ -217,7 +217,7 @@ class ProductStickwcupController extends Controller
                 '0' => 'Only without images',
             ]);
             $filter->between('overall_height', 'Overall Height');
-            $filter->between('overall_width', 'Overall Width');
+            $filter->between('overall_width', 'Overall Width(mm)');
         });
 
         $grid->expandFilter();
@@ -253,7 +253,7 @@ class ProductStickwcupController extends Controller
         $form->text('cover_material', 'Cover Material')->rules('required');
         $form->divider();
         $form->text('overall_length', 'Overall Length')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Length must be a number'])->setWidth(4);
-        $form->text('overall_width', 'Overall Width')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Width must be a number'])->setWidth(4);
+        $form->text('overall_width', 'Overall Width(mm)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Width(mm) must be a number'])->setWidth(4);
         $form->text('overall_height', 'Overall Height')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Height must be a number'])->setWidth(4);
         $form->select('mechanism', 'Mechanism')->options(self::$mechanismMap)->rules('required')->setWidth(4);
         $form->text('storage_location', 'Storage Location')->rules('required');
@@ -318,7 +318,7 @@ class ProductStickwcupController extends Controller
         $show->cover_material('Cover Material');
         $show->divider();
         $show->overall_length('Overall Height');
-        $show->overall_width('Overall Width');
+        $show->overall_width('Overall Width(mm)');
         $show->overall_height('Overall Height');
         $show->mechanism('Mechanism');
         $show->storage_location('Storage Location');

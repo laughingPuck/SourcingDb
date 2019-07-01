@@ -50,11 +50,15 @@ class ProductStickController extends Controller
         'Other' => 'Other',
     ];
     public static $closureMechanismMap = [
-        'Twist' => 'Twist',
-        'Sanp' => 'Sanp',
+        'Screw' => 'Screw',
+        'Snap' => 'Snap',
         'Magnetic' => 'Magnetic',
         'Others' => 'Others',
-        'Not sure' => 'Not sure',
+    ];
+    public static $recommendForSoftMap = [
+        'Soft' => 'Soft',
+        'Hard' => 'Hard',
+        'Not Sure' => 'Not Sure',
     ];
     public static $mechanismMap = [
         'Snap' => 'Snap',
@@ -172,23 +176,23 @@ class ProductStickController extends Controller
         $grid->shape('Shape')->width('120');
         $grid->edges_style('Edges Style')->width('120');
         $grid->cup('Cup')->width('120');
-        $grid->cup_size('Cup Size')->width('120');
+        $grid->cup_size('Cup Size (mm)')->width('120');
         $grid->cup_material('Cup Material')->width('120');
         $grid->recommend_for_soft('Recommend For Soft')->width('150');
-        $grid->estimate_capacity('Estimate Capacity')->width('120');
+        $grid->estimate_capacity('Estimate Capacity (mL)')->width('120');
         $grid->cup_cover_material('Cup Cover Material')->width('120');
         $grid->cap_material('Cap Material')->width('120');
         $grid->ashell_material('A-Shell Material')->width('120');
         $grid->body_material('Body Material')->width('120');
         $grid->outer_base_material('Outer Base Material')->width('150');
-        $grid->overall_length('Overall Length')->width('120');
-        $grid->overall_width('Overall Width')->width('120');
-        $grid->overall_height('Overall Height')->width('120');
+        $grid->overall_length('Overall Length (mm)')->width('120');
+        $grid->overall_width('Overall Width (mm)')->width('120');
+        $grid->overall_height('Overall Height (mm)')->width('120');
         $grid->filling_method('Filling Method')->width('120');
         $grid->closure_mechanism('Closure Mechanism')->width('120');
-        $grid->mechanism('Mechanism')->width('120');
-        $grid->moq('Moq')->width('50');
-        $grid->price('Price')->width('50');
+//        $grid->mechanism('Mechanism')->width('120');
+        $grid->moq('MOQ')->width('50');
+        $grid->price('Price (USD)')->width('50');
         $grid->mold_status('Mold Status')->width('80');
         $grid->files('Files')->display(function ($files) {
             $btn = new DocumentBtn(count($files), $this->id, self::TAG);
@@ -220,7 +224,7 @@ class ProductStickController extends Controller
             }
             $filter->equal('material', 'Material')->select(self::$materialMap);
             $filter->equal('shape', 'Shape')->select(self::$shapeMap);
-            $filter->equal('mechanism', 'Mechanism')->select(self::$mechanismMap);
+//            $filter->equal('mechanism', 'Mechanism')->select(self::$mechanismMap);
             $filter->equal('closure_mechanism', 'Closure Mechanism')->select(self::$closureMechanismMap);
             $filter->equal('cup', 'Cup')->select(self::$cupMap);
             $filter->equal('filling_method', 'Filling Method')->select(self::$fillingMethod);
@@ -237,9 +241,9 @@ class ProductStickController extends Controller
                 '1' => 'Only with images',
                 '0' => 'Only without images',
             ]);
-            $filter->between('estimate_capacity', 'Estimate Capacity');
-            $filter->between('overall_height', 'Overall Height');
-            $filter->between('overall_width', 'Overall Width');
+            $filter->between('estimate_capacity', 'Estimate Capacity (mL)');
+            $filter->between('overall_height', 'Overall Height (mm)');
+            $filter->between('overall_width', 'Overall Width (mm)');
         });
 
         $grid->expandFilter();
@@ -277,19 +281,19 @@ class ProductStickController extends Controller
         $form->select('ashell_material', 'A-Shell Material')->options(self::$materialMap)->rules('required')->setWidth(4);
         $form->select('body_material', 'Body Material')->options(self::$materialMap)->rules('required')->setWidth(4);
         $form->select('outer_base_material', 'Outer Base Material')->options(self::$materialMap)->rules('required')->setWidth(4);
-        $form->select('mechanism', 'Mechanism')->options(self::$mechanismMap)->rules('required')->setWidth(4);
+//        $form->select('mechanism', 'Mechanism')->options(self::$mechanismMap)->rules('required')->setWidth(4);
         $form->select('filling_method', 'Filling Method')->options(self::$fillingMethod)->rules('required')->setWidth(4);
         $form->select('closure_mechanism', 'Closure Mechanism')->options(self::$closureMechanismMap)->rules('required')->setWidth(4);
         $form->divider();
-        $form->text('recommend_for_soft', 'Recommend For Soft')->rules('required');
-        $form->text('cup_size', 'Cup Size')->rules('required|regex:/^\d+$/|max:1', ['regex' => 'The Cup Size must be a number'])->setWidth(4);
-        $form->text('estimate_capacity', 'Estimate Capacity')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Estimate Capacity Width must be a number'])->setWidth(4);
-        $form->text('overall_length', 'Overall Length')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Length must be a number'])->setWidth(4);
-        $form->text('overall_width', 'Overall Width')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Width must be a number'])->setWidth(4);
-        $form->text('overall_height', 'Overall Height')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Height must be a number'])->setWidth(4);
+        $form->select('recommend_for_soft', 'Recommend For Soft')->options(self::$recommendForSoftMap)->rules('required')->setWidth(4);
+        $form->text('cup_size', 'Cup Size (mm)')->rules('required|regex:/^\d+$/|max:1', ['regex' => 'The Cup Size (mm) must be a number'])->setWidth(4);
+        $form->text('estimate_capacity', 'Estimate Capacity (mL)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Estimate Capacity (mL) Width must be a number'])->setWidth(4);
+        $form->text('overall_length', 'Overall Length (mm)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Length (mm) must be a number'])->setWidth(4);
+        $form->text('overall_width', 'Overall Width (mm)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Width (mm) must be a number'])->setWidth(4);
+        $form->text('overall_height', 'Overall Height (mm)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Height (mm) must be a number'])->setWidth(4);
         $form->divider();
-        $form->text('moq', 'Moq')->rules('required');
-        $form->text('price', 'Price')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Price must be a number'])->setWidth(4);
+        $form->text('moq', 'MOQ')->rules('required');
+        $form->text('price', 'Price (USD)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Price (USD) must be a number'])->setWidth(4);
         $form->text('mold_status', 'Mold Status')->rules('required');
         $form->switch('state', 'Display')->value(1);
 
@@ -343,24 +347,24 @@ class ProductStickController extends Controller
         $show->shape('Shape');
         $show->edges_style('Edges Style');
         $show->cup('Cup');
-        $show->cup_size('Cup Size');
+        $show->cup_size('Cup Size (mm)');
         $show->cup_material('Cup Material');
         $show->recommend_for_soft('Recommend For Soft');
-        $show->estimate_capacity('Estimate Capacity');
+        $show->estimate_capacity('Estimate Capacity (mL)');
         $show->cup_cover_material('Cup Cover Material');
         $show->cap_material('Cap Material');
         $show->ashell_material('A-Shell Material');
         $show->body_material('Body Material');
         $show->outer_base_material('Outer Base Material');
-        $show->overall_length('Overall Length');
-        $show->overall_width('Overall Width');
-        $show->overall_height('Overall Height');
+        $show->overall_length('Overall Length (mm)');
+        $show->overall_width('Overall Width (mm)');
+        $show->overall_height('Overall Height (mm)');
         $show->filling_method('Filling Method');
         $show->closure_mechanism('Closure Mechanism');
-        $show->mechanism('Mechanism');
+//        $show->mechanism('Mechanism');
         $show->divider();
-        $show->moq('Moq');
-        $show->price('Price');
+        $show->moq('MOQ');
+        $show->price('Price (USD)');
         $show->mold_status('Mold Status');
         $show->state('State');
 
