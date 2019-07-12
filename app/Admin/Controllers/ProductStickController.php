@@ -74,9 +74,9 @@ class ProductStickController extends Controller
         'Not sure' => 'Not sure',
     ];
     public static $fillingMethod = [
-        'Topp Filling' => 'Topp Filling',
+        'Top Filling' => 'Top Filling',
         'Bottom Filling' => 'Bottom Filling',
-        'Blank' => 'Blank',
+        'Both' => 'Both',
     ];
     public static $edgesStyleMap = [
         'Soft' => 'Soft',
@@ -275,7 +275,7 @@ class ProductStickController extends Controller
         $form->select('shape', 'Shape')->options(self::$shapeMap)->rules('required')->setWidth(4);
         $form->select('edges_style', 'Edges Style')->options(self::$edgesStyleMap)->rules('required')->setWidth(4);
         $form->select('cup', 'Cup')->options(self::$cupMap)->rules('required')->setWidth(4);
-        $form->select('cup_material', 'Cap Material')->options(self::$materialMap)->rules('required')->setWidth(4);
+        $form->select('cup_material', 'Cup Material')->options(self::$materialMap)->rules('required')->setWidth(4);
         $form->select('cap_material', 'Cap Material')->options(self::$materialMap)->rules('required')->setWidth(4);
         $form->select('cup_cover_material', 'Cup Cover Material')->options(self::$materialMap)->rules('required')->setWidth(4);
         $form->select('ashell_material', 'A-Shell Material')->options(self::$materialMap)->rules('required')->setWidth(4);

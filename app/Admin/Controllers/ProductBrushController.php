@@ -163,7 +163,7 @@ class ProductBrushController extends Controller
         $grid->handle_shape('Handle Shape')->width('120');
         $grid->handle_length('Handle Length (mm)')->width('120');
         $grid->brush_material('Brush Material')->width('120');
-        $grid->brush_shape('Brush Shape')->width('120');
+//        $grid->brush_shape('Brush Shape')->width('120');
         $grid->brush('Brush')->width('120');
         $grid->ferrual_material('Ferrual Material')->width('120');
         $grid->ferrual_length('Ferrual Length (mm)')->width('120');
@@ -224,7 +224,7 @@ class ProductBrushController extends Controller
         });
 
         $grid->expandFilter();
-        $exceptField = [];
+        $exceptField = ['brush_shape'];
         if (!Admin::user()->can('page-products-write')) {
             $exceptField = ['vendor_item', 'manufactory_name'];
             $grid->disableCreateButton();
@@ -252,7 +252,7 @@ class ProductBrushController extends Controller
         $form->select('handle_material', 'Handle Material')->options(self::$handleMaterialMap)->rules('required')->setWidth(4);
         $form->select('handle_shape', 'Handle Shape')->options(self::$handleShapeMap)->rules('required')->setWidth(4);
         $form->select('brush_material', 'Brush Material')->options(self::$brushMaterialMap)->rules('required')->setWidth(4);
-        $form->select('brush_shape', 'Brush Shape')->options(self::$handleShapeMap)->rules('required')->setWidth(4);
+//        $form->select('brush_shape', 'Brush Shape')->options(self::$handleShapeMap)->rules('required')->setWidth(4);
         $form->select('brush', 'Brush')->options(self::$brushMap)->rules('required')->setWidth(4);
         $form->select('ferrual_material', 'Ferrual Material')->options(self::$handleMaterialMap)->rules('required')->setWidth(4);
         $form->select('set_individual', 'Set Individual')->options(self::$setIndividualMap)->rules('required')->setWidth(4);
@@ -318,7 +318,7 @@ class ProductBrushController extends Controller
         $show->handle_shape('Handle Shape');
         $show->handle_length('Handle Length (mm)');
         $show->brush_material('Brush Material');
-        $show->brush_shape('Brush Shape');
+//        $show->brush_shape('Brush Shape');
         $show->brush('Brush');
         $show->ferrual_material('Ferrual Material');
         $show->ferrual_length('Ferrual Length (mm)');
