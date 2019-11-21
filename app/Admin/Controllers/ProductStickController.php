@@ -43,6 +43,58 @@ class ProductStickController extends Controller
         'Glass' => 'Glass',
         'Not sure' => 'Not sure',
     ];
+    public static $capMaterialMap = [
+        'AS' => 'AS',
+        'ABS' => 'ABS',
+        'PP' => 'PP',
+        'PETG' => 'PETG',
+        'PET' => 'PET',
+        'POM' => 'POM',
+        'SAN' => 'SAN',
+        'PMMA' => 'PMMA',
+        'Glass' => 'Glass',
+        'Aluminum' => 'Aluminum',
+        'Not sure' => 'Not sure',
+    ];
+    public static $aShellMaterialMap = [
+        'AS' => 'AS',
+        'ABS' => 'ABS',
+        'PP' => 'PP',
+        'PETG' => 'PETG',
+        'PET' => 'PET',
+        'POM' => 'POM',
+        'SAN' => 'SAN',
+        'PMMA' => 'PMMA',
+        'Glass' => 'Glass',
+        'Aluminum' => 'Aluminum',
+        'Not sure' => 'Not sure',
+    ];
+    public static $bodyMaterialMap = [
+        'AS' => 'AS',
+        'ABS' => 'ABS',
+        'PP' => 'PP',
+        'PETG' => 'PETG',
+        'PET' => 'PET',
+        'POM' => 'POM',
+        'SAN' => 'SAN',
+        'PMMA' => 'PMMA',
+        'Glass' => 'Glass',
+        'Aluminum' => 'Aluminum',
+        'Not sure' => 'Not sure',
+    ];
+    public static $outerBaseMaterialMap = [
+        'AS' => 'AS',
+        'ABS' => 'ABS',
+        'PP' => 'PP',
+        'PETG' => 'PETG',
+        'PET' => 'PET',
+        'POM' => 'POM',
+        'SAN' => 'SAN',
+        'PMMA' => 'PMMA',
+        'Glass' => 'Glass',
+        'Aluminum' => 'Aluminum',
+        'Not sure' => 'Not sure',
+    ];
     public static $shapeMap = [
         'Round' => 'Round',
         'Square' => 'Square',
@@ -276,17 +328,17 @@ class ProductStickController extends Controller
         $form->select('edges_style', 'Edges Style')->options(self::$edgesStyleMap)->rules('required')->setWidth(4);
         $form->select('cup', 'Cup')->options(self::$cupMap)->rules('required')->setWidth(4);
         $form->select('cup_material', 'Cup Material')->options(self::$materialMap)->rules('required')->setWidth(4);
-        $form->select('cap_material', 'Cap Material')->options(self::$materialMap)->rules('required')->setWidth(4);
+        $form->select('cap_material', 'Cap Material')->options(self::$capMaterialMap)->rules('required')->setWidth(4);
         $form->select('cup_cover_material', 'Cup Cover Material')->options(self::$materialMap)->rules('required')->setWidth(4);
-        $form->select('ashell_material', 'A-Shell Material')->options(self::$materialMap)->rules('required')->setWidth(4);
-        $form->select('body_material', 'Body Material')->options(self::$materialMap)->rules('required')->setWidth(4);
-        $form->select('outer_base_material', 'Outer Base Material')->options(self::$materialMap)->rules('required')->setWidth(4);
+        $form->select('ashell_material', 'A-Shell Material')->options(self::$aShellMaterialMap)->rules('required')->setWidth(4);
+        $form->select('body_material', 'Body Material')->options(self::$bodyMaterialMap)->rules('required')->setWidth(4);
+        $form->select('outer_base_material', 'Outer Base Material')->options(self::$outerBaseMaterialMap)->rules('required')->setWidth(4);
 //        $form->select('mechanism', 'Mechanism')->options(self::$mechanismMap)->rules('required')->setWidth(4);
         $form->select('filling_method', 'Filling Method')->options(self::$fillingMethod)->rules('required')->setWidth(4);
         $form->select('closure_mechanism', 'Closure Mechanism')->options(self::$closureMechanismMap)->rules('required')->setWidth(4);
         $form->divider();
         $form->select('recommend_for_soft', 'Recommend For Soft')->options(self::$recommendForSoftMap)->rules('required')->setWidth(4);
-        $form->text('cup_size', 'Cup Size (mm)')->rules('required|regex:/^\d+$/|max:1', ['regex' => 'The Cup Size (mm) must be a number'])->setWidth(4);
+        $form->text('cup_size', 'Cup Size (mm)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Cup Size (mm) must be a number'])->setWidth(4);
         $form->text('estimate_capacity', 'Estimate Capacity (mL)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Estimate Capacity (mL) Width must be a number'])->setWidth(4);
         $form->text('overall_length', 'Overall Length (mm)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Length (mm) must be a number'])->setWidth(4);
         $form->text('overall_width', 'Overall Width (mm)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Width (mm) must be a number'])->setWidth(4);

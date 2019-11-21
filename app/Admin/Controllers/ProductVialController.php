@@ -43,6 +43,19 @@ class ProductVialController extends Controller
         'Glass' => 'Glass',
         'Not sure' => 'Not sure',
     ];
+    public static $capMaterialMap = [
+        'AS' => 'AS',
+        'ABS' => 'ABS',
+        'PP' => 'PP',
+        'PETG' => 'PETG',
+        'PET' => 'PET',
+        'POM' => 'POM',
+        'SAN' => 'SAN',
+        'PMMA' => 'PMMA',
+        'Glass' => 'Glass',
+        'Aluminum' => 'Aluminum',
+        'Not sure' => 'Not sure',
+    ];
     public static $shapeMap = [
         'Round/Cylindical' => 'Round/Cylindical',
         'Square' => 'Square',
@@ -316,7 +329,7 @@ class ProductVialController extends Controller
         $form->text('manufactory_name', 'Manufactory Name')->rules('required');
         $form->text('item_description', 'Item Description')->rules('required');
         $form->divider();
-        $form->select('cap_material', 'Cap Material')->options(self::$materialMap)->rules('required')->setWidth(4);
+        $form->select('cap_material', 'Cap Material')->options(self::$capMaterialMap)->rules('required')->setWidth(4);
         $form->select('inner_cap_material', 'Inner Cap Material')->options(self::$materialMap)->rules('required')->setWidth(4);
         $form->select('collar_material', 'Collar Material')->options(self::$materialMap)->rules('required')->setWidth(4);
         $form->select('rod_material', 'Rod Material')->options(self::$materialMap)->rules('required')->setWidth(4);

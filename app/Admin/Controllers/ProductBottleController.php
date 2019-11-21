@@ -44,6 +44,20 @@ class ProductBottleController extends Controller
         'Not sure' => 'Not sure',
     ];
 
+    public static $capMaterialMap = [
+        'AS' => 'AS',
+        'ABS' => 'ABS',
+        'PP' => 'PP',
+        'PETG' => 'PETG',
+        'PET' => 'PET',
+        'POM' => 'POM',
+        'SAN' => 'SAN',
+        'PMMA' => 'PMMA',
+        'Glass' => 'Glass',
+        'Aluminum' => 'Aluminum',
+        'Not sure' => 'Not sure',
+    ];
+
     public static $linerMap = [
         'Yes' => 'Yes',
         'No' => 'No',
@@ -292,7 +306,7 @@ class ProductBottleController extends Controller
         $form->select('shape', 'Shape')->options(self::$shapeMap)->rules('required')->setWidth(4);
         $form->select('chamber', 'Chamber')->options(self::$chamberMap)->rules('required')->setWidth(4);
         $form->select('color', 'Color')->options(self::$colorMap)->rules('required')->setWidth(4);
-        $form->select('cap_material', 'Cap Material')->options(self::$materialMap)->rules('required')->setWidth(4);
+        $form->select('cap_material', 'Cap Material')->options(self::$capMaterialMap)->rules('required')->setWidth(4);
         $form->select('liner_material', 'Liner')->options(self::$linerMap)->rules('required')->setWidth(4);
         $form->select('base_material', 'Base Material')->options(self::$materialMap)->rules('required')->setWidth(4);
         $form->select('collar_material', 'Collar')->options(self::$collarMap)->rules('required')->setWidth(4);

@@ -325,7 +325,7 @@ class ProductCompactpaletteController extends Controller
         $form->select('window', 'Window')->options(Products::$switchMap)->rules('required')->setWidth(4);
         $form->select('closure_mechanism', 'Closure Mechanism')->options(self::$closureMechanismMap)->rules('required')->setWidth(4);
         $form->select('pan_well_shape', 'Pan Well Shape')->options(self::$panWellShapeMap)->rules('required')->setWidth(4);
-        $form->text('pan_well_width', 'Pan Well Width')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Pan Well Width must be a number'])->setWidth(4);
+        $form->text('pan_well_width', 'Pan Well Width')->rules('required')->setWidth(4);
 //        $form->text('pan_well_height', 'Pan Well Height (mm)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Pan Well Height (mm) must be a number'])->setWidth(4);
         $form->text('pan_well_depth', 'Pan Well Depth (mm)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Pan Well Depth (mm) must be a number'])->setWidth(4);
         $form->select('applicator_well', 'Applicator Well')->options(Products::$switchMap)->rules('required')->setWidth(4);
