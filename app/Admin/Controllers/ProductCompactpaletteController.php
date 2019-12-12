@@ -202,7 +202,7 @@ class ProductCompactpaletteController extends Controller
         })->width('120');
         $grid->pan_well_width('Pan Well Width/radius')->width('140');
 //        $grid->pan_well_height('Pan Well Height (mm)')->width('120');
-        $grid->pan_well_depth('Pan Well Depth (mm)')->width('120');
+        $grid->pan_well_depth('Pan Well Depth (mm)')->width('140');
         $grid->applicator_well('Applicator Well')->display(function ($value) {
             if (array_key_exists($value, Products::$switchMap)) {
                 return Products::$switchMap[$value];
@@ -266,7 +266,8 @@ class ProductCompactpaletteController extends Controller
             $filter->equal('edges_style', 'Edges Style')->select(self::$edgesStyleMap);
 //            $filter->equal('pan_well', 'Pan Well#')->select(self::$panWellMap);
             $filter->equal('material', 'Material')->select(self::$materialMap);
-            $filter->between('pan_well_width', 'Pan Well Width');
+//            $filter->between('pan_well_width', 'Pan Well Width');
+            $filter->like('pan_well_width', 'Pan Well Width');
             $filter->equal('applicator_well', 'Applicator Well')->select(Products::$switchMap);
             $filter->equal('closure_mechanism', 'Closure Mechanism')->select(self::$closureMechanismMap);
             $filter->equal('window', 'Window')->select(Products::$switchMap);
@@ -327,7 +328,7 @@ class ProductCompactpaletteController extends Controller
         $form->select('pan_well_shape', 'Pan Well Shape')->options(self::$panWellShapeMap)->rules('required')->setWidth(4);
         $form->text('pan_well_width', 'Pan Well Width')->rules('required')->setWidth(4);
 //        $form->text('pan_well_height', 'Pan Well Height (mm)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Pan Well Height (mm) must be a number'])->setWidth(4);
-        $form->text('pan_well_depth', 'Pan Well Depth (mm)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Pan Well Depth (mm) must be a number'])->setWidth(4);
+        $form->text('pan_well_depth', 'Pan Well Depth (mm)')->rules('required')->setWidth(4);
         $form->select('applicator_well', 'Applicator Well')->options(Products::$switchMap)->rules('required')->setWidth(4);
         $form->divider();
         $form->text('moq', 'MOQ')->rules('required');

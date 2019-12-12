@@ -338,7 +338,7 @@ class ProductStickController extends Controller
         $form->select('closure_mechanism', 'Closure Mechanism')->options(self::$closureMechanismMap)->rules('required')->setWidth(4);
         $form->divider();
         $form->select('recommend_for_soft', 'Recommend For Soft')->options(self::$recommendForSoftMap)->rules('required')->setWidth(4);
-        $form->text('cup_size', 'Cup Size (mm)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Cup Size (mm) must be a number'])->setWidth(4);
+        $form->text('cup_size', 'Cup Size (mm)')->rules('required')->setWidth(4);
         $form->text('estimate_capacity', 'Estimate Capacity (mL)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Estimate Capacity (mL) Width must be a number'])->setWidth(4);
         $form->text('overall_length', 'Overall Length (mm)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Length (mm) must be a number'])->setWidth(4);
         $form->text('overall_width', 'Overall Width (mm)')->rules('required|regex:/^\d+(\.\d{0,2})?$/', ['regex' => 'The Overall Width (mm) must be a number'])->setWidth(4);
