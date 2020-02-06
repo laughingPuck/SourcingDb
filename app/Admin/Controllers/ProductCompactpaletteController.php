@@ -267,7 +267,32 @@ class ProductCompactpaletteController extends Controller
 //            $filter->equal('pan_well', 'Pan Well#')->select(self::$panWellMap);
             $filter->equal('material', 'Material')->select(self::$materialMap);
 //            $filter->between('pan_well_width', 'Pan Well Width');
-            $filter->like('pan_well_width', 'Pan Well Width');
+            $filter->where(function ($query) {
+                $valArr = explode(';', $this->input);
+                $valCount = count($valArr);
+                if ($valCount) {
+                    $query->where('pan_well_width', 'like', "%{$valArr[0]}%");
+                    if ($valCount > 1) {
+                        unset($valArr[0]);
+                        foreach($valArr as $v) {
+                            $query->orWhere('pan_well_width', 'like', "%{$v}%");
+                        }
+                    }
+                }
+            }, 'Pan Well Width');
+            $filter->where(function ($query) {
+                $valArr = explode(';', $this->input);
+                $valCount = count($valArr);
+                if ($valCount) {
+                    $query->where('pan_well_depth', 'like', "%{$valArr[0]}%");
+                    if ($valCount > 1) {
+                        unset($valArr[0]);
+                        foreach($valArr as $v) {
+                            $query->orWhere('pan_well_depth', 'like', "%{$v}%");
+                        }
+                    }
+                }
+            }, 'Pan Well Depth');
             $filter->equal('applicator_well', 'Applicator Well')->select(Products::$switchMap);
             $filter->equal('closure_mechanism', 'Closure Mechanism')->select(self::$closureMechanismMap);
             $filter->equal('window', 'Window')->select(Products::$switchMap);

@@ -279,6 +279,19 @@ class ProductStickController extends Controller
 //            $filter->equal('mechanism', 'Mechanism')->select(self::$mechanismMap);
             $filter->equal('closure_mechanism', 'Closure Mechanism')->select(self::$closureMechanismMap);
             $filter->equal('cup', 'Cup')->select(self::$cupMap);
+            $filter->where(function ($query) {
+                $valArr = explode(';', $this->input);
+                $valCount = count($valArr);
+                if ($valCount) {
+                    $query->where('cup_size', 'like', "%{$valArr[0]}%");
+                    if ($valCount > 1) {
+                        unset($valArr[0]);
+                        foreach($valArr as $v) {
+                            $query->orWhere('cup_size', 'like', "%{$v}%");
+                        }
+                    }
+                }
+            }, 'Cup Size (mm)');
             $filter->equal('filling_method', 'Filling Method')->select(self::$fillingMethod);
             $filter->where(function ($query) {
                 switch ($this->input) {
